@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj": {}
+    "D:\\.NET\\Capstone\\Repository\\Repository.csproj": {}
   },
   "projects": {
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+    "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
+        "projectUniqueName": "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj",
         "projectName": "BusinessObject",
-        "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
-        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\obj\\",
+        "projectPath": "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\.NET\\Capstone\\BusinessObject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -34,6 +35,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -79,21 +85,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
+    "D:\\.NET\\Capstone\\DataAccess\\DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
+        "projectUniqueName": "D:\\.NET\\Capstone\\DataAccess\\DataAccess.csproj",
         "projectName": "DataAccess",
-        "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
-        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\obj\\",
+        "projectPath": "D:\\.NET\\Capstone\\DataAccess\\DataAccess.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\.NET\\Capstone\\DataAccess\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -101,14 +107,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
+              "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj": {
+                "projectPath": "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj"
               }
             }
           }
@@ -117,6 +124,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -138,21 +150,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj": {
+    "D:\\.NET\\Capstone\\Repository\\Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj",
+        "projectUniqueName": "D:\\.NET\\Capstone\\Repository\\Repository.csproj",
         "projectName": "Repository",
-        "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj",
-        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\obj\\",
+        "projectPath": "D:\\.NET\\Capstone\\Repository\\Repository.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\.NET\\Capstone\\Repository\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -160,17 +172,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
+              "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj": {
+                "projectPath": "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj"
               },
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
+              "D:\\.NET\\Capstone\\DataAccess\\DataAccess.csproj": {
+                "projectPath": "D:\\.NET\\Capstone\\DataAccess\\DataAccess.csproj"
               }
             }
           }
@@ -179,6 +192,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -200,7 +218,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HealthTrackingManageAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+22f598044da6b4e6eb4431b1b131d7f6ba46811e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e04cc21bf442093d0cd6fb1c6132ddeb911a3121")]
 [assembly: System.Reflection.AssemblyProductAttribute("HealthTrackingManageAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HealthTrackingManageAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
