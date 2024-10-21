@@ -9,3 +9,15 @@ D:\CapstoneFa24\HealthTrackingAPI\DataAccess\obj\Debug\net6.0\DataAccess.dll
 D:\CapstoneFa24\HealthTrackingAPI\DataAccess\obj\Debug\net6.0\refint\DataAccess.dll
 D:\CapstoneFa24\HealthTrackingAPI\DataAccess\obj\Debug\net6.0\DataAccess.pdb
 D:\CapstoneFa24\HealthTrackingAPI\DataAccess\obj\Debug\net6.0\ref\DataAccess.dll
+D:\.NET\Capstone\DataAccess\bin\Debug\net6.0\DataAccess.deps.json
+D:\.NET\Capstone\DataAccess\bin\Debug\net6.0\DataAccess.dll
+D:\.NET\Capstone\DataAccess\bin\Debug\net6.0\DataAccess.pdb
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.AssemblyInfoInputs.cache
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.AssemblyInfo.cs
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.csproj.CoreCompileInputs.cache
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.sourcelink.json
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.dll
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\refint\DataAccess.dll
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.pdb
+D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\ref\DataAccess.dll
