@@ -43,3 +43,6 @@ D:\CapstoneFa24\API\CapstoneFa24\Repository\bin\Debug\net6.0\BusinessObject.pdb
 D:\CapstoneFa24\API\CapstoneFa24\Repository\bin\Debug\net6.0\DataAccess.pdb
 D:\CapstoneFa24\API\CapstoneFa24\Repository\obj\Debug\net6.0\Repository.csproj.CopyComplete
 D:\CapstoneFa24\API\CapstoneFa24\Repository\obj\Debug\net6.0\ref\Repository.dll
+D:\.NET\Capstone\Repository\bin\Debug\net6.0\DataAccess.dll
+D:\.NET\Capstone\Repository\bin\Debug\net6.0\DataAccess.pdb
+D:\.NET\Capstone\Repository\bin\Debug\net6.0\appsettings.json

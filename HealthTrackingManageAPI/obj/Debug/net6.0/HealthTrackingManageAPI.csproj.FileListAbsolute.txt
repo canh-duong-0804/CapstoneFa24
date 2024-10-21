@@ -41,7 +41,6 @@ D:\.NET\Capstone\HealthTrackingManageAPI\obj\Debug\net6.0\HealthTrackingManageAP
 D:\.NET\Capstone\HealthTrackingManageAPI\obj\Debug\net6.0\HealthTrackingManageAPI.dll
 D:\.NET\Capstone\HealthTrackingManageAPI\obj\Debug\net6.0\refint\HealthTrackingManageAPI.dll
 D:\.NET\Capstone\HealthTrackingManageAPI\obj\Debug\net6.0\HealthTrackingManageAPI.pdb
-D:\.NET\Capstone\HealthTrackingManageAPI\bin\Debug\net6.0\appsettings.Development.json
 D:\.NET\Capstone\HealthTrackingManageAPI\bin\Debug\net6.0\appsettings.json
 D:\.NET\Capstone\HealthTrackingManageAPI\bin\Debug\net6.0\HealthTrackingManageAPI.exe
 D:\.NET\Capstone\HealthTrackingManageAPI\bin\Debug\net6.0\HealthTrackingManageAPI.deps.json
@@ -177,3 +176,6 @@ D:\CapstoneFa24\API\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\scoped
 D:\CapstoneFa24\API\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\HealthTrackingManageAPI.csproj.CopyComplete
 D:\CapstoneFa24\API\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\HealthTrackingManageAPI.genruntimeconfig.cache
 D:\CapstoneFa24\API\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\ref\HealthTrackingManageAPI.dll
+D:\.NET\Capstone\HealthTrackingManageAPI\bin\Debug\net6.0\AutoMapper.dll
+D:\.NET\Capstone\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\.NET\Capstone\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
