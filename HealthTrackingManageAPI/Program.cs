@@ -1,4 +1,5 @@
-using BusinessObject;
+
+using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 

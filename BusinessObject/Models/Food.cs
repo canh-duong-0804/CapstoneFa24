@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BusinessObject.Entities
+namespace BusinessObject.Models
 {
     public partial class Food
     {
@@ -19,7 +19,7 @@ namespace BusinessObject.Entities
         public double Calories { get; set; }
         public int CreateBy { get; set; }
         public DateTime CreateDate { get; set; }
-        public int ChangeBy { get; set; }
+        public int? ChangeBy { get; set; }
         public DateTime ChangeDate { get; set; }
         public string? FoodImage { get; set; }
         public double Protein { get; set; }

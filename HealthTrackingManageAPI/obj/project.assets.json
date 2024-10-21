@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "AutoMapper/13.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Options": "6.0.0"
+        },
+        "compile": {
+          "lib/net6.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.CSharp/4.5.0": {
         "type": "package",
         "compile": {
@@ -987,6 +1003,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
+          "AutoMapper": "13.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.27",
           "Microsoft.Extensions.Configuration": "6.0.0",
           "Microsoft.Extensions.Configuration.Json": "6.0.0"
@@ -1001,6 +1018,9 @@
       "DataAccess/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "BusinessObject": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/DataAccess.dll": {}
         },
@@ -1012,7 +1032,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
-          "BusinessObject": "1.0.0"
+          "BusinessObject": "1.0.0",
+          "DataAccess": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Repository.dll": {}
@@ -1024,6 +1045,21 @@
     }
   },
   "libraries": {
+    "AutoMapper/13.0.1": {
+      "sha512": "/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
+      "type": "package",
+      "path": "automapper/13.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "automapper.13.0.1.nupkg.sha512",
+        "automapper.nuspec",
+        "icon.png",
+        "lib/net6.0/AutoMapper.dll",
+        "lib/net6.0/AutoMapper.xml"
+      ]
+    },
     "Microsoft.CSharp/4.5.0": {
       "sha512": "kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ==",
       "type": "package",
@@ -2758,19 +2794,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\admin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\.NET\\Capstone\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
+      "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
       "projectName": "HealthTrackingManageAPI",
-      "projectPath": "D:\\.NET\\Capstone\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\.NET\\Capstone\\HealthTrackingManageAPI\\obj\\",
+      "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
+      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
+      "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2778,21 +2814,20 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj": {
-              "projectPath": "D:\\.NET\\Capstone\\BusinessObject\\BusinessObject.csproj"
+            "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+              "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
             },
-            "D:\\.NET\\Capstone\\DataAccess\\DataAccess.csproj": {
-              "projectPath": "D:\\.NET\\Capstone\\DataAccess\\DataAccess.csproj"
+            "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
+              "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
             },
-            "D:\\.NET\\Capstone\\Repository\\Repository.csproj": {
-              "projectPath": "D:\\.NET\\Capstone\\Repository\\Repository.csproj"
+            "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj": {
+              "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj"
             }
           }
         }
@@ -2801,11 +2836,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -2836,7 +2866,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }

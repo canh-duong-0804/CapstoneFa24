@@ -1,5 +1,7 @@
-﻿using BusinessObject;
-using BusinessObject.Entities;
+﻿
+using AutoMapper.Execution;
+using BusinessObject.Models;
+using DataAccess;
 using HealthTrackingManageAPI.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 using Repository.Model.Dto;
@@ -11,9 +13,9 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-	public class UserRepository : IUserRepository
-	{
-		private readonly HealthTrackingDBContext _context;
+    public class UserRepository : IUserRepository
+    {
+		/*private readonly HealthTrackingDBContext _context;
 		public UserRepository(HealthTrackingDBContext context)
 		{
 			_context = context;
@@ -50,15 +52,15 @@ namespace Repository
 
 		public async Task<Member> Register(RegisterationRequestDTO registerationRequestDTO)
 		{
-			
-			
 
-			
+
+
+
 			var newMember = new Member
 			{
 				Username = registerationRequestDTO.UserName,
 				Email = registerationRequestDTO.Email,
-				Password = registerationRequestDTO.Password, 
+				Password = registerationRequestDTO.Password,
 				Dob = registerationRequestDTO.Dob,
 				PhoneNumber = registerationRequestDTO.PhoneNumber,
 				Height = registerationRequestDTO.Height,
@@ -68,14 +70,14 @@ namespace Repository
 				Goal = registerationRequestDTO.Goal,
 				UnderlyingDisease = registerationRequestDTO.UnderLyingDisease,
 				CreatedAt = DateTime.Now,
-				Status = true 
+				Status = true
 			};
 
-			
+
 			_context.Members.Add(newMember);
 			await _context.SaveChangesAsync();
 
-			return newMember; 
+			return newMember;
 		}
 
 		public async Task<Member> Login(LoginRequestDTO loginRequestDTO)
@@ -83,7 +85,20 @@ namespace Repository
 			var user = await _context.Members.FirstOrDefaultAsync(x =>
 				x.Username == loginRequestDTO.UserName && x.Password == loginRequestDTO.Password);
 
-			return user; 
-		}
-	}
+			return user;
+		}*/
+		public bool IsUniqueEmail(string email) => UserDAO.Instance.IsUniqueEmail(email);
+
+        public bool IsUniquePhonenumber(string number) => UserDAO.Instance.IsUniquePhonenumber(number);
+       
+
+        public bool IsUniqueUser(string username) => UserDAO.Instance.IsUniqueUser(username);
+
+
+        public Task<BusinessObject.Models.Member> Login(BusinessObject.Models.Member loginRequestDTO) => UserDAO.Instance.Login(loginRequestDTO);
+        
+
+        public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO) => UserDAO.Instance.Register(registerationRequestDTO);
+
+    }
 }

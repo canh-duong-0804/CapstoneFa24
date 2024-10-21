@@ -1,4 +1,5 @@
-﻿using BusinessObject.Entities;
+﻿
+using BusinessObject.Models;
 using HealthTrackingManageAPI.Models.Dto;
 using Repository.Model.Dto;
 using System;
@@ -14,8 +15,8 @@ namespace Repository
 		bool IsUniqueEmail(string email);
 		bool IsUniqueUser(string username);
 		bool IsUniquePhonenumber(string number);
-		Task<Member> Register(RegisterationRequestDTO registerationRequestDTO);
-		Task<Member> Login(LoginRequestDTO loginRequestDTO);
+		Task<Member> Register(Member registerationRequestDTO);
+		Task<Member> Login(Member loginRequestDTO);
 
 	}
 }

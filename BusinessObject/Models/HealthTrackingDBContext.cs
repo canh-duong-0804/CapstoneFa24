@@ -1,11 +1,9 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
-using BusinessObject.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
-namespace BusinessObject
+namespace BusinessObject.Models
 {
     public partial class HealthTrackingDBContext : DbContext
     {
@@ -47,12 +45,12 @@ namespace BusinessObject
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-			var builder = new ConfigurationBuilder()
-				  .SetBasePath(Directory.GetCurrentDirectory())
-				  .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-			IConfigurationRoot configuration = builder.Build();
-			optionsBuilder.UseSqlServer(configuration.GetConnectionString("DbConnection"));
-		}
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server=DESKTOP-5DR1P1T;database=HealthTrackingDB;uid=sa;pwd=123;TrustServerCertificate=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -68,17 +66,15 @@ namespace BusinessObject
                     .HasColumnType("datetime")
                     .HasColumnName("change_date");
 
-                entity.Property(e => e.Content).HasColumnName("content");
+                entity.Property(e => e.Content)
+                    .HasColumnType("ntext")
+                    .HasColumnName("content");
 
                 entity.Property(e => e.CreateBy).HasColumnName("create_by");
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
-
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasColumnName("created_at")
+                    .HasColumnName("create_date")
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Dislikes).HasColumnName("dislikes");
@@ -90,9 +86,9 @@ namespace BusinessObject
                     .HasColumnName("status")
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.ThumbanilBlog)
+                entity.Property(e => e.ThumbnailBlog)
                     .HasMaxLength(100)
-                    .HasColumnName("thumbanilBlog");
+                    .HasColumnName("thumbnail_blog");
 
                 entity.Property(e => e.Title)
                     .HasMaxLength(255)
@@ -102,13 +98,13 @@ namespace BusinessObject
                     .WithMany(p => p.Blogs)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BLOG__create_by__71D1E811");
+                    .HasConstraintName("FK__BLOG__create_by__5BE2A6F2");
             });
 
             modelBuilder.Entity<BodyMeasureChange>(entity =>
             {
                 entity.HasKey(e => e.BodyMeasureId)
-                    .HasName("PK__BODY_MEA__3FCFA33BD0365F55");
+                    .HasName("PK__BODY_MEA__3FCFA33B5746A884");
 
                 entity.ToTable("BODY_MEASURE_CHANGE");
 
@@ -130,7 +126,7 @@ namespace BusinessObject
                     .WithMany(p => p.BodyMeasureChanges)
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BODY_MEAS__membe__619B8048");
+                    .HasConstraintName("FK__BODY_MEAS__membe__4F7CD00D");
             });
 
             modelBuilder.Entity<Comment>(entity =>
@@ -145,17 +141,15 @@ namespace BusinessObject
                     .HasColumnType("datetime")
                     .HasColumnName("change_date");
 
-                entity.Property(e => e.Content).HasColumnName("content");
+                entity.Property(e => e.Content)
+                    .HasColumnType("ntext")
+                    .HasColumnName("content");
 
                 entity.Property(e => e.CreateBy).HasColumnName("create_by");
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
-
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasColumnName("created_at")
+                    .HasColumnName("create_date")
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.PostId).HasColumnName("post_id");
@@ -169,23 +163,20 @@ namespace BusinessObject
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__COMMENT__create___7C4F7684");
+                    .HasConstraintName("FK__COMMENT__create___66603565");
 
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__COMMENT__post_id__7B5B524B");
+                    .HasConstraintName("FK__COMMENT__post_id__656C112C");
             });
 
             modelBuilder.Entity<CommunityPost>(entity =>
             {
-                entity.HasKey(e => e.PostId)
-                    .HasName("PK__COMMUNIT__3ED7876665F8AD8E");
-
                 entity.ToTable("COMMUNITY_POST");
 
-                entity.Property(e => e.PostId).HasColumnName("post_id");
+                entity.Property(e => e.CommunityPostId).HasColumnName("community_post_id");
 
                 entity.Property(e => e.ChangeBy).HasColumnName("change_by");
 
@@ -193,17 +184,15 @@ namespace BusinessObject
                     .HasColumnType("datetime")
                     .HasColumnName("change_date");
 
-                entity.Property(e => e.Content).HasColumnName("content");
+                entity.Property(e => e.Content)
+                    .HasColumnType("ntext")
+                    .HasColumnName("content");
 
                 entity.Property(e => e.CreateBy).HasColumnName("create_by");
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
-
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasColumnName("created_at")
+                    .HasColumnName("create_date")
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Status)
@@ -211,11 +200,15 @@ namespace BusinessObject
                     .HasColumnName("status")
                     .HasDefaultValueSql("((1))");
 
+                entity.Property(e => e.Title)
+                    .HasMaxLength(100)
+                    .HasColumnName("title");
+
                 entity.HasOne(d => d.CreateByNavigation)
                     .WithMany(p => p.CommunityPosts)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__COMMUNITY__creat__76969D2E");
+                    .HasConstraintName("FK__COMMUNITY__creat__60A75C0F");
             });
 
             modelBuilder.Entity<CompanyInfo>(entity =>
@@ -347,12 +340,13 @@ namespace BusinessObject
                     .WithMany(p => p.Exercises)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EXERCISE__create__66603565");
+                    .HasConstraintName("FK__EXERCISE__create__5441852A");
 
                 entity.HasOne(d => d.ExerciseCategory)
                     .WithMany(p => p.Exercises)
                     .HasForeignKey(d => d.ExerciseCategoryId)
-                    .HasConstraintName("FK__EXERCISE__exerci__6754599E");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__EXERCISE__exerci__5535A963");
             });
 
             modelBuilder.Entity<ExerciseCategory>(entity =>
@@ -368,12 +362,9 @@ namespace BusinessObject
 
             modelBuilder.Entity<ExerciseDiary>(entity =>
             {
-                entity.HasKey(e => e.DiaryId)
-                    .HasName("PK__EXERCISE__339232C844785D43");
-
                 entity.ToTable("EXERCISE_DIARY");
 
-                entity.Property(e => e.DiaryId).HasColumnName("diary_id");
+                entity.Property(e => e.ExerciseDiaryId).HasColumnName("exercise_diary_id");
 
                 entity.Property(e => e.CaloriesBurned).HasColumnName("calories_burned");
 
@@ -393,19 +384,19 @@ namespace BusinessObject
                     .WithMany(p => p.ExerciseDiaries)
                     .HasForeignKey(d => d.ExerciseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EXERCISE___exerc__6B24EA82");
+                    .HasConstraintName("FK__EXERCISE___exerc__05D8E0BE");
 
                 entity.HasOne(d => d.ExercisePlan)
                     .WithMany(p => p.ExerciseDiaries)
                     .HasForeignKey(d => d.ExercisePlanId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_EXERCISE_DIARY_EXERCISE_PLAN");
+                    .HasConstraintName("FK__EXERCISE___exerc__03F0984C");
 
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.ExerciseDiaries)
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EXERCISE___membe__6A30C649");
+                    .HasConstraintName("FK__EXERCISE___membe__04E4BC85");
             });
 
             modelBuilder.Entity<ExercisePlan>(entity =>
@@ -426,11 +417,6 @@ namespace BusinessObject
                     .HasColumnType("datetime")
                     .HasColumnName("create_date");
 
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasColumnName("created_at")
-                    .HasDefaultValueSql("(getdate())");
-
                 entity.Property(e => e.Name)
                     .HasMaxLength(100)
                     .HasColumnName("name");
@@ -441,7 +427,7 @@ namespace BusinessObject
                     .WithMany(p => p.ExercisePlans)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EXERCISE___creat__14270015");
+                    .HasConstraintName("FK__EXERCISE___creat__7D439ABD");
             });
 
             modelBuilder.Entity<ExercisePlanDetail>(entity =>
@@ -460,19 +446,19 @@ namespace BusinessObject
                     .WithMany(p => p.ExercisePlanDetails)
                     .HasForeignKey(d => d.ExerciseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EXERCISE___exerc__17F790F9");
+                    .HasConstraintName("FK__EXERCISE___exerc__01142BA1");
 
                 entity.HasOne(d => d.ExercisePlan)
                     .WithMany(p => p.ExercisePlanDetails)
                     .HasForeignKey(d => d.ExercisePlanId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EXERCISE___exerc__17036CC0");
+                    .HasConstraintName("FK__EXERCISE___exerc__00200768");
             });
 
             modelBuilder.Entity<Faq>(entity =>
             {
                 entity.HasKey(e => e.QuestionId)
-                    .HasName("PK__FAQ__2EC21549AD9AE779");
+                    .HasName("PK__FAQ__2EC2154970461874");
 
                 entity.ToTable("FAQ");
 
@@ -486,9 +472,9 @@ namespace BusinessObject
                     .HasColumnType("datetime")
                     .HasColumnName("change_date");
 
-                entity.Property(e => e.CreatDate)
+                entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("creat_date");
+                    .HasColumnName("create_date");
 
                 entity.Property(e => e.Question)
                     .HasMaxLength(100)
@@ -557,17 +543,17 @@ namespace BusinessObject
                     .WithMany(p => p.Foods)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__FOOD__create_by__5165187F");
+                    .HasConstraintName("FK__FOOD__create_by__3F466844");
 
                 entity.HasMany(d => d.Tags)
                     .WithMany(p => p.Foods)
                     .UsingEntity<Dictionary<string, object>>(
                         "FoodTag",
-                        l => l.HasOne<Tag>().WithMany().HasForeignKey("TagId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__FOOD_TAG__tag_id__571DF1D5"),
-                        r => r.HasOne<Food>().WithMany().HasForeignKey("FoodId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__FOOD_TAG__food_i__5629CD9C"),
+                        l => l.HasOne<Tag>().WithMany().HasForeignKey("TagId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__FOOD_TAG__tag_id__44FF419A"),
+                        r => r.HasOne<Food>().WithMany().HasForeignKey("FoodId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__FOOD_TAG__food_i__440B1D61"),
                         j =>
                         {
-                            j.HasKey("FoodId", "TagId").HasName("PK__FOOD_TAG__5B6527F3614706F5");
+                            j.HasKey("FoodId", "TagId").HasName("PK__FOOD_TAG__5B6527F39BD304C6");
 
                             j.ToTable("FOOD_TAG");
 
@@ -580,7 +566,7 @@ namespace BusinessObject
             modelBuilder.Entity<FoodDiary>(entity =>
             {
                 entity.HasKey(e => e.DiaryId)
-                    .HasName("PK__FOOD_DIA__339232C8302B1CF3");
+                    .HasName("PK__FOOD_DIA__339232C84BE920A0");
 
                 entity.ToTable("FOOD_DIARY");
 
@@ -607,19 +593,19 @@ namespace BusinessObject
                 entity.HasOne(d => d.MealPlan)
                     .WithMany(p => p.FoodDiaries)
                     .HasForeignKey(d => d.MealPlanId)
-                    .HasConstraintName("FK__FOOD_DIAR__meal___0C85DE4D");
+                    .HasConstraintName("FK__FOOD_DIAR__meal___76969D2E");
 
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.FoodDiaries)
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__FOOD_DIAR__membe__0B91BA14");
+                    .HasConstraintName("FK__FOOD_DIAR__membe__75A278F5");
             });
 
             modelBuilder.Entity<FoodDiaryDetail>(entity =>
             {
                 entity.HasKey(e => e.DiaryDetailId)
-                    .HasName("PK__FOOD_DIA__2B203A1F01FA92DB");
+                    .HasName("PK__FOOD_DIA__2B203A1FB79F7A34");
 
                 entity.ToTable("FOOD_DIARY_DETAIL");
 
@@ -638,13 +624,13 @@ namespace BusinessObject
                 entity.HasOne(d => d.Diary)
                     .WithMany(p => p.FoodDiaryDetails)
                     .HasForeignKey(d => d.DiaryId)
-                    .HasConstraintName("FK__FOOD_DIAR__diary__0F624AF8");
+                    .HasConstraintName("FK__FOOD_DIAR__diary__797309D9");
 
                 entity.HasOne(d => d.Food)
                     .WithMany(p => p.FoodDiaryDetails)
                     .HasForeignKey(d => d.FoodId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__FOOD_DIAR__food___10566F31");
+                    .HasConstraintName("FK__FOOD_DIAR__food___7A672E12");
             });
 
             modelBuilder.Entity<Goal>(entity =>
@@ -669,7 +655,7 @@ namespace BusinessObject
                     .WithMany(p => p.Goals)
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__GOAL__member_id__5EBF139D");
+                    .HasConstraintName("FK__GOAL__member_id__4CA06362");
             });
 
             modelBuilder.Entity<MealPlan>(entity =>
@@ -709,12 +695,12 @@ namespace BusinessObject
                     .WithMany(p => p.MealPlans)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__MEAL_PLAN__creat__02FC7413");
+                    .HasConstraintName("FK__MEAL_PLAN__creat__6D0D32F4");
 
                 entity.HasOne(d => d.Diet)
                     .WithMany(p => p.MealPlans)
                     .HasForeignKey(d => d.DietId)
-                    .HasConstraintName("FK__MEAL_PLAN__diet___03F0984C");
+                    .HasConstraintName("FK__MEAL_PLAN__diet___6E01572D");
             });
 
             modelBuilder.Entity<MealPlanDetail>(entity =>
@@ -747,20 +733,20 @@ namespace BusinessObject
                     .WithMany(p => p.MealPlanDetails)
                     .HasForeignKey(d => d.FoodId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__MEAL_PLAN__food___08B54D69");
+                    .HasConstraintName("FK__MEAL_PLAN__food___72C60C4A");
 
                 entity.HasOne(d => d.MealPlan)
                     .WithMany(p => p.MealPlanDetails)
                     .HasForeignKey(d => d.MealPlanId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__MEAL_PLAN__meal___07C12930");
+                    .HasConstraintName("FK__MEAL_PLAN__meal___71D1E811");
             });
 
             modelBuilder.Entity<Member>(entity =>
             {
                 entity.ToTable("MEMBER");
 
-                entity.HasIndex(e => e.Email, "UQ__MEMBER__AB6E61646B9452F4")
+                entity.HasIndex(e => e.Email, "UQ__MEMBER__AB6E6164E56CA26C")
                     .IsUnique();
 
                 entity.Property(e => e.MemberId).HasColumnName("member_id");
@@ -782,12 +768,10 @@ namespace BusinessObject
 
                 entity.Property(e => e.ExerciseLevel).HasColumnName("exercise_level");
 
-                entity.Property(e => e.Gender)
-                    .HasMaxLength(20)
-                    .HasColumnName("gender");
+                entity.Property(e => e.Gender).HasColumnName("gender");
 
                 entity.Property(e => e.Goal)
-                    .HasMaxLength(20)
+                    .HasMaxLength(100)
                     .HasColumnName("goal");
 
                 entity.Property(e => e.Height).HasColumnName("height");
@@ -805,21 +789,22 @@ namespace BusinessObject
                     .HasColumnName("status")
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.UnderlyingDisease)
-                    .HasMaxLength(20)
-                    .HasColumnName("underlying_disease");
-
                 entity.Property(e => e.Username)
                     .HasMaxLength(50)
                     .HasColumnName("username");
 
                 entity.Property(e => e.Weight).HasColumnName("weight");
+
+                entity.HasOne(d => d.Diet)
+                    .WithMany(p => p.Members)
+                    .HasForeignKey(d => d.DietId)
+                    .HasConstraintName("FK__MEMBER__diet_id__300424B4");
             });
 
             modelBuilder.Entity<MemberDisease>(entity =>
             {
                 entity.HasKey(e => e.IdMemberDisease)
-                    .HasName("PK__MEMBER_D__9AA485E481FCE6BD");
+                    .HasName("PK__MEMBER_D__9AA485E4FFA611DC");
 
                 entity.ToTable("MEMBER_DISEASE");
 
@@ -838,22 +823,19 @@ namespace BusinessObject
                 entity.HasOne(d => d.Disease)
                     .WithMany(p => p.MemberDiseases)
                     .HasForeignKey(d => d.DiseaseId)
-                    .HasConstraintName("FK__MEMBER_DI__disea__4E88ABD4");
+                    .HasConstraintName("FK__MEMBER_DI__disea__3C69FB99");
 
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.MemberDiseases)
                     .HasForeignKey(d => d.MemberId)
-                    .HasConstraintName("FK__MEMBER_DI__membe__4D94879B");
+                    .HasConstraintName("FK__MEMBER_DI__membe__3B75D760");
             });
 
             modelBuilder.Entity<MessageChat>(entity =>
             {
-                entity.HasKey(e => e.MessageChat1)
-                    .HasName("PK__MESSAGE___7A26AF3426865539");
-
                 entity.ToTable("MESSAGE_CHAT");
 
-                entity.Property(e => e.MessageChat1).HasColumnName("message_chat");
+                entity.Property(e => e.MessageChatId).HasColumnName("message_chat_id");
 
                 entity.Property(e => e.MemberId).HasColumnName("member_id");
 
@@ -874,12 +856,12 @@ namespace BusinessObject
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.MessageChats)
                     .HasForeignKey(d => d.MemberId)
-                    .HasConstraintName("FK__MESSAGE_C__membe__46E78A0C");
+                    .HasConstraintName("FK__MESSAGE_C__membe__36B12243");
 
                 entity.HasOne(d => d.Staff)
                     .WithMany(p => p.MessageChats)
                     .HasForeignKey(d => d.StaffId)
-                    .HasConstraintName("FK__MESSAGE_C__sent___45F365D3");
+                    .HasConstraintName("FK__MESSAGE_C__sent___35BCFE0A");
             });
 
             modelBuilder.Entity<Recipe>(entity =>
@@ -925,13 +907,13 @@ namespace BusinessObject
                     .WithMany(p => p.Recipes)
                     .HasForeignKey(d => d.CreateBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RECIPE__create_b__5AEE82B9");
+                    .HasConstraintName("FK__RECIPE__create_b__48CFD27E");
 
                 entity.HasOne(d => d.Food)
                     .WithMany(p => p.Recipes)
                     .HasForeignKey(d => d.FoodId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__RECIPE__food_id__5BE2A6F2");
+                    .HasConstraintName("FK__RECIPE__food_id__49C3F6B7");
             });
 
             modelBuilder.Entity<Tag>(entity =>
@@ -950,7 +932,7 @@ namespace BusinessObject
             modelBuilder.Entity<WaterIntake>(entity =>
             {
                 entity.HasKey(e => e.IntakeId)
-                    .HasName("PK__WATER_IN__A10485F025808178");
+                    .HasName("PK__WATER_IN__A10485F0CEA597CE");
 
                 entity.ToTable("WATER_INTAKE");
 
@@ -968,14 +950,14 @@ namespace BusinessObject
                     .WithMany(p => p.WaterIntakes)
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__WATER_INT__membe__7F2BE32F");
+                    .HasConstraintName("FK__WATER_INT__membe__693CA210");
             });
 
             modelBuilder.Entity<staff>(entity =>
             {
                 entity.ToTable("STAFF");
 
-                entity.HasIndex(e => e.Email, "UQ__STAFF__AB6E6164286EDD7E")
+                entity.HasIndex(e => e.Email, "UQ__STAFF__AB6E6164E4D276EA")
                     .IsUnique();
 
                 entity.Property(e => e.StaffId).HasColumnName("staff_id");
@@ -1033,4 +1015,3 @@ namespace BusinessObject
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
-*/

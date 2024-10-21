@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BusinessObject.Entities
+namespace BusinessObject.Models
 {
     public partial class ExerciseCategory
     {
@@ -11,7 +11,7 @@ namespace BusinessObject.Entities
         }
 
         public int ExerciseCategoryId { get; set; }
-        public string? ExerciseCategoryName { get; set; }
+        public string ExerciseCategoryName { get; set; } = null!;
 
         public virtual ICollection<Exercise> Exercises { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BusinessObject.Entities
+namespace BusinessObject.Models
 {
     public partial class Member
     {
@@ -22,18 +22,18 @@ namespace BusinessObject.Entities
         public string Username { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public DateTime? Dob { get; set; }
+        public DateTime Dob { get; set; }
         public string? PhoneNumber { get; set; }
-        public double? Height { get; set; }
-        public double? Weight { get; set; }
-        public string? Gender { get; set; }
-        public int? ExerciseLevel { get; set; }
-        public string? Goal { get; set; }
-        public string? UnderlyingDisease { get; set; }
+        public double Height { get; set; }
+        public double Weight { get; set; }
+        public bool Gender { get; set; }
+        public int ExerciseLevel { get; set; }
+        public string Goal { get; set; } = null!;
         public int? DietId { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool? Status { get; set; }
 
+        public virtual Diet? Diet { get; set; }
         public virtual ICollection<BodyMeasureChange> BodyMeasureChanges { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<CommunityPost> CommunityPosts { get; set; }

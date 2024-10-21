@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BusinessObject.Entities
+namespace BusinessObject.Models
 {
     public partial class MessageChat
     {
-        public int MessageChat1 { get; set; }
+        public int MessageChatId { get; set; }
         public int? StaffId { get; set; }
         public int? MemberId { get; set; }
         public string? SenderType { get; set; }

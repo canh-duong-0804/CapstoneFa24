@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BusinessObject.Entities
+namespace BusinessObject.Models
 {
     public partial class Diet
     {
         public Diet()
         {
             MealPlans = new HashSet<MealPlan>();
+            Members = new HashSet<Member>();
         }
 
         public int DietId { get; set; }
@@ -19,5 +20,6 @@ namespace BusinessObject.Entities
         public string? ShortDescription { get; set; }
 
         public virtual ICollection<MealPlan> MealPlans { get; set; }
+        public virtual ICollection<Member> Members { get; set; }
     }
 }
