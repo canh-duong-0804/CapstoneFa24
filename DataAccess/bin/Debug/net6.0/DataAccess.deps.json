@@ -525,7 +525,10 @@
           "Microsoft.Extensions.Configuration.Json": "6.0.0"
         },
         "runtime": {
-          "BusinessObject.dll": {}
+          "BusinessObject.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

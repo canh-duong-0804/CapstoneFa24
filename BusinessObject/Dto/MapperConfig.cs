@@ -2,6 +2,7 @@
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Blog.CreateBlog;
 using BusinessObject.Dto.Login;
+using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Register;
 using BusinessObject.Models;
 using System;
@@ -99,7 +100,10 @@ namespace BusinessObject
            .ForMember(dest => dest.Goal, opt => opt.MapFrom(src => src.Goal))
            .ReverseMap()
            ;
-            });
+				cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>()
+				   .ForMember(dest => dest.MemberId, opt => opt.Ignore())
+				   .ReverseMap();
+			});
 
 
 

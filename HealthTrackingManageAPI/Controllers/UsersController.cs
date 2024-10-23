@@ -2,6 +2,7 @@
 using BusinessObject;
 using BusinessObject.Dto;
 using BusinessObject.Dto.Login;
+using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Message;
 using BusinessObject.Dto.Register;
 using BusinessObject.Models;
@@ -302,7 +303,88 @@ namespace HealthTrackingManageAPI.Controllers
 
             return dateTimeInterval;
         }
-       
-        
-    }
+		[Authorize]
+		[HttpGet("viewMemberProfile")]
+		public async Task<IActionResult> ViewMemberProfile()
+		{
+			try
+			{
+				// Since we're using [Authorize], we can assume the user is authenticated
+				var userId = User.FindFirstValue("Id");
+
+				if (userId == null)
+				{
+					return BadRequest("User ID not found in token");
+				}
+
+				// Ensure userId is a valid integer
+				if (!int.TryParse(userId, out var parsedUserId))
+				{
+					return BadRequest("Invalid user ID format.");
+				}
+
+				// Get user details
+				var user = await _userRepo.GetMemberByIdAsync(parsedUserId);
+
+				if (user == null)
+				{
+					return NotFound("User not found");
+				}
+
+				var mapper = MapperConfig.InitializeAutomapper();
+				var userProfileDto = mapper.Map<MemberProfileDto>(user);
+
+				return Ok(userProfileDto);
+			}
+			catch (Exception ex)
+			{
+				// Log the exception (assuming you have a logger)
+				
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+
+		[Authorize]
+		[HttpPut("editMemberProfile")]
+		public async Task<IActionResult> EditMemberProfile([FromBody] MemberProfileDto updatedProfile)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest("Invalid profile data.");
+			}
+
+			try
+			{
+				// Get userId from token
+				var userId = User.FindFirstValue("Id");
+				if (userId == null)
+				{
+					return BadRequest("User ID not found in token.");
+				}
+
+				// Retrieve the existing user from the repository
+				var user = await _userRepo.GetMemberByIdAsync(int.Parse(userId));
+				if (user == null)
+				{
+					return NotFound("User not found.");
+				}
+
+				// Use AutoMapper to map the updated DTO data to the user entity
+				var mapper = MapperConfig.InitializeAutomapper();
+				mapper.Map(updatedProfile, user);
+
+				// Save changes to the database
+				await _userRepo.UpdateMemberProfileAsync(user);
+
+				return Ok("Profile updated successfully.");
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+
+	}
 }
