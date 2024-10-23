@@ -124,5 +124,22 @@ namespace DataAccess
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<Member> GetMemberByIdAsync(int userId)
+        {
+            using (var context = new HealthTrackingDBContext())
+            {
+                return await context.Members.FirstOrDefaultAsync(x => x.MemberId == userId);
+            }
+        }
+
+        public async Task UpdateMemberProfileAsync(Member user)
+        {
+            using (var context = new HealthTrackingDBContext())
+            {
+                context.Members.Update(user);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1M5FYi+1qcqlo8eP3eaWtgXrgUJFbvDkWjOQYPA6D2OlcIOXZhaR6rdhHTF1DEIB/fCQ9jQvFk7hDe12ZH3USw==",
+  "dgSpecHash": "8Ez/bhbyumB/wQXusdBlXl74OVRsS1IFxqzsy6lIs5Fze4cSGYbDn2fxGYvdCRYImjUTE75UChcMQhCCD04fGQ==",
   "success": true,
-  "projectFilePath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
+  "projectFilePath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",

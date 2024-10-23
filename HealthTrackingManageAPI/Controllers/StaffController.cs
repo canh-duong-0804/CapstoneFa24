@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Repository;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Repository.IRepo;
+using BusinessObject;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -122,7 +123,7 @@ namespace HealthTrackingManageAPI.Controllers
         }),
 
                 //time access
-                Expires = DateTime.UtcNow.AddSeconds(20),
+                //Expires = DateTime.UtcNow.AddSeconds(20),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKetBytes),
                 SecurityAlgorithms.HmacSha256Signature)
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9TJzPNZ+prbu59pDv9qxySLqRtWNcNCImueJali5dmgJXe8SCPmBULdjHx9rE7gcI21iXKxI15CwtqM8YL1DMQ==",
+  "dgSpecHash": "neQI4gloUjLCSnpcH7/MPVvt8c5kC0aJCKHxsXPNhZNdEiNfFWIC8uZqNA5hg/eAwMswPQn4MaSsLtfWjWDk0Q==",
   "success": true,
-  "projectFilePath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj",
+  "projectFilePath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.35\\microsoft.aspnetcore.authentication.jwtbearer.6.0.35.nupkg.sha512",

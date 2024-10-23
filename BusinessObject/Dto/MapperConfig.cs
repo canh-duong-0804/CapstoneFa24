@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BusinessObject.Dto.Blog;
+using BusinessObject.Dto.Blog.CreateBlog;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Register;
 using BusinessObject.Models;
@@ -8,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessObject.Dto
+namespace BusinessObject
 {
     public class MapperConfig
     {
@@ -59,6 +61,29 @@ namespace BusinessObject.Dto
            .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))
            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName)).ReverseMap();
+                
+                
+                cfg.CreateMap<BlogRequestDTO, Blog>()
+           .ForMember(dest => dest.BlogId, opt => opt.Ignore())
+           .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now))
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
+           .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+         
+           .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+           .ForMember(dest => dest.ThumbnailBlog, opt => opt.MapFrom(src => src.ThumbnailBlog))
+           .ReverseMap();  
+                
+                
+                
+                cfg.CreateMap<UpdateBlogRequestDTO, Blog>()
+           .ForMember(dest => dest.BlogId, opt => opt.Ignore())
+           .ForMember(dest => dest.ChangeDate, opt => opt.MapFrom(src => DateTime.Now))
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
+           .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+         
+           .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+           .ForMember(dest => dest.ThumbnailBlog, opt => opt.MapFrom(src => src.ThumbnailBlog))
+           .ReverseMap();
            
            
            cfg.CreateMap<LoginResponseMemberDTO, Member>()

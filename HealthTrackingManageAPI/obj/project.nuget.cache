@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nBLErpYnDKmy9jM6Bl+193t6uoT4tw06WfNpawy1KSzvIxmVQ/3Lm8Bgm33Da7hPdQUo91O8P8n5s3xbCAT1OA==",
+  "dgSpecHash": "4qg+3YlaJGopU7g7Bzok/NBUNxuUD6zNr79ycWjz026fIXFs+V23hvSBsqvt4ZX1wN5ZywXDDaKgGC/9vE+AmA==",
   "success": true,
-  "projectFilePath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
+  "projectFilePath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.35\\microsoft.aspnetcore.authentication.jwtbearer.6.0.35.nupkg.sha512",

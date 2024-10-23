@@ -1,17 +1,19 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject;
 using BusinessObject.Dto;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Message;
 using BusinessObject.Dto.Register;
 using BusinessObject.Models;
 using HealthTrackingManageAPI.NewFolder;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Repository;
+using Repository.IRepo;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -125,7 +127,7 @@ namespace HealthTrackingManageAPI.Controllers
         }),
 
                 //time access
-                Expires = DateTime.UtcNow.AddSeconds(20),
+                //Expires = DateTime.UtcNow.AddSeconds(20),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKetBytes),
                 SecurityAlgorithms.HmacSha256Signature)
 
@@ -300,5 +302,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             return dateTimeInterval;
         }
+       
+        
     }
 }

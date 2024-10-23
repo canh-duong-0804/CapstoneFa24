@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto;
 using BusinessObject.Dto.Register;
 using BusinessObject.Models;
 
@@ -81,6 +82,32 @@ namespace DataAccess
                     using (var context = new HealthTrackingDBContext())
                     {
                         var user = context.staffs.FirstOrDefault(x => x.PhoneNumber == number);
+                        if (user == null)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+
+            }
+        }
+
+        public bool IsUniqueEmail(string email)
+        {
+            try
+            {
+                using (var _context = new HealthTrackingDBContext())
+                {
+
+                    using (var context = new HealthTrackingDBContext())
+                    {
+                        var user = context.staffs.FirstOrDefault(x => x.Email == email);
                         if (user == null)
                         {
                             return true;

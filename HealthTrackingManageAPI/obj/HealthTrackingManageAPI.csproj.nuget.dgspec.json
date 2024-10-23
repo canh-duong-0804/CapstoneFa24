@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj": {}
+    "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj": {}
   },
   "projects": {
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+    "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
+        "projectUniqueName": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
         "projectName": "BusinessObject",
-        "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
+        "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\obj\\",
+        "outputPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -93,14 +93,14 @@
         }
       }
     },
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
+    "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
+        "projectUniqueName": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
         "projectName": "DataAccess",
-        "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
+        "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\obj\\",
+        "outputPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -117,8 +117,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
+              "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+                "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
               }
             }
           }
@@ -152,14 +152,14 @@
         }
       }
     },
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj": {
+    "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
+        "projectUniqueName": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
         "projectName": "HealthTrackingManageAPI",
-        "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
+        "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\HealthTrackingManageAPI\\HealthTrackingManageAPI.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\HealthTrackingManageAPI\\obj\\",
+        "outputPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\HealthTrackingManageAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -176,14 +176,14 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
+              "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+                "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
               },
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
+              "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
+                "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
               },
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj"
+              "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj": {
+                "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj"
               }
             }
           }
@@ -234,14 +234,14 @@
         }
       }
     },
-    "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj": {
+    "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj",
+        "projectUniqueName": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj",
         "projectName": "Repository",
-        "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj",
+        "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\obj\\",
+        "outputPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -258,11 +258,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
+              "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+                "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
               },
-              "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
-                "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
+              "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
+                "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
               }
             }
           }

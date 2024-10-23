@@ -2675,11 +2675,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj",
+      "projectUniqueName": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj",
       "projectName": "Repository",
-      "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\Repository.csproj",
+      "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\Repository.csproj",
       "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-      "outputPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\Repository\\obj\\",
+      "outputPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\Repository\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2696,11 +2696,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
-              "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
+            "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+              "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
             },
-            "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
-              "projectPath": "D:\\CapstoneFa24\\API\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
+            "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj": {
+              "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj"
             }
           }
         }

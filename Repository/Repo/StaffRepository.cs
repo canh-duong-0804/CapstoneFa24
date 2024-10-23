@@ -1,19 +1,19 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper.Execution;
+using BusinessObject.Models;
 using DataAccess;
+using Repository.IRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository
+namespace Repository.Repo
 {
     public class StaffRepository : IStaffRepository
     {
-        public bool IsUniqueEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
+        public bool IsUniqueEmail(string email) => StaffDAO.Instance.IsUniqueEmail(email);
+
 
         public bool IsUniquePhonenumber(string number) => StaffDAO.Instance.IsUniquePhonenumber(number);
 
