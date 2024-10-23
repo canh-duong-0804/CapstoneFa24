@@ -39,16 +39,18 @@ namespace BusinessObject.Models
         public virtual DbSet<MemberDisease> MemberDiseases { get; set; } = null!;
         public virtual DbSet<MessageChat> MessageChats { get; set; } = null!;
         public virtual DbSet<Recipe> Recipes { get; set; } = null!;
+        public virtual DbSet<RefreshTokensMember> RefreshTokensMembers { get; set; } = null!;
+        public virtual DbSet<RefreshTokensStaff> RefreshTokensStaffs { get; set; } = null!;
         public virtual DbSet<Tag> Tags { get; set; } = null!;
         public virtual DbSet<WaterIntake> WaterIntakes { get; set; } = null!;
-        public virtual DbSet<staff> staff { get; set; } = null!;
+        public virtual DbSet<staff> staffs { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server=localhost\\SQLEXPRESS01;database=HealthTrackingDB;uid=sa;pwd=123456789;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer("server=DESKTOP-5DR1P1T;uid=sa;pwd=123;database=HealthTrackingDB;MultipleActiveResultSets=true");
             }
         }
 
@@ -104,7 +106,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<BodyMeasureChange>(entity =>
             {
                 entity.HasKey(e => e.BodyMeasureId)
-                    .HasName("PK__BODY_MEA__3FCFA33B5746A884");
+                    .HasName("PK__BODY_MEA__3FCFA33B1689169F");
 
                 entity.ToTable("BODY_MEASURE_CHANGE");
 
@@ -458,7 +460,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<Faq>(entity =>
             {
                 entity.HasKey(e => e.QuestionId)
-                    .HasName("PK__FAQ__2EC2154970461874");
+                    .HasName("PK__FAQ__2EC21549BAEFF816");
 
                 entity.ToTable("FAQ");
 
@@ -553,7 +555,7 @@ namespace BusinessObject.Models
                         r => r.HasOne<Food>().WithMany().HasForeignKey("FoodId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__FOOD_TAG__food_i__440B1D61"),
                         j =>
                         {
-                            j.HasKey("FoodId", "TagId").HasName("PK__FOOD_TAG__5B6527F39BD304C6");
+                            j.HasKey("FoodId", "TagId").HasName("PK__FOOD_TAG__5B6527F3C74394DF");
 
                             j.ToTable("FOOD_TAG");
 
@@ -566,7 +568,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<FoodDiary>(entity =>
             {
                 entity.HasKey(e => e.DiaryId)
-                    .HasName("PK__FOOD_DIA__339232C84BE920A0");
+                    .HasName("PK__FOOD_DIA__339232C8F2861FA0");
 
                 entity.ToTable("FOOD_DIARY");
 
@@ -605,7 +607,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<FoodDiaryDetail>(entity =>
             {
                 entity.HasKey(e => e.DiaryDetailId)
-                    .HasName("PK__FOOD_DIA__2B203A1FB79F7A34");
+                    .HasName("PK__FOOD_DIA__2B203A1F26BE808E");
 
                 entity.ToTable("FOOD_DIARY_DETAIL");
 
@@ -746,7 +748,7 @@ namespace BusinessObject.Models
             {
                 entity.ToTable("MEMBER");
 
-                entity.HasIndex(e => e.Email, "UQ__MEMBER__AB6E6164E56CA26C")
+                entity.HasIndex(e => e.Email, "UQ__MEMBER__AB6E61642BA18D4E")
                     .IsUnique();
 
                 entity.Property(e => e.MemberId).HasColumnName("member_id");
@@ -804,7 +806,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<MemberDisease>(entity =>
             {
                 entity.HasKey(e => e.IdMemberDisease)
-                    .HasName("PK__MEMBER_D__9AA485E4FFA611DC");
+                    .HasName("PK__MEMBER_D__9AA485E401AA67CF");
 
                 entity.ToTable("MEMBER_DISEASE");
 
@@ -916,6 +918,58 @@ namespace BusinessObject.Models
                     .HasConstraintName("FK__RECIPE__food_id__49C3F6B7");
             });
 
+            modelBuilder.Entity<RefreshTokensMember>(entity =>
+            {
+                entity.ToTable("Refresh_Tokens_Member");
+
+                entity.Property(e => e.RefreshTokensMemberId).HasColumnName("refresh_tokens_member_id");
+
+                entity.Property(e => e.ExpiredAt).HasColumnType("datetime");
+
+                entity.Property(e => e.IssuedAt).HasColumnType("datetime");
+
+                entity.Property(e => e.MemberId).HasColumnName("member_id");
+
+                entity.Property(e => e.Token).HasColumnName("token");
+
+                entity.HasOne(d => d.Member)
+                    .WithMany(p => p.RefreshTokensMembers)
+                    .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Refresh_T__membe__08B54D69");
+            });
+
+            modelBuilder.Entity<RefreshTokensStaff>(entity =>
+            {
+                entity.ToTable("Refresh_Tokens_Staff");
+
+                entity.Property(e => e.RefreshTokensStaffId).HasColumnName("refresh_tokens_staff_id");
+
+                entity.Property(e => e.ExpiredAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("expired_at");
+
+                entity.Property(e => e.IsRevoked).HasColumnName("is_revoked");
+
+                entity.Property(e => e.IsUsed).HasColumnName("is_used");
+
+                entity.Property(e => e.IssuedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("issued_at");
+
+                entity.Property(e => e.JwtId).HasColumnName("jwt_id");
+
+                entity.Property(e => e.StaffId).HasColumnName("staff_id");
+
+                entity.Property(e => e.Token).HasColumnName("token");
+
+                entity.HasOne(d => d.Staff)
+                    .WithMany(p => p.RefreshTokensStaffs)
+                    .HasForeignKey(d => d.StaffId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Refresh_T__staff__0B91BA14");
+            });
+
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.ToTable("TAG");
@@ -932,7 +986,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<WaterIntake>(entity =>
             {
                 entity.HasKey(e => e.IntakeId)
-                    .HasName("PK__WATER_IN__A10485F0CEA597CE");
+                    .HasName("PK__WATER_IN__A10485F09D63EDB7");
 
                 entity.ToTable("WATER_INTAKE");
 
@@ -957,7 +1011,7 @@ namespace BusinessObject.Models
             {
                 entity.ToTable("STAFF");
 
-                entity.HasIndex(e => e.Email, "UQ__STAFF__AB6E6164E4D276EA")
+                entity.HasIndex(e => e.Email, "UQ__STAFF__AB6E6164CB160FED")
                     .IsUnique();
 
                 entity.Property(e => e.StaffId).HasColumnName("staff_id");

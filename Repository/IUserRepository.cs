@@ -1,7 +1,6 @@
 ﻿
 using BusinessObject.Models;
-using HealthTrackingManageAPI.Models.Dto;
-using Repository.Model.Dto;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

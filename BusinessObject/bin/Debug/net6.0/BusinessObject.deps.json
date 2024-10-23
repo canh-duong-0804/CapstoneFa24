@@ -12,6 +12,7 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.35",
           "Microsoft.EntityFrameworkCore.Design": "6.0.27",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.27",
+          "Microsoft.EntityFrameworkCore.Tools": "6.0.1",
           "Microsoft.Extensions.Configuration": "6.0.0",
           "Microsoft.Extensions.Configuration.Json": "6.0.0"
         },
@@ -168,6 +169,11 @@
             "assemblyVersion": "6.0.27.0",
             "fileVersion": "6.0.2724.6609"
           }
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Tools/6.0.1": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Design": "6.0.27"
         }
       },
       "Microsoft.Extensions.Caching.Abstractions/6.0.0": {
@@ -632,6 +638,13 @@
       "sha512": "sha512-Yc66OLFHx7fY5vI1/q9F3FZNt+hdcUO1dhRQev9dffeFVn2v/AA2vGhh1NUpDHASA7iCS2DRkwCr/Y7LwI3fNQ==",
       "path": "microsoft.entityframeworkcore.sqlserver/6.0.27",
       "hashPath": "microsoft.entityframeworkcore.sqlserver.6.0.27.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Tools/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jXhlTOcFct3U9YiH9KNfjIHzEPxjXgH7hiriWoZJ0PtT9/GGeWHu9Dblb5D441X+91EMqx7jbpKHNMIu6mvz5w==",
+      "path": "microsoft.entityframeworkcore.tools/6.0.1",
+      "hashPath": "microsoft.entityframeworkcore.tools.6.0.1.nupkg.sha512"
     },
     "Microsoft.Extensions.Caching.Abstractions/6.0.0": {
       "type": "package",

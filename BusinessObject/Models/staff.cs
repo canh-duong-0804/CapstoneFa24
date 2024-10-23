@@ -14,6 +14,7 @@ namespace BusinessObject.Models
             MealPlans = new HashSet<MealPlan>();
             MessageChats = new HashSet<MessageChat>();
             Recipes = new HashSet<Recipe>();
+            RefreshTokensStaffs = new HashSet<RefreshTokensStaff>();
         }
 
         public int StaffId { get; set; }
@@ -37,5 +38,6 @@ namespace BusinessObject.Models
         public virtual ICollection<MealPlan> MealPlans { get; set; }
         public virtual ICollection<MessageChat> MessageChats { get; set; }
         public virtual ICollection<Recipe> Recipes { get; set; }
+        public virtual ICollection<RefreshTokensStaff> RefreshTokensStaffs { get; set; }
     }
 }

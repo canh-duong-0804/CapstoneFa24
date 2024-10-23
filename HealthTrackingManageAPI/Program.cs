@@ -3,7 +3,7 @@ using BusinessObject.Models;
 using HealthTrackingManageAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+//using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Repository;
 using System.Text;
@@ -19,6 +19,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<HealthTrackingDBContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 builder.Services.Configure<AppSettingsKey>(builder.Configuration.GetSection("ApiSettings"));
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+
+builder.Services.AddDistributedMemoryCache(); // Sử dụng bộ nhớ trong để lưu session
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian timeout của session
+    options.Cookie.HttpOnly = true; // Chỉ truy cập qua HTTP
+    options.Cookie.IsEssential = true;
+});
+
 
 var secretKey = builder.Configuration["ApiSettings:SecretKey"];
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
@@ -60,6 +71,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("MyCorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllers();
 

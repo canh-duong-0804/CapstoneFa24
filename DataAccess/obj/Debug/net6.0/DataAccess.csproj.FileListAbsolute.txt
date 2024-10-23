@@ -42,3 +42,4 @@ D:\.NET\Capstone\DataAccess\bin\Debug\net6.0\BusinessObject.pdb
 D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.csproj.AssemblyReference.cache
 D:\.NET\Capstone\DataAccess\obj\Debug\net6.0\DataAccess.csproj.Up2Date
 D:\.NET\Capstone\DataAccess\bin\Debug\net6.0\appsettings.json
+D:\CapstoneFa24\API\CapstoneFa24\DataAccess\bin\Debug\net6.0\appsettings.json

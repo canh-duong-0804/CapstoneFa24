@@ -27,6 +27,12 @@ D:\.NET\Capstone\BusinessObject\obj\Debug\net6.0\refint\BusinessObject.dll
 D:\.NET\Capstone\BusinessObject\obj\Debug\net6.0\BusinessObject.pdb
 D:\.NET\Capstone\BusinessObject\obj\Debug\net6.0\BusinessObject.genruntimeconfig.cache
 D:\.NET\Capstone\BusinessObject\obj\Debug\net6.0\ref\BusinessObject.dll
+D:\.NET\Capstone\BusinessObject\bin\Debug\net6.0\appsettings.json
+D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\appsettings.json
+D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.deps.json
+D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.runtimeconfig.json
+D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.dll
+D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.pdb
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\BusinessObject.csproj.AssemblyReference.cache
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\BusinessObject.GeneratedMSBuildEditorConfig.editorconfig
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\BusinessObject.AssemblyInfoInputs.cache
@@ -36,10 +42,5 @@ D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\BusinessObject.
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\BusinessObject.dll
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\refint\BusinessObject.dll
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\BusinessObject.pdb
-D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.deps.json
-D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.runtimeconfig.json
-D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.dll
-D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\bin\Debug\net6.0\BusinessObject.pdb
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\BusinessObject.genruntimeconfig.cache
 D:\CapstoneFa24\API\CapstoneFa24\BusinessObject\obj\Debug\net6.0\ref\BusinessObject.dll
-D:\.NET\Capstone\BusinessObject\bin\Debug\net6.0\appsettings.json

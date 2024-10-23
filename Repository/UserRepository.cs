@@ -2,9 +2,9 @@
 using AutoMapper.Execution;
 using BusinessObject.Models;
 using DataAccess;
-using HealthTrackingManageAPI.Models.Dto;
+
 using Microsoft.EntityFrameworkCore;
-using Repository.Model.Dto;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
