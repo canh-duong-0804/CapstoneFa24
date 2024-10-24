@@ -25,7 +25,9 @@ namespace BusinessObject
                 .ForMember(dest => dest.MemberId, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender == "Male"));
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender)).ReverseMap();
+                cfg.CreateMap<RegisterationResponseDTO, Member>()
+                .ReverseMap();
 
                 cfg.CreateMap<LoginRequestDTO, Member>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))

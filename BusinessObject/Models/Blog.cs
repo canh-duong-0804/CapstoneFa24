@@ -6,6 +6,8 @@ namespace BusinessObject.Models
     public partial class Blog
     {
         public int BlogId { get; set; }
+        public int? CategoryId { get; set; }
+        public string? ShortDescription { get; set; }
         public int CreateBy { get; set; }
         public DateTime CreateDate { get; set; }
         public int? ChangeBy { get; set; }
@@ -17,6 +19,7 @@ namespace BusinessObject.Models
         public int Dislikes { get; set; }
         public bool? Status { get; set; }
 
+        public virtual CategoryBlog? Category { get; set; }
         public virtual staff CreateByNavigation { get; set; } = null!;
     }
 }

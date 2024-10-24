@@ -73,8 +73,8 @@ namespace HealthTrackingManageAPI.Controllers
                 return BadRequest("Error while registering the user");
             }
 
-
-            return Ok(user);
+            var userResponse = mapper.Map<BusinessObject.Dto.Register.RegisterationResponseDTO>(user);
+            return Ok(userResponse);
         }
 
         [HttpPost("login")]

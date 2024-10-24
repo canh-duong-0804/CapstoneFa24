@@ -333,3 +333,14 @@ D:\.NET\Capstone\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\refint\He
 D:\.NET\Capstone\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\HealthTrackingManageAPI.pdb
 D:\.NET\Capstone\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\HealthTrackingManageAPI.genruntimeconfig.cache
 D:\.NET\Capstone\CapstoneFa24\HealthTrackingManageAPI\obj\Debug\net6.0\ref\HealthTrackingManageAPI.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.Http.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.Logging.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Twilio.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Twilio.AspNet.Common.dll
+D:\CapstoneFa24\AndroidApp\CapstoneFa24\HealthTrackingManageAPI\bin\Debug\net6.0\Twilio.AspNet.Core.dll

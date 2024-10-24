@@ -9,12 +9,14 @@ using Microsoft.OpenApi.Models;
 using Repository.IRepo;
 using Repository.Repo;
 using System.Text;
+using Twilio;
+using Twilio.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,6 +25,9 @@ builder.Services.AddDbContext<HealthTrackingDBContext>(options =>
 builder.Services.Configure<AppSettingsKey>(builder.Configuration.GetSection("ApiSettings"));
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+
+builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
+
 
 builder.Services.AddDistributedMemoryCache(); // Sử dụng bộ nhớ trong để lưu session
 
@@ -33,7 +38,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-
+builder.Services.AddControllers();
 var secretKey = builder.Configuration["ApiSettings:SecretKey"];
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
