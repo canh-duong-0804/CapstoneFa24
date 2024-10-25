@@ -1,7 +1,9 @@
-﻿using BusinessObject.Dto.Food;
+﻿using BusinessObject.Dto.Diet;
+using BusinessObject.Dto.Food;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -201,6 +203,35 @@ namespace DataAccess
             {
                 throw new Exception($"Error updating food: {ex.Message}", ex);
             }
+        }
+
+        public async Task<IEnumerable<DietResponseDTO>> GetAllDietAsync()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var diets = await context.Diets.ToListAsync();
+
+                    
+                    var dietResponse = diets.Select(d => new DietResponseDTO
+                    {
+                        DietId = d.DietId,
+                        DietName = d.DietName,
+                      
+                    }).ToList();
+
+                    return dietResponse;
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving diets: {ex.Message}", ex);
+            }
+
         }
     }
 }

@@ -22,7 +22,9 @@ namespace Repository.Repo
 
         public Task<Blog> GetBlogByIdAsync(int id) => BlogDAO.Instance.GetBlogByIdAsync(id);
 
-
+        public Task<IEnumerable<Blog>>SearchAndFilterExerciseByIdAsync(string searchName, string categoryBlogName) => BlogDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName, categoryBlogName);
+        
+         
         public Task<Blog> UpdateBlogAsync(Blog blog) => BlogDAO.Instance.UpdateBlogAsync(blog);
 
     }

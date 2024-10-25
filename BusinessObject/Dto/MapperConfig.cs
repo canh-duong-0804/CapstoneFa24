@@ -2,6 +2,7 @@ using AutoMapper;
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Blog.CreateBlog;
 using BusinessObject.Dto.CommunityPost;
+using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
@@ -144,6 +145,7 @@ namespace BusinessObject
                 cfg.CreateMap<CreateExerciseRequestDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
+                cfg.CreateMap<DietResponseDTO, Diet>().ReverseMap();
 
             });
 

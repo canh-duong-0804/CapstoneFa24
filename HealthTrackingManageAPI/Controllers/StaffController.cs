@@ -34,43 +34,7 @@ namespace HealthTrackingManageAPI.Controllers
             _appSettings = optionsMonitor.CurrentValue;
         }
 
-        /*[HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterationRequestStaffDTO staff)
-        {
-            var mapper = MapperConfig.InitializeAutomapper();
-
-            var model = mapper.Map<BusinessObject.Models.staff>(staff);
-
-           *//* bool ifUserNameUnique = _staffRepo.IsUniqueUser(model.Username);
-            if (!ifUserNameUnique)
-            {
-                return BadRequest("Username already exists");
-            }
-*//*
-
-            bool ifEmailUnique = _staffRepo.IsUniqueEmail(model.Email);
-            if (!ifEmailUnique)
-            {
-                return BadRequest("Email already exists");
-            }
-
-
-            bool ifPhoneUnique = _staffRepo.IsUniquePhonenumber(model.PhoneNumber);
-            if (!ifPhoneUnique)
-            {
-                return BadRequest("Phone number already exists");
-            }
-
-
-            var user = await _staffRepo.Register(model);
-            if (user == null)
-            {
-                return BadRequest("Error while registering the user");
-            }
-
-
-            return Ok(user);
-        }*/
+    
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestStaffDTO staffRequest)

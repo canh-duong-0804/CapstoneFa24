@@ -16,7 +16,7 @@ namespace HealthTrackingManageAPI.Controllers
         {
             _exerciseRepository = exerciseRepository;
         }
-        [HttpGet("GetAllExercises")]
+        [HttpGet("Get-all-exercises")]
         public async Task<IActionResult> GetAllExercises()
         {
             var exercises = await _exerciseRepository.GetAllExercisesAsync();
@@ -24,7 +24,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
       
-        [HttpGet("GetExerciseById/{id}")]
+        [HttpGet("Get-exercise-by-id/{id}")]
         public async Task<IActionResult> GetExerciseById(int id)
         {
             var exercise = await _exerciseRepository.GetExerciseByIdAsync(id);
@@ -36,7 +36,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
      
-        [HttpPost("CreateExercise")]
+        [HttpPost("Create-exercise")]
         public async Task<IActionResult> CreateExercise([FromBody] CreateExerciseRequestDTO exercise)
         {
             var mapper = MapperConfig.InitializeAutomapper();
@@ -48,17 +48,15 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
             var createdExercise = await _exerciseRepository.CreateExerciseAsync(modelExericse);
-            return CreatedAtAction(nameof(GetExerciseById), new { id = createdExercise.ExerciseId }, createdExercise);
+            // return CreatedAtAction(nameof(GetExerciseById), new { id = createdExercise.ExerciseId }, createdExercise);
+            return Ok();
         }
 
 
-        [HttpPut("UpdateExercise/{id}")]
-        public async Task<IActionResult> UpdateExercise(int id, [FromBody] Exercise exercise)
+        [HttpPut("Update-exercise/{id}")]
+        public async Task<IActionResult> UpdateExercise([FromBody] Exercise exercise)
         {
-            if (exercise == null || exercise.ExerciseId != id)
-            {
-                return BadRequest("Exercise is null or ID mismatch.");
-            }
+            
 
             var updatedExercise = await _exerciseRepository.UpdateExerciseAsync(exercise);
             if (updatedExercise == null)
@@ -70,7 +68,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-        [HttpDelete("DeleteExercise/{id}")]
+        [HttpDelete("Delete-exercise/{id}")]
         public async Task<IActionResult> DeleteExercise(int id)
         {
             var result = await _exerciseRepository.DeleteExerciseAsync(id);
@@ -89,7 +87,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("search-and-filter")]
-        public async Task<IActionResult> SearchAndFilterExercise([FromQuery] string searchName, [FromQuery] string categoryExerciseName)
+        public async Task<IActionResult> SearchAndFilterExercise(string searchName,string categoryExerciseName)
         {
             try
             {

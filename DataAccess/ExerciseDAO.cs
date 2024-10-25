@@ -143,41 +143,60 @@ namespace DataAccess
             }
         }
 
-        public async Task<Exercise> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName)
+        public async Task<IEnumerable<AllExerciseResponseDTO>> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                   
                     var query = context.Exercises
                         .Include(e => e.ExerciseCategory)
-                        .Where(e => e.Status == true);
+                        .Where(e => e.Status == true); 
 
-                    if (!string.IsNullOrEmpty(searchName))
+               
+                    if (!string.IsNullOrEmpty(searchName) && !string.IsNullOrEmpty(categortExerciseName))
                     {
-                        query = query.Where(e => e.ExerciseName.Contains(searchName));
+                        query = query.Where(e => e.ExerciseName.Contains(searchName) &&
+                                                 e.ExerciseCategory.ExerciseCategoryName == categortExerciseName);
+                    }
+                 
+                    else if (!string.IsNullOrEmpty(searchName))
+                    {
+                        query = query.Where(e => e.ExerciseName.ToLower().Contains(searchName.ToLower()));
+                    }
+                   
+                    else if (!string.IsNullOrEmpty(categortExerciseName))
+                    {
+                        query = query.Where(e => e.ExerciseCategory.ExerciseCategoryName.ToLower() == categortExerciseName.ToLower());
                     }
 
-                    if (!string.IsNullOrEmpty(categortExerciseName))
-                    {
-                        query = query.Where(e => e.ExerciseCategory.ExerciseCategoryName == categortExerciseName);
-                    }
+                    
+                   
 
-                    var exercise = await query.FirstOrDefaultAsync();
+                    var exercises = await query
+                        .Select(e => new AllExerciseResponseDTO
+                        {
+                            ExerciseCategoryId = e.ExerciseCategoryId,
+                            ExerciseCategoryName = e.ExerciseCategory.ExerciseCategoryName,
+                            CreateBy = e.CreateByNavigation.FullName,
+                            ExerciseLevel = e.ExerciseLevel,
+                            ExerciseImage = e.ExerciseImage,
+                            ExerciseName = e.ExerciseName,
+                            Description = e.Description,
+                            CaloriesPerHour = e.CaloriesPerHour,
 
-                    if (exercise == null)
-                    {
-                        throw new Exception("Exercise not found with the specified search criteria.");
-                    }
+                        })
+                        .ToListAsync();
 
-                    return exercise;
+
+                    return exercises;
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error searching exercise: {ex.Message}", ex);
+                throw new Exception($"Error searching exercises: {ex.Message}", ex);
             }
-
         }
 
         public async Task<bool> DeleteExerciseAsync(int id)

@@ -36,9 +36,9 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     await context.Blogs.AddAsync(blog);
-                    
+
                     await context.SaveChangesAsync();
-                    return blog; 
+                    return blog;
                 }
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return await context.Blogs.FirstOrDefaultAsync(b => b.Status ==true && b.BlogId == id); ;
+                    return await context.Blogs.FirstOrDefaultAsync(b => b.Status == true && b.BlogId == id); ;
                 }
             }
             catch (Exception ex)
@@ -137,11 +137,11 @@ namespace DataAccess
                     existingBlog.Content = blog.Content;
                     existingBlog.ThumbnailBlog = blog.ThumbnailBlog;
                     existingBlog.ChangeBy = 1;
-                    existingBlog.ChangeDate = DateTime.Now; 
+                    existingBlog.ChangeDate = DateTime.Now;
 
 
 
-                 
+
 
                     await context.SaveChangesAsync();
                     return existingBlog;
@@ -153,5 +153,58 @@ namespace DataAccess
             }
         }
 
+
+
+        public async Task<IEnumerable<Blog>> SearchAndFilterExerciseByIdAsync(string searchName, string categoryBlogName)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var blogsQuery = context.Blogs
+                        .Where(b => b.Status == true);
+
+
+                    if (!string.IsNullOrWhiteSpace(searchName) && !string.IsNullOrWhiteSpace(categoryBlogName))
+                    {
+
+                        blogsQuery = blogsQuery.Where(b =>
+                            b.Title.Contains(searchName) &&
+                            b.Category.CategoryName == categoryBlogName);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(searchName))
+                    {
+
+                        blogsQuery = blogsQuery.Where(b => b.Title.Contains(searchName));
+                    }
+                    else if (!string.IsNullOrWhiteSpace(categoryBlogName))
+                    {
+                        blogsQuery = blogsQuery.Where(b => b.Category.CategoryName == categoryBlogName);
+                    }
+
+                    var blogs = await blogsQuery
+                        .Select(b => new Blog
+                        {
+                            BlogId = b.BlogId,
+                            Title = b.Title,
+                            CreateDate = b.CreateDate,
+                            CreateBy = b.CreateBy,
+                            ThumbnailBlog = b.ThumbnailBlog,
+                            Status = b.Status,
+                            Likes = b.Likes,
+                            Dislikes = b.Dislikes,
+                        })
+                        .ToListAsync();
+
+
+                    return blogs;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
+            }
+        }
     }
 }

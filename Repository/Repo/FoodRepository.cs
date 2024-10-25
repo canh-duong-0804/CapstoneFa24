@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Food;
+﻿using BusinessObject.Dto.Diet;
+using BusinessObject.Dto.Food;
 using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
@@ -19,6 +20,8 @@ namespace Repository.Repo
 
         public Task<bool> DeleteFoodAsync(int id) => FoodDAO.Instance.DeleteFoodAsync(id);
 
+        public Task<IEnumerable<DietResponseDTO>> GetAllDietAsync() => FoodDAO.Instance.GetAllDietAsync();
+        
 
         public Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsAsync() => FoodDAO.Instance.GetAllFoodsAsync();
        

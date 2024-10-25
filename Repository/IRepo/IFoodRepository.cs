@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Food;
+﻿using BusinessObject.Dto.Diet;
+using BusinessObject.Dto.Food;
 using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
@@ -23,5 +24,6 @@ namespace Repository.IRepo
 
 
         Task<bool> DeleteFoodAsync(int id);
+        Task<IEnumerable<DietResponseDTO>> GetAllDietAsync();
     }
 }

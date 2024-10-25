@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
+using Repository.Repo;
 using System.Reflection.Metadata;
 
 namespace HealthTrackingManageAPI.Controllers
@@ -124,6 +125,25 @@ namespace HealthTrackingManageAPI.Controllers
 
             await _blogRepository.DeleteBlogAsync(id);
             return NoContent(); 
+        }
+
+        [HttpGet("search-and-filter")]
+        public async Task<IActionResult> SearchAndFilterExercise([FromQuery] string searchName, [FromQuery] string categoryBlogName)
+        {
+            try
+            {
+                var exercises = await _blogRepository.SearchAndFilterExerciseByIdAsync(searchName, categoryBlogName);
+                if (exercises == null)
+                {
+                    return NotFound("No exercises found matching the criteria.");
+                }
+
+                return Ok(exercises);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

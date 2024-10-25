@@ -23,9 +23,9 @@ namespace Repository.Repo
         public Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync() => ExerciseDAO.Instance.GetAllExercisesAsync();
 
         public Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id) => ExerciseDAO.Instance.GetExerciseByIdAsync(id);
-       
 
-        public Task<Exercise> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName) => ExerciseDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName, categortExerciseName);
+
+        public Task<IEnumerable<AllExerciseResponseDTO >> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName) => ExerciseDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName, categortExerciseName);
        
 
         public Task<Exercise> UpdateExerciseAsync(Exercise exercise)

@@ -12,8 +12,8 @@ namespace Repository.IRepo
     {
 
         Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync(); 
-        Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id); 
-        Task<Exercise> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName); 
+        Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id);
+        Task<IEnumerable<AllExerciseResponseDTO>> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName); 
         Task<Exercise> CreateExerciseAsync(Exercise exercise); 
         Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exercise); 
         Task<Exercise> UpdateExerciseAsync(Exercise exercise); 

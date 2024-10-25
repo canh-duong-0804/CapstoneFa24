@@ -22,5 +22,6 @@ namespace Repository.IRepo
 
        
         Task<bool> DeleteBlogAsync(int id);
+        Task<IEnumerable<Blog>> SearchAndFilterExerciseByIdAsync(string searchName, string categoryBlogName);
     }
 }

@@ -10,12 +10,7 @@
      
         public bool Gender { get; set; }
 
-        public double? Height { get; set; }
-        public double? Weight { get; set; }
-     
-        public int? ExerciseLevel { get; set; }
-        public string? Goal { get; set; }
-        public int? DietId { get; set; }
+      
 
 
     }

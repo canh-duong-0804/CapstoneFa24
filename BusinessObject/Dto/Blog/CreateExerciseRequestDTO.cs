@@ -19,7 +19,7 @@ namespace BusinessObject.Dto.Blog
         public int? Minutes { get; set; }
         public string? ExerciseImage { get; set; }
       
-        public string Name { get; set; } = null!;
+        public string ExerciseName { get; set; } = null!;
         public string? Description { get; set; }
         public double CaloriesPerHour { get; set; }
     }
