@@ -29,6 +29,14 @@ namespace BusinessObject
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender)).ReverseMap();
                 cfg.CreateMap<RegisterationResponseDTO, Member>()
+                .ReverseMap(); 
+                
+                cfg.CreateMap<RegisterationMobileRequestDTO, Member>()
+                .ForMember(dest => dest.MemberId, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender)).ReverseMap();
+                cfg.CreateMap<RegisterationResponseDTO, Member>()
                 .ReverseMap();
 
                 cfg.CreateMap<LoginRequestDTO, Member>()
@@ -123,12 +131,20 @@ namespace BusinessObject
             .ForMember(dest => dest.CommunityCategoryId, opt => opt.MapFrom(src => src.CommunityCategoryId)) // Map CommunityCategoryId
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true)) // Set default status to true or modify as needed
             .ReverseMap();
+
+
                 cfg.CreateMap<UpdatePostDTO, CommunityPost>()
                  .ForMember(dest => dest.CommunityPostId, opt => opt.MapFrom(src => src.CommunityPostId))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title)) // Map Title
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content)) // Map Content
             .ForMember(dest => dest.ChangeBy, opt => opt.Ignore()) // Map ChangeBy if provided
             .ForMember(dest => dest.ChangeDate, opt => opt.MapFrom(src => DateTime.Now));
+
+
+                cfg.CreateMap<CreateExerciseRequestDTO, Exercise>().ReverseMap();
+                cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
+                cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
+
             });
 
       

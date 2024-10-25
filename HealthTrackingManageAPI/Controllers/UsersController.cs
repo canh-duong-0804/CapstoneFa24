@@ -77,6 +77,47 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(userResponse);
         }
 
+
+        [HttpPost("register-mobile")]
+        public async Task<IActionResult> RegisterMobile([FromBody] RegisterationMobileRequestDTO member)
+        {
+            var mapper = MapperConfig.InitializeAutomapper();
+
+            var model = mapper.Map<BusinessObject.Models.Member>(member);
+
+            bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
+            if (!ifUserNameUnique)
+            {
+                return BadRequest("Username already exists");
+            }
+
+
+            bool ifEmailUnique = _userRepo.IsUniqueEmail(model.Email);
+            if (!ifEmailUnique)
+            {
+                return BadRequest("Email already exists");
+            }
+
+
+            bool ifPhoneUnique = _userRepo.IsUniquePhonenumber(model.PhoneNumber);
+            if (!ifPhoneUnique)
+            {
+                return BadRequest("Phone number already exists");
+            }
+
+
+            var user = await _userRepo.Register(model);
+            if (user == null)
+            {
+                return BadRequest("Error while registering the user");
+            }
+
+            var userResponse = mapper.Map<BusinessObject.Dto.Register.RegisterationResponseDTO>(user);
+            return Ok(userResponse);
+        }
+
+
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO member)
         {

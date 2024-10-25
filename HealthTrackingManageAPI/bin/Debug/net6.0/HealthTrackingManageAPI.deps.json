@@ -799,10 +799,7 @@
           "Twilio.AspNet.Core": "8.0.2"
         },
         "runtime": {
-          "BusinessObject.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "BusinessObject.dll": {}
         }
       },
       "DataAccess/1.0.0": {
@@ -810,10 +807,7 @@
           "BusinessObject": "1.0.0"
         },
         "runtime": {
-          "DataAccess.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DataAccess.dll": {}
         }
       },
       "Repository/1.0.0": {
@@ -822,10 +816,7 @@
           "DataAccess": "1.0.0"
         },
         "runtime": {
-          "Repository.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "Repository.dll": {}
         }
       }
     }

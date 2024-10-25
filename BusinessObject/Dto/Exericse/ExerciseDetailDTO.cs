@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BusinessObject.Models
+namespace BusinessObject.Dto.Exericse
 {
-    public partial class Exercise
+    public class ExerciseDetailDTO
     {
-        public Exercise()
-        {
-            ExerciseDiaries = new HashSet<ExerciseDiary>();
-            ExercisePlanDetails = new HashSet<ExercisePlanDetail>();
-        }
-
         public int ExerciseId { get; set; }
         public int ExerciseCategoryId { get; set; }
-        public int CreateBy { get; set; }
+        public string ExerciseCategoryName { get; set; }
+        public string CreateBy { get; set; }
         public DateTime CreateDate { get; set; }
         public int? ExerciseLevel { get; set; }
         public int? ChangeBy { get; set; }
@@ -25,11 +23,6 @@ namespace BusinessObject.Models
         public string ExerciseName { get; set; } = null!;
         public string? Description { get; set; }
         public double CaloriesPerHour { get; set; }
-        public bool? Status { get; set; }
-
-        public virtual staff CreateByNavigation { get; set; } = null!;
-        public virtual ExerciseCategory ExerciseCategory { get; set; } = null!;
-        public virtual ICollection<ExerciseDiary> ExerciseDiaries { get; set; }
-        public virtual ICollection<ExercisePlanDetail> ExercisePlanDetails { get; set; }
+       
     }
 }
