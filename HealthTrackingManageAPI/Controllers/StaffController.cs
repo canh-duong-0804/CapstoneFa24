@@ -34,19 +34,19 @@ namespace HealthTrackingManageAPI.Controllers
             _appSettings = optionsMonitor.CurrentValue;
         }
 
-        [HttpPost("register")]
+        /*[HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterationRequestStaffDTO staff)
         {
             var mapper = MapperConfig.InitializeAutomapper();
 
             var model = mapper.Map<BusinessObject.Models.staff>(staff);
 
-           /* bool ifUserNameUnique = _staffRepo.IsUniqueUser(model.Username);
+           *//* bool ifUserNameUnique = _staffRepo.IsUniqueUser(model.Username);
             if (!ifUserNameUnique)
             {
                 return BadRequest("Username already exists");
             }
-*/
+*//*
 
             bool ifEmailUnique = _staffRepo.IsUniqueEmail(model.Email);
             if (!ifEmailUnique)
@@ -70,7 +70,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
             return Ok(user);
-        }
+        }*/
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestStaffDTO staffRequest)

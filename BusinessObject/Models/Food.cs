@@ -20,7 +20,7 @@ namespace BusinessObject.Models
         public int CreateBy { get; set; }
         public DateTime? CreateDate { get; set; }
         public int? ChangeBy { get; set; }
-        public DateTime ChangeDate { get; set; }
+        public DateTime? ChangeDate { get; set; }
         public string? FoodImage { get; set; }
         public double Protein { get; set; }
         public double Carbs { get; set; }
@@ -32,9 +32,11 @@ namespace BusinessObject.Models
         public double VitaminB1 { get; set; }
         public double VitaminB2 { get; set; }
         public double VitaminB3 { get; set; }
-        public string? Diet { get; set; }
+        public bool? Status { get; set; }
+        public int? DietId { get; set; }
 
         public virtual staff CreateByNavigation { get; set; } = null!;
+        public virtual Diet? Diet { get; set; }
         public virtual ICollection<FoodDiaryDetail> FoodDiaryDetails { get; set; }
         public virtual ICollection<MealPlanDetail> MealPlanDetails { get; set; }
         public virtual ICollection<Recipe> Recipes { get; set; }

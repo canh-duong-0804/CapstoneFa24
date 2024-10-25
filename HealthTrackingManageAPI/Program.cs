@@ -25,6 +25,9 @@ builder.Services.AddDbContext<HealthTrackingDBContext>(options =>
 builder.Services.Configure<AppSettingsKey>(builder.Configuration.GetSection("ApiSettings"));
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+builder.Services.AddScoped<ICommunityPostRepository, CommunityPostRepository>();
 
 builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
 
