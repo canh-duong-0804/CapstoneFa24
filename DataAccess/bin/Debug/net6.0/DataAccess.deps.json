@@ -747,7 +747,10 @@
           "Twilio.AspNet.Core": "8.0.2"
         },
         "runtime": {
-          "BusinessObject.dll": {}
+          "BusinessObject.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

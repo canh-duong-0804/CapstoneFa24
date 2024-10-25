@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Blog.CreateBlog;
+using BusinessObject.Dto.CommunityPost;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Register;
@@ -105,6 +106,30 @@ namespace BusinessObject
 				cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>()
 				   .ForMember(dest => dest.MemberId, opt => opt.Ignore())
 				   .ReverseMap();
+				cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>()
+				   .ForMember(dest => dest.MemberId, opt => opt.Ignore())
+				   .ReverseMap();
+				cfg.CreateMap<NewCommunityPostDto, CommunityPost>()
+			.ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Titles)) // Mapping Titles to Title
+			.ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now)) // Set CreateDate to now
+			.ForMember(dest => dest.CreateBy, opt => opt.Ignore()) // Ignore CreateBy, should be set separately
+			.ForMember(dest => dest.CommunityCategoryId, opt => opt.MapFrom(src => src.CommunityCategoryId)) // Map CommunityCategoryId
+			.ForMember(dest => dest.Status, opt => opt.MapFrom(src => true)) // Set default status to true or modify as needed
+			.ReverseMap();
+				cfg.CreateMap<CommunityPostDto, CommunityPost>()
+				.ForMember(dest => dest.CommunityPostId, opt => opt.MapFrom(src => src.PostId))
+			.ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Titles)) // Mapping Titles to Title
+			.ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now)) // Set CreateDate to now
+			.ForMember(dest => dest.CreateBy, opt => opt.Ignore()) // Ignore CreateBy, should be set separately
+			.ForMember(dest => dest.CommunityCategoryId, opt => opt.MapFrom(src => src.CommunityCategoryId)) // Map CommunityCategoryId
+			.ForMember(dest => dest.Status, opt => opt.MapFrom(src => true)) // Set default status to true or modify as needed
+			.ReverseMap();
+				cfg.CreateMap<UpdatePostDTO, CommunityPost>()
+				 .ForMember(dest => dest.CommunityPostId, opt => opt.MapFrom(src => src.CommunityPostId))
+			.ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title)) // Map Title
+			.ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content)) // Map Content
+			.ForMember(dest => dest.ChangeBy, opt => opt.Ignore()) // Map ChangeBy if provided
+			.ForMember(dest => dest.ChangeDate, opt => opt.MapFrom(src => DateTime.Now));
 			});
 
 
