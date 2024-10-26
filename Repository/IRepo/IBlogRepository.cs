@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.SearchFilter;
+using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,6 @@ namespace Repository.IRepo
 
        
         Task<bool> DeleteBlogAsync(int id);
-        Task<IEnumerable<Blog>> SearchAndFilterExerciseByIdAsync(string searchName, string categoryBlogName);
+        Task<IEnumerable<Blog>> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO search);
     }
 }

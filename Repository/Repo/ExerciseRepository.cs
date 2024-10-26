@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Dto.Exericse;
+using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
@@ -14,8 +15,11 @@ namespace Repository.Repo
     {
         public Task<Exercise> CreateExerciseAsync(Exercise exercise) => ExerciseDAO.Instance.CreateExerciseAsync(exercise);
 
+      
+
         public Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exerciseCategory) => ExerciseDAO.Instance.CreateExerciseCategoryAsync(exerciseCategory);
-        
+
+       
 
         public Task<bool> DeleteExerciseAsync(int id) => ExerciseDAO.Instance.DeleteExerciseAsync(id);
        
@@ -25,12 +29,10 @@ namespace Repository.Repo
         public Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id) => ExerciseDAO.Instance.GetExerciseByIdAsync(id);
 
 
-        public Task<IEnumerable<AllExerciseResponseDTO >> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName) => ExerciseDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName, categortExerciseName);
+        public Task<IEnumerable<AllExerciseResponseDTO >> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO searchName) => ExerciseDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName);
        
 
-        public Task<Exercise> UpdateExerciseAsync(Exercise exercise)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);
+        
     }
 }

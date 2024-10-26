@@ -15,6 +15,9 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Repository.IRepo;
 using BusinessObject;
+using Repository.Repo;
+using System.Security.Principal;
+using BusinessObject.Dto.Staff;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -34,7 +37,104 @@ namespace HealthTrackingManageAPI.Controllers
             _appSettings = optionsMonitor.CurrentValue;
         }
 
-    
+        [HttpPost("create-account-staff")]
+        public async Task<IActionResult> Register([FromBody] RegisterationRequestStaffDTO staff)
+        {
+            var mapper = MapperConfig.InitializeAutomapper();
+
+            var staffModel = mapper.Map<BusinessObject.Models.staff>(staff);
+
+            /* bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
+             if (!ifUserNameUnique)
+             {
+                 return BadRequest("Username already exists");
+             }*/
+
+
+            bool ifEmailUnique = _staffRepo.IsUniqueEmail(staffModel.Email);
+            if (!ifEmailUnique)
+            {
+                return BadRequest("Email already exists");
+            }
+
+
+            bool ifPhoneUnique = _staffRepo.IsUniquePhonenumber(staffModel.PhoneNumber);
+            if (!ifPhoneUnique)
+            {
+                return BadRequest("Phone number already exists");
+            }
+
+
+            var user = await _staffRepo.RegisterAccountStaff(staffModel);
+            if (user == null)
+            {
+                return BadRequest("Error while registering the user");
+            }
+
+            var userResponse = mapper.Map<BusinessObject.Dto.Register.RegisterationResponseDTO>(user);
+            return Ok(userResponse);
+        }
+
+
+
+
+
+
+        [HttpGet("get-all-account-staff")]
+        public async Task<IActionResult> GetAllAccountStaff()
+        {
+            var staffs = await _staffRepo.GetAllAccountStaffsAsync();
+
+
+            if (staffs == null || !staffs.Any())
+            {
+                return NotFound("No staff found.");
+            }
+
+
+            return Ok(staffs);
+        }
+
+        [HttpGet("get-account-staff-by-id/{id}")]
+        public async Task<IActionResult> GetAccountStaffById(int id)
+        {
+            var staff = await _staffRepo.GetAccountStaffByIdAsync(id);
+
+            if (staff == null)
+            {
+                return NotFound("staff not found.");
+            }
+
+            return Ok(staff);
+        }
+        
+
+      [HttpDelete("delete-account-staff/{id}")]
+        public async Task<IActionResult> DeleteFood(int id)
+        {
+            
+            await _staffRepo.DeleteAccountStaffByIdAsync(id);
+
+            return NoContent();
+        }
+
+        [HttpGet("update-role-account")]
+        public async Task<IActionResult> UpdateRoleAccountStaffById([FromBody]UpdateRoleStaffRequestDTO staffRole)
+        {
+            var staff = await _staffRepo.UpdateRoleAccountStaffByIdAsync(staffRole);
+
+            if (staff == null)
+            {
+                return NotFound("staff not found.");
+            }
+
+            return Ok(staff);
+        }
+
+
+
+
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestStaffDTO staffRequest)

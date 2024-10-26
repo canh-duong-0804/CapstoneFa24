@@ -29,7 +29,6 @@ namespace BusinessObject.Models
         public double? Weight { get; set; }
         public bool? Gender { get; set; }
         public int? ExerciseLevel { get; set; }
-        public string? Goal { get; set; }
         public bool? IsComment { get; set; }
         public int? DietId { get; set; }
         public DateTime CreatedAt { get; set; }

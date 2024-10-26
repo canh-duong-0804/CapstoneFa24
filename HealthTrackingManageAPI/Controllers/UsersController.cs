@@ -46,11 +46,11 @@ namespace HealthTrackingManageAPI.Controllers
 
             var model = mapper.Map<BusinessObject.Models.Member>(member);
 
-            bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
+           /* bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
             if (!ifUserNameUnique)
             {
                 return BadRequest("Username already exists");
-            }
+            }*/
 
 
             bool ifEmailUnique = _userRepo.IsUniqueEmail(model.Email);

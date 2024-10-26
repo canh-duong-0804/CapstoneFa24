@@ -1,7 +1,7 @@
 ﻿using AutoMapper.Execution;
 using BusinessObject;
 using BusinessObject.Dto.Blog;
-
+using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -127,12 +127,12 @@ namespace HealthTrackingManageAPI.Controllers
             return NoContent(); 
         }
 
-        [HttpGet("search-and-filter")]
-        public async Task<IActionResult> SearchAndFilterExercise([FromQuery] string searchName, [FromQuery] string categoryBlogName)
+        [HttpPost("search-and-filter")]
+        public async Task<IActionResult> SearchAndFilterExercise([FromBody] SearchFilterObjectDTO search)
         {
             try
             {
-                var exercises = await _blogRepository.SearchAndFilterExerciseByIdAsync(searchName, categoryBlogName);
+                var exercises = await _blogRepository.SearchAndFilterExerciseByIdAsync(search);
                 if (exercises == null)
                 {
                     return NotFound("No exercises found matching the criteria.");

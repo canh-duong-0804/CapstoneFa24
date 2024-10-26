@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.SearchFilter;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -22,7 +23,7 @@ namespace Repository.Repo
 
         public Task<Blog> GetBlogByIdAsync(int id) => BlogDAO.Instance.GetBlogByIdAsync(id);
 
-        public Task<IEnumerable<Blog>>SearchAndFilterExerciseByIdAsync(string searchName, string categoryBlogName) => BlogDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName, categoryBlogName);
+        public Task<IEnumerable<Blog>>SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO search) => BlogDAO.Instance.SearchAndFilterExerciseByIdAsync(search);
         
          
         public Task<Blog> UpdateBlogAsync(Blog blog) => BlogDAO.Instance.UpdateBlogAsync(blog);

@@ -13,7 +13,8 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.35",
           "Newtonsoft.Json": "13.0.3",
           "Repository": "1.0.0",
-          "Swashbuckle.AspNetCore": "6.5.0"
+          "Swashbuckle.AspNetCore": "6.5.0",
+          "Twilio.AspNet.Core": "8.0.2"
         },
         "runtime": {
           "HealthTrackingManageAPI.dll": {}

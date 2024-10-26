@@ -3,10 +3,12 @@ using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Blog.CreateBlog;
 using BusinessObject.Dto.CommunityPost;
 using BusinessObject.Dto.Diet;
+using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Register;
+using BusinessObject.Dto.Staff;
 using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
@@ -110,7 +112,7 @@ namespace BusinessObject
                 .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.Weight))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.ExerciseLevel, opt => opt.MapFrom(src => src.ExerciseLevel))
-                .ForMember(dest => dest.Goal, opt => opt.MapFrom(src => src.Goal))
+                //.ForMember(dest => dest.Goal, opt => opt.MapFrom(src => src.Goal))
                 .ReverseMap()
                 ;
                 cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>()
@@ -146,6 +148,8 @@ namespace BusinessObject
                 cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
                 cfg.CreateMap<DietResponseDTO, Diet>().ReverseMap();
+                cfg.CreateMap<AllStaffsResponseDTO, staff>().ReverseMap();
+                cfg.CreateMap<GetStaffByIdResponseDTO, staff>().ReverseMap();
 
             });
 

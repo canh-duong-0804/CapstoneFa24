@@ -1,5 +1,7 @@
 ﻿using BusinessObject;
 using BusinessObject.Dto.Blog;
+using BusinessObject.Dto.Exericse;
+using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,8 +55,8 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-        [HttpPut("Update-exercise/{id}")]
-        public async Task<IActionResult> UpdateExercise([FromBody] Exercise exercise)
+        [HttpPut("Update-exercise")]
+        public async Task<IActionResult> UpdateExercise([FromBody] UpdateExerciseRequestDTO exercise)
         {
             
 
@@ -80,18 +82,12 @@ namespace HealthTrackingManageAPI.Controllers
             return NoContent();
         }
 
-
-
-
-
-
-
-        [HttpGet("search-and-filter")]
-        public async Task<IActionResult> SearchAndFilterExercise(string searchName,string categoryExerciseName)
+        [HttpPost("search-and-filter")]
+        public async Task<IActionResult> SearchAndFilterExercise([FromBody]SearchFilterObjectDTO search)
         {
             try
             {
-                var exercises = await _exerciseRepository.SearchAndFilterExerciseByIdAsync(searchName, categoryExerciseName);
+                var exercises = await _exerciseRepository.SearchAndFilterExerciseByIdAsync(search);
                 if (exercises == null)
                 {
                     return NotFound("No exercises found matching the criteria.");

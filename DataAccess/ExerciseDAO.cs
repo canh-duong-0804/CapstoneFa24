@@ -1,6 +1,8 @@
 ﻿using BusinessObject.Dto.Exericse;
+using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,7 +145,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<AllExerciseResponseDTO>> SearchAndFilterExerciseByIdAsync(string searchName, string categortExerciseName)
+        public async Task<IEnumerable<AllExerciseResponseDTO>> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO search)
         {
             try
             {
@@ -155,20 +157,20 @@ namespace DataAccess
                         .Where(e => e.Status == true); 
 
                
-                    if (!string.IsNullOrEmpty(searchName) && !string.IsNullOrEmpty(categortExerciseName))
+                    if (!string.IsNullOrEmpty(search.SearchName) && !string.IsNullOrEmpty(search.FilterName))
                     {
-                        query = query.Where(e => e.ExerciseName.Contains(searchName) &&
-                                                 e.ExerciseCategory.ExerciseCategoryName == categortExerciseName);
+                        query = query.Where(e => e.ExerciseName.Contains(search.SearchName) &&
+                                                 e.ExerciseCategory.ExerciseCategoryName == search.FilterName);
                     }
                  
-                    else if (!string.IsNullOrEmpty(searchName))
+                    else if (!string.IsNullOrEmpty(search.SearchName))
                     {
-                        query = query.Where(e => e.ExerciseName.ToLower().Contains(searchName.ToLower()));
+                        query = query.Where(e => e.ExerciseName.ToLower().Contains(search.SearchName.ToLower()));
                     }
                    
-                    else if (!string.IsNullOrEmpty(categortExerciseName))
+                    else if (!string.IsNullOrEmpty(search.FilterName))
                     {
-                        query = query.Where(e => e.ExerciseCategory.ExerciseCategoryName.ToLower() == categortExerciseName.ToLower());
+                        query = query.Where(e => e.ExerciseCategory.ExerciseCategoryName.ToLower() == search.FilterName.ToLower());
                     }
 
                     
@@ -211,6 +213,7 @@ namespace DataAccess
                         return false; 
                     }
 
+
                     exercise.Status = false; 
                     context.Exercises.Update(exercise);
                     await context.SaveChangesAsync(); 
@@ -222,5 +225,48 @@ namespace DataAccess
                 throw new Exception($"Error updating status of exercise: {ex.Message}", ex);
             }
         }
+
+        public async Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exerciseDto)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                   
+                    var existingExercise = await context.Exercises.FindAsync(exerciseDto.ExerciseId);
+
+                   
+                    if (existingExercise == null)
+                    {
+                        return null;
+                    }
+
+                   
+                    existingExercise.ExerciseName = exerciseDto.ExerciseName;
+                    existingExercise.ExerciseCategoryId = exerciseDto.ExerciseCategoryId;
+                    existingExercise.Description = exerciseDto.Description;
+                    existingExercise.Minutes = exerciseDto.Minutes;
+                    existingExercise.Reps = exerciseDto.Reps;
+                    existingExercise.Sets = exerciseDto.Sets;
+                    existingExercise.ChangeBy = exerciseDto.ChangeBy;
+                    existingExercise.ChangeDate = exerciseDto.ChangeDate;
+                    existingExercise.CaloriesPerHour = exerciseDto.CaloriesPerHour;
+                    existingExercise.ExerciseLevel = exerciseDto.ExerciseLevel; 
+                    existingExercise.ExerciseImage = exerciseDto.ExerciseImage; 
+                   
+
+                    // Save the changes to the database
+                    await context.SaveChangesAsync();
+
+                    return exerciseDto;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating exercise: {ex.Message}", ex);
+            }
+        }
+
+
     }
 }

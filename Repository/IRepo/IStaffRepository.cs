@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.Staff;
+using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,11 @@ namespace Repository.IRepo
     {
         bool IsUniqueEmail(string email);
         bool IsUniquePhonenumber(string number);
-        Task<staff> Register(staff registerationRequestDTO);
+        Task<staff> RegisterAccountStaff(staff registerationRequestDTO);
         Task<staff> Login(staff loginRequestDTO);
+        Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync();
+        Task<GetStaffByIdResponseDTO> GetAccountStaffByIdAsync(int id);
+        Task DeleteAccountStaffByIdAsync(int id);
+        Task<UpdateRoleStaffRequestDTO> UpdateRoleAccountStaffByIdAsync(UpdateRoleStaffRequestDTO staffRole);
     }
 }

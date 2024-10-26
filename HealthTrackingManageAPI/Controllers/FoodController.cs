@@ -50,7 +50,7 @@ namespace HealthTrackingManageAPI.Controllers
 
        
         [HttpPut("update-food-status/{id}")]
-        public async Task<IActionResult> UpdateFoodStatus([FromBody] CreateFoodRequestDTO food,int id)
+        public async Task<IActionResult> UpdateFoodStatus([FromBody] CreateFoodRequestDTO food)
         {
             var mapper = MapperConfig.InitializeAutomapper();
             var foodModel = mapper.Map<BusinessObject.Models.Food>(food);
@@ -63,18 +63,21 @@ namespace HealthTrackingManageAPI.Controllers
         [HttpDelete("delete-food/{id}")]
         public async Task<IActionResult> DeleteFood(int id)
         {
-            var food = await _foodRepository.GetFoodByIdAsync(id);
-            if (food == null)
+
+            
+            bool deleteSuccess = await _foodRepository.DeleteFoodAsync(id);
+
+          
+            if (deleteSuccess)
             {
-                return NotFound("Food not found.");
+                return NoContent(); 
             }
-
-            food.Status = false; 
-            await _foodRepository.DeleteFoodAsync(id);
-
-            return NoContent();
+            else
+            {
+                return NotFound("Food item not found or already deleted."); 
+            }
         }
-        [HttpGet("{id}")]
+        [HttpGet("get-food-by-id/{id}")]
         public async Task<IActionResult> GetFoodById(int id)
         {
             var food = await _foodRepository.GetFoodByIdAsync(id);

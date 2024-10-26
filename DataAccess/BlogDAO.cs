@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.SearchFilter;
+using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -155,7 +156,7 @@ namespace DataAccess
 
 
 
-        public async Task<IEnumerable<Blog>> SearchAndFilterExerciseByIdAsync(string searchName, string categoryBlogName)
+        public async Task<IEnumerable<Blog>> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO search)
         {
             try
             {
@@ -166,21 +167,21 @@ namespace DataAccess
                         .Where(b => b.Status == true);
 
 
-                    if (!string.IsNullOrWhiteSpace(searchName) && !string.IsNullOrWhiteSpace(categoryBlogName))
+                    if (!string.IsNullOrWhiteSpace(search.SearchName) && !string.IsNullOrWhiteSpace(search.FilterName))
                     {
 
                         blogsQuery = blogsQuery.Where(b =>
-                            b.Title.Contains(searchName) &&
-                            b.Category.CategoryName == categoryBlogName);
+                            b.Title.ToLower().Contains(search.SearchName.ToLower()) &&
+                            b.Category.CategoryName.ToLower() == search.FilterName.ToLower());
                     }
-                    else if (!string.IsNullOrWhiteSpace(searchName))
+                    else if (!string.IsNullOrWhiteSpace(search.SearchName))
                     {
 
-                        blogsQuery = blogsQuery.Where(b => b.Title.Contains(searchName));
+                        blogsQuery = blogsQuery.Where(b => b.Title.ToLower().Contains(search.SearchName.ToLower()));
                     }
-                    else if (!string.IsNullOrWhiteSpace(categoryBlogName))
+                    else if (!string.IsNullOrWhiteSpace(search.FilterName))
                     {
-                        blogsQuery = blogsQuery.Where(b => b.Category.CategoryName == categoryBlogName);
+                        blogsQuery = blogsQuery.Where(b => b.Category.CategoryName.ToLower() == search.FilterName.ToLower());
                     }
 
                     var blogs = await blogsQuery

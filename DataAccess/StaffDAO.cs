@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Execution;
 using BusinessObject.Dto;
 using BusinessObject.Dto.Register;
+using BusinessObject.Dto.Staff;
 using BusinessObject.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,7 @@ namespace DataAccess
                     var staff = await _context.staffs
                         .FirstOrDefaultAsync(st => st.Email == loginRequestStaffDTO.Email && st.Password == loginRequestStaffDTO.Password);
 
-                    return staff; 
+                    return staff;
                 }
             }
             catch (Exception ex)
@@ -121,6 +122,111 @@ namespace DataAccess
             {
                 throw new Exception(ex.Message);
 
+            }
+        }
+
+        public async Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var staffAccounts = await context.staffs
+                        .Where(s => s.Status == true)
+                        .Select(s => new AllStaffsResponseDTO
+                        {
+                            FullName = s.FullName,
+                            PhoneNumber = s.PhoneNumber,
+
+                            Description = s.Description,
+
+                            StaffImage = s.StaffImage,
+                            Email = s.Email,
+                            Role = s.Role,
+                            StartWorkingDate = s.StartWorkingDate,
+                            EndWorkingDate = s.EndWorkingDate,
+                            Status = s.Status
+                        })
+                        .ToListAsync();
+
+                    return staffAccounts;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving staff accounts: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<GetStaffByIdResponseDTO> GetAccountStaffByIdAsync(int id)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var staff = await context.staffs
+                        .Where(s => s.StaffId == id && s.Status == true)
+                        .Select(s => new GetStaffByIdResponseDTO
+                        {
+                            StaffId = s.StaffId,
+                            FullName = s.FullName,
+                            PhoneNumber = s.PhoneNumber,
+                            Sex = s.Sex,
+                            Description = s.Description,
+                            Dob = s.Dob,
+                            StaffImage = s.StaffImage,
+                            Email = s.Email,
+                            Password = s.Password,
+                            Role = s.Role,
+                            StartWorkingDate = s.StartWorkingDate,
+                            EndWorkingDate = s.EndWorkingDate,
+                            Status = s.Status
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (staff == null)
+                        throw new Exception("Staff not found");
+
+                    return staff;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving staff account by ID: {ex.Message}", ex);
+            }
+        }
+
+
+
+        public async Task<UpdateRoleStaffRequestDTO> UpdateRoleAccountStaffByIdAsync(UpdateRoleStaffRequestDTO staffRole)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var staff = await context.staffs
+                                .Where(s => s.StaffId == staffRole.StaffId && s.Status == true)
+                                 .FirstOrDefaultAsync();
+
+
+                    if (staff == null)
+                    {
+                        throw new Exception("Staff not found or inactive.");
+                    }
+
+
+                    staff.Role = staffRole.Role;
+
+
+                    await context.SaveChangesAsync();
+
+                    return staffRole;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating staff role: {ex.Message}", ex);
             }
         }
     }
