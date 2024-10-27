@@ -385,3 +385,7 @@ Repository/obj/Debug/net6.0/Repository.AssemblyInfo.cs
 Repository/obj/Debug/net6.0/Repository.AssemblyInfoInputs.cache
 Repository/obj/Debug/net6.0/Repository.assets.cache
 Repository/obj/Debug/net6.0/Repository.GeneratedMSBuildEditorConfig.editorconfig
+.vs/HealthTrackingAPI/v17/.suo
+HealthTrackingManageAPI/obj/Debug/net6.0/HealthTrackingManageAPI.csproj.AssemblyReference.cache
+*.cache
+*.cache
