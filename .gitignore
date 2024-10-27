@@ -2,3 +2,13 @@
 *.vsidx
 /BusinessObject/obj/Debug
 /DataAccess/obj/Debug
+*.dll
+*.bin
+*.json
+*.targets
+*.pdb
+*.cache
+*.user
+*.BuildWithSkipAnalyzers
+*.cs
+*.CopyComplete
