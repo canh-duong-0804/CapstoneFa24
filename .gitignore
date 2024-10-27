@@ -1,2 +1,4 @@
 
 *.vsidx
+/BusinessObject/obj/Debug
+/DataAccess/obj/Debug
