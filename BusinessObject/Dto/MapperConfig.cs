@@ -7,6 +7,7 @@ using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
+using BusinessObject.Dto.Recipe;
 using BusinessObject.Dto.Register;
 using BusinessObject.Dto.Staff;
 using BusinessObject.Models;
@@ -115,6 +116,10 @@ namespace BusinessObject
                 //.ForMember(dest => dest.Goal, opt => opt.MapFrom(src => src.Goal))
                 .ReverseMap()
                 ;
+                cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>()
+                   .ForMember(dest => dest.MemberId, opt => opt.Ignore())
+                   .ReverseMap();
+
                 cfg.CreateMap<NewCommunityPostDto, CommunityPost>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Titles)) // Mapping Titles to Title
             .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now)) // Set CreateDate to now
@@ -144,29 +149,11 @@ namespace BusinessObject
                 cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
                 cfg.CreateMap<DietResponseDTO, Diet>().ReverseMap();
-                cfg.CreateMap<NewCommentDTO, Comment>()
-                .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
-            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content)) // Mapping Titles to Title
-            .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now)) // Set CreateDate to now
-            .ForMember(dest => dest.CreateBy, opt => opt.Ignore()) // Ignore CreateBy, should be set separately
-            .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId)) // Map CommunityCategoryId
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
-            .ReverseMap();
-                cfg.CreateMap<UpdateCommentDTO, Comment>()
-                .ForMember(dest => dest.CommentId, opt => opt.MapFrom(src => src.CommentId))
-            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content)) // Mapping Titles to Title
-            .ForMember(dest => dest.ChangeDate, opt => opt.MapFrom(src => DateTime.Now))
-            .ForMember(dest => dest.ChangeBy, opt => opt.Ignore()) // Map CommunityCategoryId
-
-            .ReverseMap();
-
-
-                cfg.CreateMap<CreateExerciseRequestDTO, Exercise>().ReverseMap();
-                cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
-                cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
-                cfg.CreateMap<DietResponseDTO, Diet>().ReverseMap();
                 cfg.CreateMap<AllStaffsResponseDTO, staff>().ReverseMap();
                 cfg.CreateMap<GetStaffByIdResponseDTO, staff>().ReverseMap();
+
+
+                cfg.CreateMap<CreateRecipeRequestDTO, Recipe>().ReverseMap();
 
             });
 

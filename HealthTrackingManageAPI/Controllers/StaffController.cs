@@ -171,13 +171,15 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-
+                    
                 new Claim("Id", staff.StaffId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, staff.FullName),
                 new Claim(JwtRegisteredClaimNames.Email, staff.Email),
                 new Claim(JwtRegisteredClaimNames.Sub, staff.Email),
+            
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("FullName",staff.FullName),
+              new Claim(ClaimTypes.Role, staff.Role.ToString())   
                   
            
             //roles
