@@ -389,3 +389,7 @@ Repository/obj/Debug/net6.0/Repository.GeneratedMSBuildEditorConfig.editorconfig
 HealthTrackingManageAPI/obj/Debug/net6.0/HealthTrackingManageAPI.csproj.AssemblyReference.cache
 *.cache
 *.cache
+*.cache
+*.dll
+*.json
+*.dll
