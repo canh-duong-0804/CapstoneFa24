@@ -12,6 +12,7 @@ namespace BusinessObject.Models
             CommunityPosts = new HashSet<CommunityPost>();
             ExerciseDiaries = new HashSet<ExerciseDiary>();
             FoodDiaries = new HashSet<FoodDiary>();
+            FoodMembers = new HashSet<FoodMember>();
             Goals = new HashSet<Goal>();
             MemberDiseases = new HashSet<MemberDisease>();
             MessageChats = new HashSet<MessageChat>();
@@ -40,6 +41,7 @@ namespace BusinessObject.Models
         public virtual ICollection<CommunityPost> CommunityPosts { get; set; }
         public virtual ICollection<ExerciseDiary> ExerciseDiaries { get; set; }
         public virtual ICollection<FoodDiary> FoodDiaries { get; set; }
+        public virtual ICollection<FoodMember> FoodMembers { get; set; }
         public virtual ICollection<Goal> Goals { get; set; }
         public virtual ICollection<MemberDisease> MemberDiseases { get; set; }
         public virtual ICollection<MessageChat> MessageChats { get; set; }
