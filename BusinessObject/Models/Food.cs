@@ -14,7 +14,7 @@ namespace BusinessObject.Models
         }
 
         public int FoodId { get; set; }
-        public string Name { get; set; } = null!;
+        public string FoodName { get; set; } = null!;
         public string Portion { get; set; } = null!;
         public double Calories { get; set; }
         public int CreateBy { get; set; }

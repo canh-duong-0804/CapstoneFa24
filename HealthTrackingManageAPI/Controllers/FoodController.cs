@@ -18,10 +18,26 @@ namespace HealthTrackingManageAPI.Controllers
             _foodRepository = foodRepository;
         }
 
-        [HttpGet("get-all-food-for-staff")]
+        [HttpGet("get-all-foods-for-staff")]
         public async Task<IActionResult> GetAllFoodsForStaff()
         {
-            var foods = await _foodRepository.GetAllFoodsAsync();
+            var foods = await _foodRepository.GetAllFoodsForStaffAsync();
+
+
+            if (foods == null || !foods.Any())
+            {
+                return NotFound("No foods found.");
+            }
+
+
+            return Ok(foods);
+        }
+
+
+        [HttpGet("get-all-foods-for-member")]
+        public async Task<IActionResult> GetAllFoodsForMember()
+        {
+            var foods = await _foodRepository.GetAllFoodsForMemberAsync();
 
 
             if (foods == null || !foods.Any())
@@ -77,10 +93,24 @@ namespace HealthTrackingManageAPI.Controllers
                 return NotFound("Food item not found or already deleted."); 
             }
         }
-        [HttpGet("get-food-by-id/{id}")]
+        [HttpGet("get-food-for-staff-by-id/{id}")]
         public async Task<IActionResult> GetFoodById(int id)
         {
-            var food = await _foodRepository.GetFoodByIdAsync(id);
+            var food = await _foodRepository.GetFoodForStaffByIdAsync(id);
+
+            if (food == null)
+            {
+                return NotFound("Food not found.");
+            }
+
+            return Ok(food);
+        } 
+        
+        
+        [HttpGet("get-food-for-member-by-id/{id}")]
+        public async Task<IActionResult> GetFoodForMemberById(int id)
+        {
+            var food = await _foodRepository.GetFoodForMemberByIdAsync(id);
 
             if (food == null)
             {

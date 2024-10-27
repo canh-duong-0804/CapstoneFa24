@@ -80,7 +80,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsAsync()
+        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync()
         {
             try
             {
@@ -92,7 +92,7 @@ namespace DataAccess
                                        where food.Status == true
                                        select new AllFoodForStaffResponseDTO
                                        {
-                                           Name = food.Name,
+                                           FoodName = food.FoodName,
                                            CreateBy = food.CreateBy,
                                            CreateDate = food.CreateDate,
                                            ChangeDate = food.ChangeDate,
@@ -110,7 +110,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<GetFoodByIdResponseDTO> GetFoodByIdAsync(int id)
+        public async Task<GetFoodForStaffByIdResponseDTO> GetFoodForStaffByIdAsync(int id)
         {
             try
             {
@@ -120,14 +120,15 @@ namespace DataAccess
                        
                         var responseDto = await context.Foods
                             .Where(f => f.FoodId == id && f.Status == true)
-                            .Select(food => new GetFoodByIdResponseDTO
+                            .Include(f=>f.CreateByNavigation)
+                            .Select(food => new GetFoodForStaffByIdResponseDTO
                             {
-                                Name = food.Name,
+                                FoodName = food.FoodName,
                                 Portion = food.Portion,
                                 Calories = food.Calories,
-                                CreateBy = food.CreateBy,
+                                CreateBy = food.CreateByNavigation.FullName,
                                 CreateDate = food.CreateDate,
-                                ChangeBy = food.ChangeBy,
+                                ChangeBy = food.CreateByNavigation.FullName,
                                 ChangeDate = food.ChangeDate,
                                 FoodImage = food.FoodImage,
                                 Protein = food.Protein,
@@ -172,7 +173,7 @@ namespace DataAccess
                     }
 
 
-                    existingFood.Name = food.Name;
+                    existingFood.FoodName = food.FoodName;
                     existingFood.Portion = food.Portion;
                     existingFood.Calories = food.Calories;
                     existingFood.CreateBy = food.CreateBy;
@@ -232,6 +233,75 @@ namespace DataAccess
                 throw new Exception($"Error retrieving diets: {ex.Message}", ex);
             }
 
+        }
+
+        public async Task<IEnumerable<AllFoodForMemberResponseDTO>> GetAllFoodsForMemberAsync()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var foods = await(from food in context.Foods
+                                      join diet in context.Diets on food.DietId equals diet.DietId
+                                      where food.Status == true
+                                      select new AllFoodForMemberResponseDTO
+                                      {
+                                          FoodName = food.FoodName,
+                                          FoodImage = food.FoodImage,
+                                          Calories = food.Calories,
+                                          DietName = food.Diet.DietName,
+                                      }).ToListAsync();
+
+                    return foods;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int id)
+        {
+            try
+            {
+
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var responseDto = await context.Foods
+                        .Where(f => f.FoodId == id && f.Status == true)
+                        .Select(food => new GetFoodForMemberByIdResponseDTO
+                        {
+                            FoodName = food.FoodName,
+                            Portion = food.Portion,
+                            Calories = food.Calories,
+
+                            FoodImage = food.FoodImage,
+                            Protein = food.Protein,
+                            Carbs = food.Carbs,
+                            Fat = food.Fat,
+                            VitaminA = food.VitaminA,
+                            VitaminC = food.VitaminC,
+                            VitaminD = food.VitaminD,
+                            VitaminE = food.VitaminE,
+                            VitaminB1 = food.VitaminB1,
+                            VitaminB2 = food.VitaminB2,
+                            VitaminB3 = food.VitaminB3,
+                            Status = food.Status,
+                            DietId = food.DietId,
+                            DietName = food.Diet.DietName
+                        })
+                        .FirstOrDefaultAsync();
+
+                    return responseDto;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving food: {ex.Message}", ex);
+            }
         }
     }
 }
