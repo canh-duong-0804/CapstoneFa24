@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Dto.Food
 {
-    public class CreateFoodRequestDTO
+    public class GetFoodForStaffByIdResponseDTO
     {
-      
+       
         public string FoodName { get; set; } = null!;
         public string Portion { get; set; } = null!;
-        public string dietname { get; set; } = null!;
+
         public double Calories { get; set; }
-        public int CreateBy { get; set; }    
+        public string CreateBy { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public string? ChangeBy { get; set; }
+        public DateTime? ChangeDate { get; set; }
         public string? FoodImage { get; set; }
         public double Protein { get; set; }
         public double Carbs { get; set; }
@@ -27,5 +30,6 @@ namespace BusinessObject.Dto.Food
         public double VitaminB3 { get; set; }
         public bool? Status { get; set; }
         public int? DietId { get; set; }
+        public string DietName { get; set; }
     }
 }
