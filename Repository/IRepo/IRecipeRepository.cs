@@ -12,20 +12,22 @@ namespace Repository.IRepo
 {
     public interface IRecipeRepository
     {
+        Task<Recipe> CreateRecipeAsync(Recipe recipeModel);
+        Task<IEnumerable<AllRecipeForMemberResponseDTO>> GetAllRecipesForMemberAsync();
 
-        Task<Recipe> CreateRecipeAsync(Recipe recipe);
+        /* Task<Recipe> CreateRecipeAsync(Recipe recipe);*/
 
 
-        Task<IEnumerable<AllRecipeForStaffResponseDTO>> GetAllFoodsAsync();
+        Task<IEnumerable<AllRecipeForStaffResponseDTO>> GetAllRecipesForStaffAsync();
 
 
-        Task<GetRecipeByIdResponseDTO> GetRecipeByIdAsync(int id);
+      /*  Task<GetRecipeByIdResponseDTO> GetRecipeByIdAsync(int id);
 
 
         Task<Recipe> UpdateRecipeAsync(Food blog);
 
 
-        Task<bool> DeleteFoodAsync(int id);
+        Task<bool> DeleteFoodAsync(int id);*/
        
     }
 }

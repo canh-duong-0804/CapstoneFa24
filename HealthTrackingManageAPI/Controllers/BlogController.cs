@@ -23,7 +23,7 @@ namespace HealthTrackingManageAPI.Controllers
             _blogRepository = blogRepository;
         }
 
-      
+        [Authorize(Roles = "2")]
         [HttpGet("get-all-blog-for-staff")]
         public async Task<IActionResult> GetAllBlogsForStaff()
         {
@@ -51,6 +51,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         // POST: api/blogs/create-blog
+        [Authorize(Roles = "2")]
         [HttpPost("create-blog")]
         public async Task<IActionResult> CreateBlog([FromBody] BlogRequestDTO blog)
         {

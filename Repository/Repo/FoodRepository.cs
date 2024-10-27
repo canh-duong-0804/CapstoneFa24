@@ -21,14 +21,17 @@ namespace Repository.Repo
         public Task<bool> DeleteFoodAsync(int id) => FoodDAO.Instance.DeleteFoodAsync(id);
 
         public Task<IEnumerable<DietResponseDTO>> GetAllDietAsync() => FoodDAO.Instance.GetAllDietAsync();
-        
 
-        public Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsAsync() => FoodDAO.Instance.GetAllFoodsAsync();
+        public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetAllFoodsForMemberAsync() => FoodDAO.Instance.GetAllFoodsForMemberAsync();
+
+
+        public Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync() => FoodDAO.Instance.GetAllFoodsForStaffAsync();
        
 
-        public Task<GetFoodByIdResponseDTO> GetFoodByIdAsync(int id) => FoodDAO.Instance.GetFoodByIdAsync(id);
+        public Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int id) => FoodDAO.Instance.GetFoodForMemberByIdAsync(id);
 
-     
+        public Task<GetFoodForStaffByIdResponseDTO> GetFoodForStaffByIdAsync(int id) => FoodDAO.Instance.GetFoodForStaffByIdAsync(id);
+
 
         public Task<Food> UpdateFoodAsync(Food food) => FoodDAO.Instance.UpdateFoodAsync(food);
 
