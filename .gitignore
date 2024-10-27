@@ -367,3 +367,16 @@ FodyWeavers.xsd
 _ReSharper.*
 bin
 obj
+DataAccess/obj/Debug/net6.0/DataAccess.AssemblyInfo.cs
+DataAccess/obj/Debug/net6.0/DataAccess.AssemblyInfoInputs.cache
+Repository/obj/Debug/net6.0/Repository.AssemblyInfo.cs
+Repository/obj/Debug/net6.0/Repository.AssemblyInfoInputs.cache
+BusinessObject/obj/Debug/net6.0/BusinessObject.AssemblyInfo.cs
+BusinessObject/obj/Debug/net6.0/BusinessObject.AssemblyInfoInputs.cache
+DataAccess/obj/Debug/net6.0/DataAccess.AssemblyInfo.cs
+DataAccess/obj/Debug/net6.0/DataAccess.AssemblyInfoInputs.cache
+HealthTrackingManageAPI/obj/Debug/net6.0/HealthTrackingManageAPI.AssemblyInfo.cs
+HealthTrackingManageAPI/obj/Debug/net6.0/HealthTrackingManageAPI.AssemblyInfoInputs.cache
+HealthTrackingManageAPI/obj/Debug/net6.0/HealthTrackingManageAPI.csproj.AssemblyReference.cache
+Repository/obj/Debug/net6.0/Repository.AssemblyInfo.cs
+Repository/obj/Debug/net6.0/Repository.AssemblyInfoInputs.cache
