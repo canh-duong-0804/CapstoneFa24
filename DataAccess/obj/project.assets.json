@@ -4039,19 +4039,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\admin\\.nuget\\packages\\": {}
+    "C:\\Users\\tu\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
+      "projectUniqueName": "D:\\Capstone\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
       "projectName": "DataAccess",
-      "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
-      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-      "outputPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\DataAccess\\obj\\",
+      "projectPath": "D:\\Capstone\\CapstoneFa24\\DataAccess\\DataAccess.csproj",
+      "packagesPath": "C:\\Users\\tu\\.nuget\\packages\\",
+      "outputPath": "D:\\Capstone\\CapstoneFa24\\DataAccess\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\tu\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4059,14 +4059,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
-              "projectPath": "D:\\CapstoneFa24\\AndroidApp\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
+            "D:\\Capstone\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj": {
+              "projectPath": "D:\\Capstone\\CapstoneFa24\\BusinessObject\\BusinessObject.csproj"
             }
           }
         }
@@ -4075,6 +4076,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -4096,7 +4102,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
