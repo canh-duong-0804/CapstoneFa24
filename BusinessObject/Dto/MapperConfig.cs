@@ -7,7 +7,7 @@ using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
-using BusinessObject.Dto.Recipe;
+using BusinessObject.Dto.Recipe.CreateDTO;
 using BusinessObject.Dto.Register;
 using BusinessObject.Dto.Staff;
 using BusinessObject.Models;
@@ -40,7 +40,8 @@ namespace BusinessObject
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender)).ReverseMap();
-                cfg.CreateMap<RegisterationResponseDTO, Member>()
+                cfg.CreateMap<RegisterationRequestStaffDTO, staff>()
+                .ReverseMap();cfg.CreateMap<RegisterationResponseDTO, staff>()
                 .ReverseMap();
 
                 cfg.CreateMap<LoginRequestDTO, Member>()
@@ -59,7 +60,7 @@ namespace BusinessObject
                 cfg.CreateMap<RegisterationRequestStaffDTO, staff>()
             .ForMember(dest => dest.StaffId, opt => opt.Ignore())
             .ForMember(dest => dest.StartWorkingDate, opt => opt.MapFrom(src => DateTime.Now))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
+            //.ForMember(dest => dest.Status, opt => opt.MapFrom(src => true))
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.StaffImage, opt => opt.MapFrom(src => src.StaffImage))
@@ -154,6 +155,7 @@ namespace BusinessObject
 
 
                 cfg.CreateMap<CreateRecipeRequestDTO, Recipe>().ReverseMap();
+                cfg.CreateMap<RecipeIngredientRequestDTO, RecipeIngredient>().ReverseMap();
 
             });
 

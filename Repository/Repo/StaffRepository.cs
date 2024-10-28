@@ -14,10 +14,8 @@ namespace Repository.Repo
 {
     public class StaffRepository : IStaffRepository
     {
-        public Task DeleteAccountStaffByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<bool> DeleteAccountStaffByIdAsync(int id) => StaffDAO.Instance.DeleteAccountStaffByIdAsync(id);
+
 
         public Task<GetStaffByIdResponseDTO> GetAccountStaffByIdAsync(int id) => StaffDAO.Instance.GetAccountStaffByIdAsync(id);
       

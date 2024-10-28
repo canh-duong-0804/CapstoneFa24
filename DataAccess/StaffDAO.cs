@@ -134,7 +134,7 @@ namespace DataAccess
                     var staffAccounts = await context.staffs
                         .Where(s => s.Status == true)
                         .Select(s => new AllStaffsResponseDTO
-                        {
+                        { StaffId=s.StaffId,
                             FullName = s.FullName,
                             PhoneNumber = s.PhoneNumber,
 
@@ -184,8 +184,7 @@ namespace DataAccess
                         })
                         .FirstOrDefaultAsync();
 
-                    if (staff == null)
-                        throw new Exception("Staff not found");
+                   
 
                     return staff;
                 }
@@ -227,6 +226,34 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"Error updating staff role: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteAccountStaffByIdAsync(int id)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var staff = await context.staffs.FindAsync(id);
+
+                    if (staff == null)
+                    {
+                        throw new Exception("Food not found.");
+                    }
+
+
+                    staff.Status = false;
+
+                    await context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating food status: {ex.Message}", ex);
             }
         }
     }

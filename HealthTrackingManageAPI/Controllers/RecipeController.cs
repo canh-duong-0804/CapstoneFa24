@@ -6,6 +6,8 @@ using Repository.IRepo;
 using Repository.Repo;
 using BusinessObject.Models;
 using Twilio.TwiML.Fax;
+using BusinessObject.Dto.Recipe.CreateDTO;
+using DataAccess;
 using BusinessObject.Dto.Recipe;
 
 namespace HealthTrackingManageAPI.Controllers
@@ -64,9 +66,11 @@ namespace HealthTrackingManageAPI.Controllers
             var recipeModel = mapper.Map<BusinessObject.Models.Recipe>(recipe);
 
 
-            var createdFood = await _recipeRepository.CreateRecipeAsync(recipeModel);
+            var createdRecipe = await _recipeRepository.CreateRecipeAsync(recipeModel);
             //return CreatedAtAction(nameof(GetAllFoodsForStaff), new { id = createdFood.FoodId }, createdFood);
-            return Ok(createdFood);
+            //var recipeDTO = mapper.Map<RecipeDTO>(createdRecipe);
+            var recipeDTO = mapper.Map<CreateRecipeRequestDTO>(createdRecipe);
+            return Ok(recipeDTO);
         }
 
 
