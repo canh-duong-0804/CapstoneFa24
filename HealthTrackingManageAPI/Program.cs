@@ -34,6 +34,7 @@ builder.Services.AddScoped<IBodyMesurementRepository, BodyMeasurementRepository>
 builder.Services.AddScoped<IExeriseDiaryRepository, ExecriseDiaryRepository>();
 builder.Services.AddScoped<ICompanyInfoRepository, CompanyInfoRepository>();
 
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 
 builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
 

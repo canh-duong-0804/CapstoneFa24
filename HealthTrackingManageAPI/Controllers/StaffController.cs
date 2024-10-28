@@ -113,12 +113,12 @@ namespace HealthTrackingManageAPI.Controllers
         public async Task<IActionResult> DeleteFood(int id)
         {
             
-            await _staffRepo.DeleteAccountStaffByIdAsync(id);
-
+          bool checkStatus=  await _staffRepo.DeleteAccountStaffByIdAsync(id);
+            if (!checkStatus) return BadRequest();
             return NoContent();
         }
 
-        [HttpGet("update-role-account")]
+        [HttpPut("update-role-account")]
         public async Task<IActionResult> UpdateRoleAccountStaffById([FromBody]UpdateRoleStaffRequestDTO staffRole)
         {
             var staff = await _staffRepo.UpdateRoleAccountStaffByIdAsync(staffRole);

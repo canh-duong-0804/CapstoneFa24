@@ -102,10 +102,19 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-
+                   
                     await context.Recipes.AddAsync(recipeModel);
+                    await context.SaveChangesAsync();
 
+                  
+                   /* foreach (var ingredient in recipeModel.RecipeIngredients)
+                    {
+                        ingredient.RecipeId = recipeModel.RecipeId; 
+                        ingredient.RecipeIngredientId = 0;
+                        await context.RecipeIngredients.AddAsync(ingredient);
+                    }*/
 
+                    
                     await context.SaveChangesAsync();
 
                     return recipeModel;
@@ -113,8 +122,9 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error creating food: {ex.Message}", ex);
+                throw new Exception($"Error creating recipe: {ex.Message}", ex);
             }
         }
+
     }
 }

@@ -16,7 +16,7 @@ namespace Repository.IRepo
         Task<staff> Login(staff loginRequestDTO);
         Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync();
         Task<GetStaffByIdResponseDTO> GetAccountStaffByIdAsync(int id);
-        Task DeleteAccountStaffByIdAsync(int id);
+        Task<bool> DeleteAccountStaffByIdAsync(int id);
         Task<UpdateRoleStaffRequestDTO> UpdateRoleAccountStaffByIdAsync(UpdateRoleStaffRequestDTO staffRole);
     }
 }
