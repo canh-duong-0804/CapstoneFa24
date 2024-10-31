@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessObject.Dto.Recipe
+namespace BusinessObject.Dto.Recipe.UpdateDTO
 {
-    public class GetRecipeForStaffByIdResponseDTO
+    public class UpdateRecipeRequestDTO
     {
         public int RecipeId { get; set; }
-        public string FoodName { get; set; }
-        public string CreateBy { get; set; }
+        public int FoodId { get; set; }
+        //public int CreateBy { get; set; }
         public string RecipeImage { get; set; } = null!;
-        public DateTime CreateDate { get; set; }
+        //public DateTime CreateDate { get; set; }
         public string? ChangeBy { get; set; }
         public DateTime? ChangeDate { get; set; }
         public string RecipeName { get; set; } = null!;
@@ -25,6 +25,5 @@ namespace BusinessObject.Dto.Recipe
 
 
         public List<RecipeIngredientRequestDTO> RecipeIngredients { get; set; }
-
     }
 }

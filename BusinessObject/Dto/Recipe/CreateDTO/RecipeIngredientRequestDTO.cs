@@ -14,7 +14,7 @@ namespace BusinessObject.Dto.Recipe.CreateDTO
         public int IngredientId { get; set; }
         public double Quantity { get; set; }
         public string Unit { get; set; } = null!;
-        public double? CaloriesPerUnit { get; set; }
+        //public double? CaloriesPerUnit { get; set; }
 
         
     }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.IRepo;
+using Repository.NewFolder;
 using Repository.Repo;
 using System.Text;
 using Twilio;
@@ -30,9 +31,12 @@ builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<ICommunityPostRepository, CommunityPostRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
+builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
 
-builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
-
+//builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
+builder.Services.Configure<SMSSetting>(builder.Configuration.GetSection("SMSSettingTwilio"));
+builder.Services.AddTransient<ISMSService, SMSService>();
 
 builder.Services.AddDistributedMemoryCache(); // Sử dụng bộ nhớ trong để lưu session
 
@@ -57,7 +61,7 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         In = ParameterLocation.Header,
         Description = "Enter token"

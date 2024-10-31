@@ -24,6 +24,7 @@ namespace HealthTrackingManageAPI.Controllers
             var exercises = await _exerciseRepository.GetAllExercisesAsync();
             return Ok(exercises);
         }
+      
 
       
         [HttpGet("Get-exercise-by-id/{id}")]

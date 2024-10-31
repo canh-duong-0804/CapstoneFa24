@@ -18,5 +18,6 @@ namespace Repository.IRepo
         Task<GetStaffByIdResponseDTO> GetAccountStaffByIdAsync(int id);
         Task<bool> DeleteAccountStaffByIdAsync(int id);
         Task<UpdateRoleStaffRequestDTO> UpdateRoleAccountStaffByIdAsync(UpdateRoleStaffRequestDTO staffRole);
+        Task<UpdateInfoAccountStaffByIdDTO> UpdateAccountStaffById(UpdateInfoAccountStaffByIdDTO staffRole);
     }
 }

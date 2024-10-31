@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Dto.Message
 {
-    public class SmsMessage
+    public class MessageRessourceDto
     {
         public string To { get; set; }  
         public string From { get; set; }

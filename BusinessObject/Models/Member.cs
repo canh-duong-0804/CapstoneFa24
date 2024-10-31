@@ -15,6 +15,7 @@ namespace BusinessObject.Models
             FoodMembers = new HashSet<FoodMember>();
             Goals = new HashSet<Goal>();
             MemberDiseases = new HashSet<MemberDisease>();
+            MemberNotifications = new HashSet<MemberNotification>();
             MessageChats = new HashSet<MessageChat>();
             RefreshTokensMembers = new HashSet<RefreshTokensMember>();
             WaterIntakes = new HashSet<WaterIntake>();
@@ -44,6 +45,7 @@ namespace BusinessObject.Models
         public virtual ICollection<FoodMember> FoodMembers { get; set; }
         public virtual ICollection<Goal> Goals { get; set; }
         public virtual ICollection<MemberDisease> MemberDiseases { get; set; }
+        public virtual ICollection<MemberNotification> MemberNotifications { get; set; }
         public virtual ICollection<MessageChat> MessageChats { get; set; }
         public virtual ICollection<RefreshTokensMember> RefreshTokensMembers { get; set; }
         public virtual ICollection<WaterIntake> WaterIntakes { get; set; }

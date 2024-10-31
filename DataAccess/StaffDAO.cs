@@ -256,5 +256,45 @@ namespace DataAccess
                 throw new Exception($"Error updating food status: {ex.Message}", ex);
             }
         }
+
+        public async Task<UpdateInfoAccountStaffByIdDTO> UpdateAccountStaffById(UpdateInfoAccountStaffByIdDTO staffRequest)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var staffModel = await context.staffs
+                                .Where(s => s.StaffId == staffRequest.StaffId && s.Status == true)
+                                 .FirstOrDefaultAsync();
+
+
+                    if (staffModel == null)
+                    {
+                        throw new Exception("Staff not found or inactive.");
+                    }
+                    //validate email, phone
+                    if (IsUniqueEmail(staffModel.Email)) return null;
+                    if (IsUniquePhonenumber(staffModel.PhoneNumber)) return null;
+
+                   
+                    staffModel.FullName= staffRequest.FullName;
+                    staffModel.PhoneNumber = staffRequest.PhoneNumber;
+                    staffModel.StaffImage = staffRequest.StaffImage;
+                    staffModel.Sex = staffRequest.Sex;
+                    staffModel.Dob = staffRequest.Dob;  
+                    staffModel.Email = staffRequest.Email;
+                    staffModel.Password = staffRequest.Password;
+
+                    await context.SaveChangesAsync();
+
+                    return staffRequest;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating staff role: {ex.Message}", ex);
+            }
+        }
     }
 }

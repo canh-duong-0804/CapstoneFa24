@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Exericse;
+﻿using BusinessObject.Dto.CategoryExerice;
+using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
 using System;
@@ -15,11 +16,10 @@ namespace Repository.IRepo
         Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync(); 
         Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id);
         Task<IEnumerable<AllExerciseResponseDTO>> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO searchName); 
-        Task<Exercise> CreateExerciseAsync(Exercise exercise); 
-        Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exercise); 
+       Task<Exercise> CreateExerciseAsync(Exercise exercise); 
+        
         Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise); 
-        Task<bool> DeleteExerciseAsync(int id); 
-
-
+        Task<bool> DeleteExerciseAsync(int id);
+        
     }
 }
