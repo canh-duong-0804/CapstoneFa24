@@ -130,6 +130,31 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(staff);
         }
+        
+        
+        [HttpPut("update-account-staff")]
+        public async Task<IActionResult> UpdateAccountStaffById([FromBody] UpdateInfoAccountStaffByIdDTO staffUpdate)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("User ID not found in token.");
+            }
+
+
+            staffUpdate.StaffId = int.Parse(userIdClaim.Value);
+
+
+            var staff = await _staffRepo.UpdateAccountStaffById(staffUpdate);
+
+            if (staff == null)
+            {
+                return NotFound("staff not found || email duplicate || phone duplicate.");
+            }
+
+            return Ok(staff);
+        }
 
 
 

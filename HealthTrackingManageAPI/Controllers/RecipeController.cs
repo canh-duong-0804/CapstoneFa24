@@ -9,6 +9,7 @@ using Twilio.TwiML.Fax;
 using BusinessObject.Dto.Recipe.CreateDTO;
 using DataAccess;
 using BusinessObject.Dto.Recipe;
+using BusinessObject.Dto.Recipe.UpdateDTO;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -52,6 +53,21 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(recipes);
         }
+        
+        
+        [HttpGet("get-recipe-for-staff-by-id/{id}")]
+        public async Task<IActionResult> GetRecipeForStaffById(int id)
+        {
+            var recipeDetails = await _recipeRepository.GetRecipeForStaffByIdAsync(id);
+
+            if (recipeDetails == null)
+            {
+                return NotFound($"Recipe with ID {id} not found.");
+            }
+
+            return Ok(recipeDetails);
+
+        }
 
 
 
@@ -76,10 +92,35 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
+        [HttpDelete("delete-recipe/{id}")]
+        public async Task<IActionResult> DeleteRecipe(int id)
+        {
+            var existingRecipe = await _recipeRepository.DeleteRecipeAsync(id);
+            if (existingRecipe == null)
+            {
+                return NotFound();
+            }
+
+            //await _recipeRepository.DeleteRecipeAsync(id);
+            return NoContent();
+        }
+        [HttpPut("update-recipe")]
+        public async Task<IActionResult> UpdateRecipe([FromBody] UpdateRecipeRequestDTO updateRecipe)
+        {
+            var existingRecipe = await _recipeRepository.UpdateRecipeAsync(updateRecipe);
+            if (existingRecipe == null)
+            {
+                return NotFound();
+            }
+
+            //await _recipeRepository.DeleteRecipeAsync(id);
+            return NoContent();
+
+
+        }
 
 
 
 
-
-    }
+        }
 }

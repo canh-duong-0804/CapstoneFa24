@@ -12,6 +12,7 @@ namespace BusinessObject.Models
 
         public int ExerciseCategoryId { get; set; }
         public string ExerciseCategoryName { get; set; } = null!;
+        public bool? Status { get; set; }
 
         public virtual ICollection<Exercise> Exercises { get; set; }
     }

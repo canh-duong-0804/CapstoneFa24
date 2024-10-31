@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Exericse;
+﻿using BusinessObject.Dto.CategoryExerice;
+using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<Exercise> CreateExerciseAsync(Exercise exercise)
+       public async Task<Exercise> CreateExerciseAsync(Exercise exercise)
         {
             try
             {
@@ -53,6 +54,7 @@ namespace DataAccess
                 throw new Exception($"Error creating exercise: {ex.Message}", ex);
             }
         }
+
 
         public async Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync()
         {
@@ -255,7 +257,6 @@ namespace DataAccess
                     existingExercise.ExerciseImage = exerciseDto.ExerciseImage; 
                    
 
-                    // Save the changes to the database
                     await context.SaveChangesAsync();
 
                     return exerciseDto;
@@ -267,6 +268,6 @@ namespace DataAccess
             }
         }
 
-
+       
     }
 }

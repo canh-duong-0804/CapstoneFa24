@@ -2,6 +2,7 @@ using AutoMapper;
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Blog.CreateBlog;
 using BusinessObject.Dto.BodyMeasurement;
+using BusinessObject.Dto.CategoryExerice;
 using BusinessObject.Dto.CommunityPost;
 using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Exericse;
@@ -166,6 +167,7 @@ namespace BusinessObject
 
                 cfg.CreateMap<CreateRecipeRequestDTO, Recipe>().ReverseMap();
                 cfg.CreateMap<RecipeIngredientRequestDTO, RecipeIngredient>().ReverseMap();
+                cfg.CreateMap<CreateCategoryExerciseRequestDTO, ExerciseCategory>().ReverseMap();
 
             });
 

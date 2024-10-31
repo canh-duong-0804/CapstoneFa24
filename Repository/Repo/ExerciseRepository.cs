@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Exericse;
+﻿using BusinessObject.Dto.CategoryExerice;
+using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
 using DataAccess;
@@ -13,16 +14,18 @@ namespace Repository.Repo
 {
     public class ExerciseRepository : IExerciseRepository
     {
-        public Task<Exercise> CreateExerciseAsync(Exercise exercise) => ExerciseDAO.Instance.CreateExerciseAsync(exercise);
+       public Task<Exercise> CreateExerciseAsync(Exercise exercise) => ExerciseDAO.Instance.CreateExerciseAsync(exercise);
 
       
-
-        public Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exerciseCategory) => ExerciseDAO.Instance.CreateExerciseCategoryAsync(exerciseCategory);
+        //
+        //public Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exerciseCategory) => ExerciseDAO.Instance.CreateExerciseCategoryAsync(exerciseCategory);
 
        
 
         public Task<bool> DeleteExerciseAsync(int id) => ExerciseDAO.Instance.DeleteExerciseAsync(id);
-       
+        //
+       // public Task<GetAllCategoryExeriseResponseDTO> GetAllCategoryExercisesAsync() => ExerciseDAO.Instance.GetAllCategoryExercisesAsync();
+
 
         public Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync() => ExerciseDAO.Instance.GetAllExercisesAsync();
 
