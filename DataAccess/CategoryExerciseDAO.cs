@@ -52,7 +52,7 @@ namespace DataAccess
             }
         }
 
-        public  async Task<List<GetAllCategoryExeriseResponseDTO>> GetAllCategoryExercisesAsync()
+        public async Task<List<GetAllCategoryExeriseResponseDTO>> GetAllCategoryExercisesAsync()
         {
             try
             {
@@ -60,12 +60,13 @@ namespace DataAccess
                 {
 
                     var cateExercises = await context.ExerciseCategories
-                        .Where(e=>e.Status==true)
+                        .Where(e => e.Status == true)
                         .Select(e => new GetAllCategoryExeriseResponseDTO
                         {
                             ExerciseCategoryId = e.ExerciseCategoryId,
                             ExerciseCategoryName = e.ExerciseCategoryName,
-                            Value = e.ExerciseCategoryId,
+                            Status = e.Status,
+                            //Value = e.ExerciseCategoryId,
                         })
                         .ToListAsync();
 
@@ -88,8 +89,8 @@ namespace DataAccess
                     var category = await context.ExerciseCategories.FindAsync(id);
                     if (category != null)
                     {
-                        category.Status = false; 
-                        await context.SaveChangesAsync(); 
+                        category.Status = false;
+                        await context.SaveChangesAsync();
                     }
                     else
                     {
@@ -124,6 +125,33 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"Error deleting exercise category: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<ListBoxResponseDTO>> GetlistboxAsync()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var cateExercises = await context.ExerciseCategories
+                        .Where(e => e.Status == true)
+                        .Select(e => new ListBoxResponseDTO
+                        {
+                            Key = e.ExerciseCategoryId.ToString(),
+                            Label = e.ExerciseCategoryName,
+                            Value = e.ExerciseCategoryId
+                        })
+                        .ToListAsync();
+
+                    return cateExercises;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Error retrieving exercises: {ex.Message}", ex);
             }
         }
     }

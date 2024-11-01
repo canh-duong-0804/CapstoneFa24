@@ -113,7 +113,7 @@ namespace BusinessObject
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.Height, opt => opt.MapFrom(src => src.Height))
-                .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.Weight))
+               // .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.Weight))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.ExerciseLevel, opt => opt.MapFrom(src => src.ExerciseLevel))
                 //.ForMember(dest => dest.Goal, opt => opt.MapFrom(src => src.Goal))

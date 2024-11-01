@@ -29,8 +29,7 @@ namespace DataAccess
                 }
             }
         }
-
-        public async Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int memberId)
+      public async Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int memberId)
         {
           
             try
@@ -44,7 +43,7 @@ namespace DataAccess
                     if (member == null)
                         throw new Exception("Member not found");
 
-                    // Calculate age
+              
                     var age = DateTime.Now.Year - member.Dob.Year;
 
 
@@ -59,11 +58,12 @@ namespace DataAccess
                     double bmr;
                     if (member.Gender == true) 
                     {
-                        bmr = 88.362 + (13.397 * currentWeight) + (4.799 * (member.Height ?? 0)) - (5.677 * age);
+                        bmr = (10 * currentWeight) + (6.25 * (member.Height ?? 0)) - (5 * age) + 5;
+
                     }
                     else
                     {
-                        bmr = 447.593 + (9.247 * currentWeight) + (3.098 * (member.Height ?? 0)) - (4.330 * age);
+                        bmr = (10 * currentWeight) + (6.25 * (member.Height ?? 0)) - (5 * age) - 161;
                     }
 
                     
@@ -81,7 +81,7 @@ namespace DataAccess
                     var weightGoal = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân"));
                     var calorieAdjustment = 0.0;
                     DateTime? targetDate = null;
-                    string goalType = "Maintain";
+                    string goalType = "duy trì";
                     double weightDifference = 0;
 
                     if (weightGoal != null)
@@ -98,14 +98,14 @@ namespace DataAccess
                           
                             var totalDeficitNeeded = Math.Abs(weightDifference) * 7700;
                             calorieAdjustment = -1 * (totalDeficitNeeded / daysUntilTarget);
-                            goalType = "Weight Loss";
+                            goalType = "giảm cân";
                         }
                         else if (weightDifference > 0) 
                         {
                            
                             var totalSurplusNeeded = weightDifference * 7700;
                             calorieAdjustment = totalSurplusNeeded / daysUntilTarget;
-                            goalType = "Weight Gain";
+                            goalType = "tăng cân";
                         }
                     }
 

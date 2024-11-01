@@ -37,7 +37,7 @@ namespace HealthTrackingManageAPI.Controllers
             _appSettings = optionsMonitor.CurrentValue;
         }
 
-        [HttpPost("create-account-staff")]
+        [HttpPost("create-account-staff-by-admin")]
         public async Task<IActionResult> Register([FromBody] RegisterationRequestStaffDTO staff)
         {
             var mapper = MapperConfig.InitializeAutomapper();
@@ -80,7 +80,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
-        [HttpGet("get-all-account-staff")]
+        [HttpGet("get-all-account-staff-for-admin")]
         public async Task<IActionResult> GetAllAccountStaff()
         {
             var staffs = await _staffRepo.GetAllAccountStaffsAsync();
@@ -95,10 +95,24 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(staffs);
         }
 
-        [HttpGet("get-account-staff-by-id/{id}")]
+        [HttpGet("get-account-staff-for-admin-by-id/{id}")]
         public async Task<IActionResult> GetAccountStaffById(int id)
         {
-            var staff = await _staffRepo.GetAccountStaffByIdAsync(id);
+            var staff = await _staffRepo.GetAccountStaffForAdminByIdAsync(id);
+
+            if (staff == null)
+            {
+                return NotFound("staff not found.");
+            }
+
+            return Ok(staff);
+        }
+        
+        
+        [HttpGet("get-account-staff-for-staff-by-id/{id}")]
+        public async Task<IActionResult> GetAccountPersonalForStaffById(int id)
+        {
+            var staff = await _staffRepo.GetAccountPersonalForStaffByIdAsync(id);
 
             if (staff == null)
             {
@@ -109,7 +123,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
 
-      [HttpDelete("delete-account-staff/{id}")]
+      [HttpDelete("delete-account-staff-by-admin/{id}")]
         public async Task<IActionResult> DeleteFood(int id)
         {
             
@@ -118,7 +132,7 @@ namespace HealthTrackingManageAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut("update-role-account")]
+        [HttpPut("update-role-account-by-admin")]
         public async Task<IActionResult> UpdateRoleAccountStaffById([FromBody]UpdateRoleStaffRequestDTO staffRole)
         {
             var staff = await _staffRepo.UpdateRoleAccountStaffByIdAsync(staffRole);
@@ -132,7 +146,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         
-        [HttpPut("update-account-staff")]
+        [HttpPut("update-personal-account-staff-by-staff")]
         public async Task<IActionResult> UpdateAccountStaffById([FromBody] UpdateInfoAccountStaffByIdDTO staffUpdate)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "Id");

@@ -10,6 +10,7 @@ namespace BusinessObject.Dto.CategoryExerice
     {
         public int ExerciseCategoryId { get; set; }
         public string ExerciseCategoryName { get; set; } = null!;
-        public int? Value { get; set; }
+        public bool? Status { get; set; }
+        //public int? Value { get; set; }
     }
 }
