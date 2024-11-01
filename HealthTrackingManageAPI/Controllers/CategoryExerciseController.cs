@@ -27,6 +27,14 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         
+        [HttpGet("Get-list-box")]
+        public async Task<IActionResult> Getlistbox()
+        {
+            var categoryExercises = await _categoryExerciseRepository.GetlistboxAsync();
+            return Ok(categoryExercises);
+        }
+        
+        
         [HttpPost("Create-category-exercise")]
         public async Task<IActionResult> CreateCategoryExercises([FromBody] CreateCategoryExerciseRequestDTO cate)
         {
@@ -47,7 +55,7 @@ namespace HealthTrackingManageAPI.Controllers
         } 
         
         
-        [HttpPut("Delete-category-exercise/{id}")]
+        [HttpDelete("Delete-category-exercise-by-id/{id}")]
         public async Task<IActionResult> DeleteCategoryExercises(int id)
         {
            

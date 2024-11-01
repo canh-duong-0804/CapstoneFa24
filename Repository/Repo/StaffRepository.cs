@@ -16,8 +16,10 @@ namespace Repository.Repo
     {
         public Task<bool> DeleteAccountStaffByIdAsync(int id) => StaffDAO.Instance.DeleteAccountStaffByIdAsync(id);
 
+        public Task<GetStaffPersonalByIdResponseDTO> GetAccountPersonalForStaffByIdAsync(int id) => StaffDAO.Instance.GetAccountPersonalForStaffByIdAsync(id);
 
-        public Task<GetStaffByIdResponseDTO> GetAccountStaffByIdAsync(int id) => StaffDAO.Instance.GetAccountStaffByIdAsync(id);
+
+        public Task<GetStaffByIdResponseDTO> GetAccountStaffForAdminByIdAsync(int id) => StaffDAO.Instance.GetAccountStaffByIdAsync(id);
       
 
         public Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync() => StaffDAO.Instance.GetAllAccountStaffsAsync();

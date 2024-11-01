@@ -19,6 +19,9 @@ namespace Repository.Repo
 
         public Task<List<GetAllCategoryExeriseResponseDTO>> GetAllCategoryExercisesAsync() => CategoryExerciseDAO.Instance.GetAllCategoryExercisesAsync();
 
+        public Task<List<ListBoxResponseDTO>> GetlistboxAsync() => CategoryExerciseDAO.Instance.GetlistboxAsync();
+       
+
         public Task UpdateCategoryExercisesAsync(UpdateCategoryExerciseRequestDTO cate) => CategoryExerciseDAO.Instance.UpdateCategoryExercisesAsync(cate);
         
     }

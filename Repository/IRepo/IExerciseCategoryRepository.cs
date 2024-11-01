@@ -15,5 +15,6 @@ namespace Repository.IRepo
         Task UpdateCategoryExercisesAsync(UpdateCategoryExerciseRequestDTO cate);
         Task DeleteExerciseCategoryAsync(int id);
         Task<List<GetAllCategoryExeriseResponseDTO>> GetAllCategoryExercisesAsync();
+        Task<List<ListBoxResponseDTO>> GetlistboxAsync();
     }
 }

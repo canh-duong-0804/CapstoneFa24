@@ -296,5 +296,42 @@ namespace DataAccess
                 throw new Exception($"Error updating staff role: {ex.Message}", ex);
             }
         }
+
+        public async Task<GetStaffPersonalByIdResponseDTO> GetAccountPersonalForStaffByIdAsync(int id)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var staff = await context.staffs
+                        .Where(s => s.StaffId == id && s.Status == true)
+                        .Select(s => new GetStaffPersonalByIdResponseDTO
+                        {
+                            StaffId = s.StaffId,
+                            FullName = s.FullName,
+                            PhoneNumber = s.PhoneNumber,
+                            Sex = s.Sex,
+                            Description = s.Description,
+                            Dob = s.Dob,
+                            StaffImage = s.StaffImage,
+                            Email = s.Email,
+                            Password = s.Password,
+                           
+                            StartWorkingDate = s.StartWorkingDate,
+                           
+                            Status = s.Status
+                        })
+                        .FirstOrDefaultAsync();
+
+
+
+                    return staff;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving staff account by ID: {ex.Message}", ex);
+            }
+        }
     }
 }
