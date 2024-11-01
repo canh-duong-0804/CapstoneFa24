@@ -34,6 +34,15 @@ builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
 
+builder.Services.AddScoped<ICommunityCategoryRepo, CommunityCategoryRepository>();
+builder.Services.AddScoped<IBodyMesurementRepository, BodyMeasurementRepository>();
+builder.Services.AddScoped<IExeriseDiaryRepository, ExecriseDiaryRepository>();
+builder.Services.AddScoped<ICompanyInfoRepository, CompanyInfoRepository>();
+
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
+builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
+
 //builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
 builder.Services.Configure<SMSSetting>(builder.Configuration.GetSection("SMSSettingTwilio"));
 builder.Services.AddTransient<ISMSService, SMSService>();

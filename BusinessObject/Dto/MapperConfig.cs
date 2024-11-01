@@ -146,9 +146,18 @@ namespace BusinessObject
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content)) // Map Content
             .ForMember(dest => dest.ChangeBy, opt => opt.Ignore()) // Map ChangeBy if provided
             .ForMember(dest => dest.ChangeDate, opt => opt.MapFrom(src => DateTime.Now));
+				cfg.CreateMap<BodyMeasurementDTO, BodyMeasureChange>()
+	.ForMember(dest => dest.BodyMeasureId, opt => opt.Ignore()) // Ignore ID for new measurements
+
+	.ForMember(dest => dest.DateChange, opt => opt.MapFrom(src => src.DateChange)) // Map DateChange
+	.ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.Weight)) // Map Weight
+	.ForMember(dest => dest.BodyFat, opt => opt.MapFrom(src => src.BodyFat)) // Map BodyFat
+	.ForMember(dest => dest.Muscles, opt => opt.MapFrom(src => src.Muscles)) // Map Muscles
+	.ForMember(dest => dest.MemberId, opt => opt.Ignore()) // Map MemberId
+	.ReverseMap(); // Optional, if you want to map back
 
 
-                cfg.CreateMap<CreateExerciseRequestDTO, Exercise>().ReverseMap();
+				cfg.CreateMap<CreateExerciseRequestDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
                 cfg.CreateMap<DietResponseDTO, Diet>().ReverseMap();

@@ -97,18 +97,6 @@ namespace HealthTrackingManageAPI.Controllers
             return NoContent(); // Successful update, no content to return
         }
 
-        // DELETE: api/communitycategory/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
-        {
-            var category = await _categoryRepo.GetCategoryByIdAsync(id);
-            if (category == null)
-            {
-                return NotFound("Category not found.");
-            }
-
-            await _categoryRepo.DeleteCategoryAsync(id);
-            return NoContent(); // Successful deletion, no content to return
-        }
+        
     }
 }
