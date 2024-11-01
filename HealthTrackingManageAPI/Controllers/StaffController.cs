@@ -81,9 +81,20 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("get-all-account-staff-for-admin")]
-        public async Task<IActionResult> GetAllAccountStaff()
+        public async Task<IActionResult> GetAllAccountStaff([FromQuery] int? page)
         {
-            var staffs = await _staffRepo.GetAllAccountStaffsAsync();
+            int currentPage = page ?? 1;
+            if (currentPage < 1) currentPage = 1;
+
+            int totalStaffs = await _staffRepo.GetTotalStaffCountAsync();
+            int currentPageSize = 5;
+            int totalPages = (int)Math.Ceiling(totalStaffs / (double)currentPageSize);
+
+            if (totalStaffs < currentPageSize) currentPageSize = totalStaffs;
+
+            if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+                var staffs = await _staffRepo.GetAllAccountStaffsAsync(currentPage, currentPageSize);
 
 
             if (staffs == null || !staffs.Any())
@@ -91,8 +102,14 @@ namespace HealthTrackingManageAPI.Controllers
                 return NotFound("No staff found.");
             }
 
-
-            return Ok(staffs);
+            return Ok(new
+            {
+                staffs,
+                TotalPages = totalPages,
+                CurrentPage = currentPage,
+                PageSize = currentPageSize
+            });
+            //return Ok(staffs);
         }
 
         [HttpGet("get-account-staff-for-admin-by-id/{id}")]
@@ -107,13 +124,13 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(staff);
         }
-        
-        
+
+
         [HttpGet("get-account-staff-for-staff-by-id/{id}")]
         public async Task<IActionResult> GetAccountPersonalForStaffById(int id)
         {
             var staff = await _staffRepo.GetAccountPersonalForStaffByIdAsync(id);
-       
+
             if (staff == null)
             {
                 return NotFound("staff not found.");
@@ -121,19 +138,19 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(staff);
         }
-        
 
-      [HttpDelete("delete-account-staff-by-admin/{id}")]
+
+        [HttpDelete("delete-account-staff-by-admin/{id}")]
         public async Task<IActionResult> DeleteFood(int id)
         {
-            
-          bool checkStatus=  await _staffRepo.DeleteAccountStaffByIdAsync(id);
+
+            bool checkStatus = await _staffRepo.DeleteAccountStaffByIdAsync(id);
             if (!checkStatus) return BadRequest();
             return NoContent();
         }
 
         [HttpPut("update-role-account-by-admin")]
-        public async Task<IActionResult> UpdateRoleAccountStaffById([FromBody]UpdateRoleStaffRequestDTO staffRole)
+        public async Task<IActionResult> UpdateRoleAccountStaffById([FromBody] UpdateRoleStaffRequestDTO staffRole)
         {
             var staff = await _staffRepo.UpdateRoleAccountStaffByIdAsync(staffRole);
 
@@ -144,8 +161,8 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(staff);
         }
-        
-        
+
+
         [HttpPut("update-personal-account-staff-by-staff")]
         public async Task<IActionResult> UpdateAccountStaffById([FromBody] UpdateInfoAccountStaffByIdDTO staffUpdate)
         {
@@ -210,12 +227,12 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    
+
                 new Claim("Id", staff.StaffId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, staff.FullName),
                 new Claim(JwtRegisteredClaimNames.Email, staff.Email),
                 new Claim(JwtRegisteredClaimNames.Sub, staff.Email),
-            
+
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("FullName",staff.FullName),
               new Claim(ClaimTypes.Role, staff.Role.ToString())   

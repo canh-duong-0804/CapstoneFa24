@@ -14,11 +14,12 @@ namespace Repository.IRepo
         bool IsUniquePhonenumber(string number);
         Task<staff> RegisterAccountStaff(staff registerationRequestDTO);
         Task<staff> Login(staff loginRequestDTO);
-        Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync();
+        Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync(int page, int pageSize);
         Task<GetStaffByIdResponseDTO> GetAccountStaffForAdminByIdAsync(int id);
         Task<bool> DeleteAccountStaffByIdAsync(int id);
         Task<UpdateRoleStaffRequestDTO> UpdateRoleAccountStaffByIdAsync(UpdateRoleStaffRequestDTO staffRole);
         Task<UpdateInfoAccountStaffByIdDTO> UpdateAccountStaffById(UpdateInfoAccountStaffByIdDTO staffRole);
         Task<GetStaffPersonalByIdResponseDTO> GetAccountPersonalForStaffByIdAsync(int id);
+        Task<int> GetTotalStaffCountAsync();
     }
 }

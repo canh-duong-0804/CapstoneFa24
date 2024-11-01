@@ -22,8 +22,10 @@ namespace Repository.Repo
         public Task<GetStaffByIdResponseDTO> GetAccountStaffForAdminByIdAsync(int id) => StaffDAO.Instance.GetAccountStaffByIdAsync(id);
       
 
-        public Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync() => StaffDAO.Instance.GetAllAccountStaffsAsync();
-         
+        public Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync() => StaffDAO.Instance.GetAllAccountStaffsAsync(int page, int pageSize);
+
+        public Task<int> GetTotalStaffCountAsync() => StaffDAO.Instance.GetTotalStaffCountAsync();
+
 
         public bool IsUniqueEmail(string email) => StaffDAO.Instance.IsUniqueEmail(email);
 
