@@ -7,7 +7,7 @@ namespace BusinessObject.Models
     {
         public int ExerciseDiaryId { get; set; }
         public int MemberId { get; set; }
-        public int ExercisePlanId { get; set; }
+        public int? ExercisePlanId { get; set; }
         public int ExerciseId { get; set; }
         public DateTime Date { get; set; }
         public int Duration { get; set; }

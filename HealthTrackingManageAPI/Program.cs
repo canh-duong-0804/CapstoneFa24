@@ -30,6 +30,10 @@ builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<ICommunityPostRepository, CommunityPostRepository>();
 builder.Services.AddScoped<ICommunityCategoryRepo, CommunityCategoryRepository>();
+builder.Services.AddScoped<IBodyMesurementRepository, BodyMeasurementRepository>();
+builder.Services.AddScoped<IExeriseDiaryRepository, ExecriseDiaryRepository>();
+builder.Services.AddScoped<ICompanyInfoRepository, CompanyInfoRepository>();
+
 
 builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
 
