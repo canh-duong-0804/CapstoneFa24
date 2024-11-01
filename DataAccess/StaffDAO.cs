@@ -125,7 +125,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync()
+        public async Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync(int page, int pageSize)
         {
             try
             {
@@ -133,6 +133,9 @@ namespace DataAccess
                 {
                     var staffAccounts = await context.staffs
                         .Where(s => s.Status == true)
+                        .OrderBy(s => s.StaffId)
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
                         .Select(s => new AllStaffsResponseDTO
                         { StaffId=s.StaffId,
                             FullName = s.FullName,
@@ -332,6 +335,22 @@ namespace DataAccess
             {
                 throw new Exception($"Error retrieving staff account by ID: {ex.Message}", ex);
             }
+        }
+
+        public async Task<int> GetTotalStaffCountAsync()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    return await context.staffs.CountAsync(s => s.Status == true);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving staff account by ID: {ex.Message}", ex);
+            }
+
         }
     }
 }

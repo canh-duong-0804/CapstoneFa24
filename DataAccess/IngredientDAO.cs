@@ -63,7 +63,7 @@ namespace DataAccess
                                     .Select(i => new ListBoxIngredientResponseDTO
                                     {
                                         Value = i.IngredientId,
-                                        Key = i.Name,
+                                        Label = i.Name,
 
                                     })
                                     .ToListAsync();
