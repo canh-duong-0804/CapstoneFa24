@@ -303,5 +303,33 @@ namespace DataAccess
                 throw new Exception($"Error retrieving food: {ex.Message}", ex);
             }
         }
+
+        public async Task<List<FoodListBoxResponseDTO>> GetListBoxFoodForStaffAsync()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var foods = await(from food in context.Foods
+                                      join diet in context.Diets on food.DietId equals diet.DietId
+                                      where food.Status == true
+                                      select new FoodListBoxResponseDTO
+                                      {
+                                          Value =food.FoodId,
+                                          Label =food.FoodName,
+                                        
+
+                                      }).ToListAsync();
+
+                    return foods;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
+            }
+
+        }
     }
 }

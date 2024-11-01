@@ -6,6 +6,7 @@ using BusinessObject.Dto.CommunityPost;
 using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
+using BusinessObject.Dto.Ingredient;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Recipe.CreateDTO;
@@ -158,6 +159,8 @@ namespace BusinessObject
                 cfg.CreateMap<CreateRecipeRequestDTO, Recipe>().ReverseMap();
                 cfg.CreateMap<RecipeIngredientRequestDTO, RecipeIngredient>().ReverseMap();
                 cfg.CreateMap<CreateCategoryExerciseRequestDTO, ExerciseCategory>().ReverseMap();
+                cfg.CreateMap<CreateIngredientRequestDTO, Ingredient>().ReverseMap();
+                cfg.CreateMap<UpdateFoodRequestDTO, Food>().ReverseMap();
 
             });
 

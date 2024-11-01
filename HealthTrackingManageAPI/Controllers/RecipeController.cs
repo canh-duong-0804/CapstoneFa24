@@ -23,7 +23,7 @@ namespace HealthTrackingManageAPI.Controllers
             _recipeRepository = recipeRepository;
         }
 
-        [HttpGet("get-all-foods-for-staff")]
+        [HttpGet("get-all-recipe-for-staff")]
         public async Task<IActionResult> GetAllFoodsForStaff()
         {
             var recipes = await _recipeRepository.GetAllRecipesForStaffAsync();

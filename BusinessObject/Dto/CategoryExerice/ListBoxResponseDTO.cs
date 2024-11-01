@@ -12,6 +12,5 @@ namespace BusinessObject.Dto.CategoryExerice
         public string? Label { get; set; }  
         public string? Key {  get; set; }
 
-
     }
 }

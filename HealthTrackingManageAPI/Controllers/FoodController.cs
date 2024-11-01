@@ -48,6 +48,23 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(foods);
         }
+        
+        
+        
+        [HttpGet("get-list-box-food-for-staff")]
+        public async Task<IActionResult> GetListBoxFoodForStaff()
+        {
+            var listBoxFood = await _foodRepository.GetListBoxFoodForStaffAsync();
+
+
+            if (listBoxFood == null || !listBoxFood.Any())
+            {
+                return NotFound("No listBoxFood found.");
+            }
+
+
+            return Ok(listBoxFood);
+        }
 
         [HttpPost("create-food")]
         public async Task<IActionResult> CreateFood([FromBody] CreateFoodRequestDTO food)
@@ -65,8 +82,8 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
        
-        [HttpPut("update-food-status/{id}")]
-        public async Task<IActionResult> UpdateFoodStatus([FromBody] CreateFoodRequestDTO food)
+        [HttpPut("update-food")]
+        public async Task<IActionResult> UpdateFoodStatus([FromBody] UpdateFoodRequestDTO food)
         {
             var mapper = MapperConfig.InitializeAutomapper();
             var foodModel = mapper.Map<BusinessObject.Models.Food>(food);
