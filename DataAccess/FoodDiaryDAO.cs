@@ -155,26 +155,26 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    // Tìm kiếm mục thực phẩm theo ID
-                    var foodItem = await context.FoodItems.FindAsync(id);
+                    
+                    var foodItem = await context.FoodDiaryDetails.FindAsync(id);
                     if (foodItem == null)
                     {
-                        // Nếu không tìm thấy mục thực phẩm, trả về false
+                      
                         return false;
                     }
 
-                    // Xóa mục thực phẩm
-                    context.FoodItems.Remove(foodItem);
-                    await context.SaveChangesAsync(); // Lưu thay đổi vào cơ sở dữ liệu
+                   
+                    context.FoodDiaryDetails.Remove(foodItem);
+                    await context.SaveChangesAsync(); 
 
-                    return true; // Xóa thành công
+                    return true; 
                 }
             }
             catch (Exception ex)
             {
-                // Ghi log hoặc xử lý lỗi ở đây nếu cần
+                
                 Console.WriteLine($"Error deleting food item: {ex.Message}");
-                return false; // Trả về false trong trường hợp xảy ra lỗi
+                return false; 
             }
         }
 

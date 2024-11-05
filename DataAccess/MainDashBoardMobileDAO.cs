@@ -240,10 +240,10 @@ namespace DataAccess
                     var infoFoodDaily = new FoodDiaryResponseDTO
                     {
                        
-                        Calories = foodDiary.Calories + breakfastList.Sum(item => item.Calories) + lunchList.Sum(item => item.Calories) + lunchList.Sum(item => item.Calories) + snackList.Sum(item => item.Calories),
-                        Protein = foodDiary.Protein + breakfastList.Sum(item => item.Protein) + lunchList.Sum(item => item.Protein) + lunchList.Sum(item => item.Protein) + snackList.Sum(item => item.Protein),
+                        Calories = foodDiary.Calories + breakfastList.Sum(item => item.Calories * item.Quantity) + lunchList.Sum(item => item.Calories * item.Quantity) + lunchList.Sum(item => item.Calories * item.Quantity) + snackList.Sum(item => item.Calories * item.Quantity),
+                        Protein = foodDiary.Protein + breakfastList.Sum(item => item.Protein * item.Quantity) + lunchList.Sum(item => item.Protein * item.Quantity) + lunchList.Sum(item => item.Protein * item.Quantity) + snackList.Sum(item => item.Protein * item.Quantity),
                         Fat = foodDiary.Fat + breakfastList.Sum(item => item.Fat) + lunchList.Sum(item => item.Fat) + lunchList.Sum(item => item.Fat) + snackList.Sum(item => item.Fat),
-                        Carbs = foodDiary.Carbs + breakfastList.Sum(item => item.Carbs) + lunchList.Sum(item => item.Carbs) + lunchList.Sum(item => item.Carbs) + snackList.Sum(item => item.Carbs),
+                        Carbs = foodDiary.Carbs + breakfastList.Sum(item => item.Carbs * item.Quantity) + lunchList.Sum(item => item.Carbs * item.Quantity) + lunchList.Sum(item => item.Carbs * item.Quantity) + snackList.Sum(item => item.Carbs * item.Quantity),
                     };
 
                     return new MainDashResponseDTO

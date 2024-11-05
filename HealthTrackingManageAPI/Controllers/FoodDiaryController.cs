@@ -65,17 +65,34 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok();
         }
 
-
-
-     /*   [HttpGet("getDailyFoodDiaryFollowMeal")]
-        public async Task<IActionResult> getDailyFoodDiaryFollowMeal(int dairyID,int mealType)
+        [HttpDelete("deleteFoodListFromDiary/{id}")]
+        public async Task<IActionResult> DeleteFoodListFromDiary(int id)
         {
-           *//* DateTime date = DateTime.Now.Date;
-            var foodDiary = await _foodDiaryRepository.getDailyFoodDiaryFollowMeal(dairyID,mealType);*/
+            
+          
 
-           /* var mapper = MapperConfig.InitializeAutomapper();
-            var foodDiaryModel = mapper.Map<FoodDiaryResponseDTO>(foodDiary);*//*
-            return Ok();
-        }*/
+            
+            var result = await _foodDiaryRepository.DeleteFoodListToDiaryAsync(id);
+
+            if (!result)
+            {
+                return NotFound($"Food item with ID {id} not found.");
+            }
+
+            return NoContent();
+        }
+
+
+
+        /*   [HttpGet("getDailyFoodDiaryFollowMeal")]
+           public async Task<IActionResult> getDailyFoodDiaryFollowMeal(int dairyID,int mealType)
+           {
+              *//* DateTime date = DateTime.Now.Date;
+               var foodDiary = await _foodDiaryRepository.getDailyFoodDiaryFollowMeal(dairyID,mealType);*/
+
+        /* var mapper = MapperConfig.InitializeAutomapper();
+         var foodDiaryModel = mapper.Map<FoodDiaryResponseDTO>(foodDiary);*//*
+         return Ok();
+     }*/
     } 
 }
