@@ -19,6 +19,8 @@ namespace Repository.Repo
 		public Task<bool> CheckExercisePlanExistsAsync(int exercisePlanId) => ExerciseDiaryDAO.Instance.CheckExercisePlanExistsAsync(exercisePlanId);
 
 		public Task<bool> CheckExerciseExistsAsync(int exerciseId) => ExerciseDiaryDAO.Instance.CheckExerciseExistsAsync(exerciseId);
+
+		public Task<bool> DeleteExerciseDiary(int exerciseDiaryId) => ExerciseDiaryDAO.Instance.DeleteExerciseDiary(exerciseDiaryId);
 	}
 	
 }

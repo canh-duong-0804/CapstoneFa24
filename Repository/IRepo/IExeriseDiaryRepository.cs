@@ -14,6 +14,6 @@ namespace Repository.IRepo
 		Task AddExerciseDiaries(List<ExerciseDiary> exerciseDiaries);
 		Task<bool> CheckExercisePlanExistsAsync(int exercisePlanId);
 		Task<bool> CheckExerciseExistsAsync(int exerciseId);
-
+		Task<bool> DeleteExerciseDiary(int exerciseDiaryId);
 	}
 }

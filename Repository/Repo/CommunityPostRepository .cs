@@ -15,7 +15,7 @@ namespace Repository.Repo
 
         public Task<bool> SoftDeletePost(int postId) => CommunityPostDAO.Instance.SoftDeletePost(postId);
 
-        public Task<IEnumerable<CommunityPost>> GetAllPosts() => CommunityPostDAO.Instance.GetAllPosts();
+        public Task<IEnumerable<CommunityPost>> GetAllPostsAsync(int page, int pageSize) => CommunityPostDAO.Instance.GetAllPostsAsync(page, pageSize);
 
         public Task<CommunityPost?> GetPostById(int postId) => CommunityPostDAO.Instance.GetPostById(postId);
 
@@ -23,6 +23,7 @@ namespace Repository.Repo
 
         public Task<CommunityPost> UpdatePost(CommunityPost updatedPost) => CommunityPostDAO.Instance.UpdatePost(updatedPost);
 
+		public Task<int> GetTotalPostCountAsync() => CommunityPostDAO.Instance.GetTotalPostCountAsync();
 
-    }
+	}
 }

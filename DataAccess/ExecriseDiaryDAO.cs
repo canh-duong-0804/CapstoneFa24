@@ -116,5 +116,27 @@ namespace DataAccess
 				throw new Exception($"Error checking Exercise existence: {ex.Message}", ex);
 			}
 		}
+
+
+		//create method to delete exercise diary by id	
+		public async Task<bool> DeleteExerciseDiary(int exerciseDiaryId)
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					var exerciseDiary = await context.ExerciseDiaries.FindAsync(exerciseDiaryId);
+					// delete exercise diary
+					context.ExerciseDiaries.Remove(exerciseDiary);
+					await context.SaveChangesAsync();
+					return true;
+				}
+			}
+			catch (Exception e)
+			{
+				throw new Exception(e.Message);
+			}
+		}
+
 	}
 }

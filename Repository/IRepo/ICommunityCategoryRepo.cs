@@ -10,9 +10,12 @@ namespace Repository.IRepo
     public interface ICommunityCategoryRepo
     {
         Task<CommunityPostCategory> CreateCategoryAsync(CommunityPostCategory category);
-        Task<List<CommunityPostCategory>> GetAllCategoriesAsync();
-        Task<CommunityPostCategory> GetCategoryByIdAsync(int id);
+        Task<List<CommunityPostCategory>> GetAllCategoriesAsync(int pageNumber, int pageSize);
+
+		Task<CommunityPostCategory> GetCategoryByIdAsync(int id);
         Task<CommunityPostCategory> UpdateCategoryAsync(CommunityPostCategory category);
         Task<bool> DeleteCategoryAsync(int id);
+
+
     }
 }

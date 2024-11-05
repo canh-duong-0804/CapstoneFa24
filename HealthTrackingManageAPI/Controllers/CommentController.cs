@@ -104,29 +104,53 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-        [HttpGet("post/{postId:int}")]
-        public async Task<IActionResult> GetCommentsByPostId(int postId)
-        {
-            var comments = await _commentRepo.GetCommentsByPostId(postId); // Assuming you have this method
-            if (comments == null || !comments.Any())
-            {
-                return NotFound("No comments found for this post.");
-            }
+		[HttpGet("post/{postId:int}/comments")]
+		public async Task<IActionResult> GetCommentsByPostId(int postId, [FromQuery] int? page, int pageSize)
+		{
+			int currentPage = page ?? 1;
+			if (currentPage < 1) currentPage = 1;
 
-            var commentDtos = comments.Select(comment => new CommentDTO
-            {
-                CommentId = comment.CommentId,
-                Content = comment.Content,
-                CreatedBy = comment.CreateBy,
-                CreatedDate = comment.CreateDate,
-                ChangeBy = comment.ChangeBy,
-                ChangeDate = comment.ChangeDate
-            }).ToList();
+			try
+			{
+				var totalComments = await _commentRepo.GetTotalCommentsByPostIdAsync(postId);
+				int totalPages = (int)Math.Ceiling(totalComments / (double)pageSize);
 
-            return Ok(commentDtos);
-        }
+				if (totalComments < pageSize) pageSize = totalComments;
+				if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
 
-        [HttpGet("{id:int}")]
+				var comments = await _commentRepo.GetCommentsByPostIdAsync(postId, currentPage, pageSize);
+
+				if (comments == null || !comments.Any())
+				{
+					return NotFound("No comments found for this post.");
+				}
+
+				var commentDtos = comments.Select(comment => new CommentDTO
+				{
+					CommentId = comment.CommentId,
+					Content = comment.Content,
+					CreatedBy = comment.CreateBy,
+					CreatedDate = comment.CreateDate,
+					ChangeBy = comment.ChangeBy,
+					ChangeDate = comment.ChangeDate
+				}).ToList();
+
+				return Ok(new
+				{
+					Comments = commentDtos,
+					TotalPages = totalPages,
+					CurrentPage = currentPage,
+					PageSize = pageSize
+				});
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+
+		[HttpGet("{id:int}")]
         public async Task<IActionResult> GetCommentById(int id)
         {
             var comment = await _commentRepo.GetCommentById(id);

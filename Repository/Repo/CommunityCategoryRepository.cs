@@ -20,8 +20,8 @@ namespace Repository.Repo
             => CommunityCategoryDAO.Instance.DeleteCategoryAsync(categoryId);
 
         // Get all CommunityPostCategories
-        public Task<List<CommunityPostCategory>> GetAllCategoriesAsync()
-            => CommunityCategoryDAO.Instance.GetAllCategoriesAsync();
+        public Task<List<CommunityPostCategory>> GetAllCategoriesAsync(int pageNumber, int pageSize)
+			=> CommunityCategoryDAO.Instance.GetAllCategoriesAsync(pageNumber, pageSize);
 
         // Get a CommunityPostCategory by ID
         public Task<CommunityPostCategory?> GetCategoryByIdAsync(int id)

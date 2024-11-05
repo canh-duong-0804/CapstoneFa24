@@ -112,5 +112,37 @@ namespace HealthTrackingManageAPI.Controllers
 
 			return Ok("Normal exercise diary entries logged successfully.");
 		}
+
+		[Authorize]
+		[HttpGet("member/{memberId}")]
+		public async Task<IActionResult> GetDiaryByMemberId(int memberId)
+		{
+			var memberIdClaim = User.FindFirstValue("Id");
+			if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int authenticatedMemberId))
+				return Unauthorized("Member ID not found in claims.");
+
+			// Check if the requesting user is authorized to access the member's diaries
+			if (authenticatedMemberId != memberId)
+				return Forbid("You are not authorized to access this member's exercise diaries.");
+
+			try
+			{
+				// Retrieve exercise diaries for the specified member ID
+				var exerciseDiaries = await _exerciseDiaryRepo.GetExerciseDiaryByMemberId(memberId);
+
+				if (exerciseDiaries == null || exerciseDiaries.Count == 0)
+					return NotFound("No exercise diary entries found for the specified member.");
+
+				return Ok(exerciseDiaries);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+
+
 	}
 }
+

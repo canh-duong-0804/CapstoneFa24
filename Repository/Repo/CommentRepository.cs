@@ -15,11 +15,13 @@ namespace Repository.Repo
 
         public Task<bool> DeleteComment(int commentId) => CommentDAO.Instance.DeleteComment(commentId);
 
-        public Task<IEnumerable<Comment>> GetCommentsByPostId(int postId) => CommentDAO.Instance.GetCommentsByPostId(postId);
+        public Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(int postId, int page, int pageSize) => CommentDAO.Instance.GetCommentsByPostIdAsync(postId, page, pageSize);
 
         public Task<Comment?> UpdateComment(Comment updatedComment) => CommentDAO.Instance.UpdateComment(updatedComment);
 
         public Task<Comment?> GetCommentById(int commentId) => CommentDAO.Instance.GetCommentById(commentId);
 
-    }
+		public Task<int> GetTotalCommentsByPostIdAsync(int postId) => CommentDAO.Instance.GetTotalCommentsByPostIdAsync(postId);
+
+	}
 }

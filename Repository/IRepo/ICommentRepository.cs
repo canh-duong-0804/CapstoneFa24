@@ -12,9 +12,11 @@ namespace Repository.IRepo
         Task<Comment> CreateComment(Comment comment);
         Task<Comment?> UpdateComment(Comment updatedComment);
         Task<bool> DeleteComment(int commentId);
-        Task<IEnumerable<Comment>> GetCommentsByPostId(int postId);
+        Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(int postId, int page, int pageSize);
+        Task<int> GetTotalCommentsByPostIdAsync(int postId);
 
-        Task<Comment?> GetCommentById(int commentId);
+
+		Task<Comment?> GetCommentById(int commentId);
 
 
 

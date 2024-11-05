@@ -117,17 +117,38 @@ namespace DataAccess
 				throw new Exception(e.Message);
 			}
 		}
-		public async Task<IEnumerable<CommunityPost>> GetAllPosts()
+		public async Task<IEnumerable<CommunityPost>> GetAllPostsAsync(int page, int pageSize)
 		{
 			try
 			{
 				using (var context = new HealthTrackingDBContext())
 				{
-					// Retrieve all posts that are active (Status = true)
-					return await context.CommunityPosts.Include(post => post.CreateByNavigation)
+					var posts = await context.CommunityPosts
 						.Where(post => post.Status == true) // Filter active posts
-						.OrderByDescending(post => post.CreateDate) // Optionally order by create date
-						.ToListAsync();
+						.OrderByDescending(post => post.CreateDate) // Order by create date
+						.Skip((page - 1) * pageSize) // Skip the records for previous pages
+						.Take(pageSize) // Take the records for the current page
+						.Include(post => post.CreateByNavigation) // Include related navigation property
+						.ToListAsync(); // Execute the query and convert to a list
+
+					return posts;
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Error retrieving posts: {ex.Message}", ex);
+			}
+		}
+
+
+		public async Task<int> GetTotalPostCountAsync()
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					// Count all active posts (where Status is true)
+					return await context.CommunityPosts.CountAsync(post => post.Status == true);
 				}
 			}
 			catch (Exception e)
