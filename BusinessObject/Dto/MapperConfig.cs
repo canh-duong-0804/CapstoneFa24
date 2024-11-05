@@ -1,11 +1,13 @@
 using AutoMapper;
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Blog.CreateBlog;
+using BusinessObject.Dto.BodyMeasurement;
 using BusinessObject.Dto.CategoryExerice;
 using BusinessObject.Dto.CommunityPost;
 using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
+using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.Ingredient;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
@@ -47,16 +49,16 @@ namespace BusinessObject
                 .ReverseMap();
 
                 cfg.CreateMap<LoginRequestDTO, Member>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+                // .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
 
                 cfg.CreateMap<LoginRequestStaffDTO, staff>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+                //  .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
 
                 cfg.CreateMap<LoginRequestStaffDTO, staff>()
-               .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-               .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
+               .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+              // .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
                 cfg.CreateMap<CreateFoodRequestDTO, Food>().ReverseMap();
 
                 cfg.CreateMap<RegisterationRequestStaffDTO, staff>()
@@ -66,7 +68,7 @@ namespace BusinessObject
             .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.StaffImage, opt => opt.MapFrom(src => src.StaffImage))
-            .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
+           // .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
             .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
@@ -170,6 +172,18 @@ namespace BusinessObject
                 cfg.CreateMap<CreateCategoryExerciseRequestDTO, ExerciseCategory>().ReverseMap();
                 cfg.CreateMap<CreateIngredientRequestDTO, Ingredient>().ReverseMap();
                 cfg.CreateMap<UpdateFoodRequestDTO, Food>().ReverseMap();
+                cfg.CreateMap<FoodDiaryResponseDTO, FoodDiary>().ReverseMap();
+
+
+                cfg.CreateMap<FoodDiaryDetail, FoodDiaryForMealResponseDTO>()
+                .ForMember(dest => dest.Calories, opt => opt.MapFrom(src => src.Food.Calories))
+                .ForMember(dest => dest.Carbs, opt => opt.MapFrom(src => src.Food.Carbs))
+                .ForMember(dest => dest.Protein, opt => opt.MapFrom(src => src.Food.Protein))
+                .ForMember(dest => dest.Fat, opt => opt.MapFrom(src => src.Food.Fat))
+                .ForMember(dest => dest.Calories, opt => opt.MapFrom(src => src.Food.Calories));
+
+
+
 
             });
 

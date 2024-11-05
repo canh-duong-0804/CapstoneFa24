@@ -11,7 +11,10 @@ namespace Repository.Repo
 {
     public class MainDashBoardRepository : IMainDashBoardRepository
     {
-        public Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id);
+        public Task<MainDashResponseDTO> GetFoodDairyDetailById(int memberId, DateTime date) => MainDashBoardMobileDAO.Instance.GetFoodDairyDetailById(memberId, date);
+
+
+        public Task<MainDashResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id,date);
 
 
     }

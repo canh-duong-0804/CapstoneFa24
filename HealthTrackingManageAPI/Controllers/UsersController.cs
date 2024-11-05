@@ -138,7 +138,7 @@ namespace HealthTrackingManageAPI.Controllers
                 Success = true,
                 Message = "Authenticate success",
                 Data = token,
-                ObjectResponse = memberDTO
+              Member = memberDTO
             };
 
             return Ok(response);

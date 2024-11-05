@@ -38,6 +38,7 @@ builder.Services.AddScoped<ICommunityCategoryRepo, CommunityCategoryRepository>(
 builder.Services.AddScoped<IBodyMesurementRepository, BodyMeasurementRepository>();
 builder.Services.AddScoped<IExeriseDiaryRepository, ExecriseDiaryRepository>();
 builder.Services.AddScoped<ICompanyInfoRepository, CompanyInfoRepository>();
+builder.Services.AddScoped<IFoodDiaryRepository, FoodDiaryRepository>();
 
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
