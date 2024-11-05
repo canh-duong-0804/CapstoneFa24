@@ -11,7 +11,8 @@ namespace BusinessObject.Dto.Message
         public bool Success { get; set; }
         public string Message { get; set; }
         public object Data { get; set; }
-        public object ObjectResponse { get; set; }
+        public object Member { get; set; }
+        public object Staff { get; set; }
 
     }
 }

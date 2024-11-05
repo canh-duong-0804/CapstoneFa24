@@ -12,8 +12,8 @@ namespace Repository.IRepo
     {
         bool IsUniqueEmail(string email);
         bool IsUniquePhonenumber(string number);
-        Task<staff> RegisterAccountStaff(staff registerationRequestDTO);
-        Task<staff> Login(staff loginRequestDTO);
+        Task<staff> RegisterAccountStaff(staff registerationRequestDTO, string password);
+        Task<staff> Login(staff loginRequestDTO, string password);
         Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync(int page, int pageSize);
         Task<GetStaffByIdResponseDTO> GetAccountStaffForAdminByIdAsync(int id);
         Task<bool> DeleteAccountStaffByIdAsync(int id);

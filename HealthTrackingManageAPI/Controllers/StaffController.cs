@@ -18,6 +18,7 @@ using BusinessObject;
 using Repository.Repo;
 using System.Security.Principal;
 using BusinessObject.Dto.Staff;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -29,12 +30,19 @@ namespace HealthTrackingManageAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly AppSettingsKey _appSettings;
         private readonly HealthTrackingDBContext _context;
+        private IStaffRepository @object;
+
         public StaffController(HealthTrackingDBContext context, IConfiguration configuration, IStaffRepository staffRepo, IOptionsMonitor<AppSettingsKey> optionsMonitor)
         {
             _configuration = configuration;
-            _staffRepo = staffRepo;
+            _staffRepo = staffRepo ?? throw new ArgumentNullException(nameof(staffRepo));
             _context = context;
             _appSettings = optionsMonitor.CurrentValue;
+        }
+
+        public StaffController(IStaffRepository @object)
+        {
+            this.@object = @object;
         }
 
         [HttpPost("create-account-staff-by-admin")]
@@ -65,7 +73,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
 
-            var user = await _staffRepo.RegisterAccountStaff(staffModel);
+            var user = await _staffRepo.RegisterAccountStaff(staffModel,staff.Password);
             if (user == null)
             {
                 return BadRequest("Error while registering the user");
@@ -81,10 +89,10 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("get-all-account-staff-for-admin")]
-        public async Task<IActionResult> GetAllAccountStaff([FromQuery] int? page)
+        public async Task<IActionResult> GetAllAccountStaffForAdmin([FromQuery] int? page)
         {
             int currentPage = page ?? 1;
-            if (currentPage < 1) currentPage = 1;
+            if (currentPage < 1) currentPage = 1; 
 
             int totalStaffs = await _staffRepo.GetTotalStaffCountAsync();
             int currentPageSize = 5;
@@ -94,8 +102,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
 
-                var staffs = await _staffRepo.GetAllAccountStaffsAsync(currentPage, currentPageSize);
-
+            var staffs = await _staffRepo.GetAllAccountStaffsAsync(currentPage, currentPageSize);
 
             if (staffs == null || !staffs.Any())
             {
@@ -109,7 +116,6 @@ namespace HealthTrackingManageAPI.Controllers
                 CurrentPage = currentPage,
                 PageSize = currentPageSize
             });
-            //return Ok(staffs);
         }
 
         [HttpGet("get-account-staff-for-admin-by-id/{id}")]
@@ -197,8 +203,8 @@ namespace HealthTrackingManageAPI.Controllers
         {
             var mapper = MapperConfig.InitializeAutomapper();
 
-            var model = mapper.Map<BusinessObject.Models.staff>(staffRequest);
-            var staff = await _staffRepo.Login(model);
+            var modelLogin = mapper.Map<BusinessObject.Models.staff>(staffRequest);
+            var staff = await _staffRepo.Login(modelLogin,staffRequest.Password);
             if (staff == null)
             {
                 return Unauthorized("Invalid username or password");
@@ -212,7 +218,7 @@ namespace HealthTrackingManageAPI.Controllers
                 Success = true,
                 Message = "Authenticate success",
                 Data = token,
-                ObjectResponse = staffDTO
+                Staff = staffDTO
             };
 
             return Ok(response);

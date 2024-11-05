@@ -39,8 +39,8 @@ namespace Repository.Repo
 
 
 
-        public Task<staff> Login(staff loginRequestStaffDTO) => StaffDAO.Instance.LoginStaff(loginRequestStaffDTO);
-        public Task<staff> RegisterAccountStaff(staff registerationRequesStafftDTO) => StaffDAO.Instance.RegisterStaff(registerationRequesStafftDTO);
+        public Task<staff> Login(staff loginRequestStaffDTO, string password) => StaffDAO.Instance.LoginStaff(loginRequestStaffDTO,password);
+        public Task<staff> RegisterAccountStaff(staff registerationRequesStafftDTO, string password) => StaffDAO.Instance.RegisterStaff(registerationRequesStafftDTO,password);
 
         public Task<UpdateInfoAccountStaffByIdDTO> UpdateAccountStaffById(UpdateInfoAccountStaffByIdDTO staffRole) => StaffDAO.Instance.UpdateAccountStaffById(staffRole);
 

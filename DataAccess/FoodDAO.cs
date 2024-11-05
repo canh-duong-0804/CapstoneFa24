@@ -91,7 +91,11 @@ namespace DataAccess
                                        join diet in context.Diets on food.DietId equals diet.DietId
                                        where food.Status == true
                                        select new AllFoodForStaffResponseDTO
-                                       {
+                                       { FoodId =food.FoodId,
+                                           CreateByName=food.CreateByNavigation.FullName,
+                                           ChangeBy=food.ChangeBy,
+                                           ChangeByName=food.CreateByNavigation.FullName,
+
                                            FoodName = food.FoodName,
                                            CreateBy = food.CreateBy,
                                            CreateDate = food.CreateDate,
@@ -250,6 +254,9 @@ namespace DataAccess
                                           FoodName = food.FoodName,
                                           FoodImage = food.FoodImage,
                                           Calories = food.Calories,
+                                          Fat=food.Fat,
+                                          Carbs = food.Carbs,
+                                          Protein = food.Protein,
                                           DietName = food.Diet.DietName,
                                       }).ToListAsync();
 

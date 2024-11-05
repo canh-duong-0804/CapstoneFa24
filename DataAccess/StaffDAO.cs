@@ -33,14 +33,23 @@ namespace DataAccess
             }
         }
 
-        public async Task<staff?> LoginStaff(staff loginRequestStaffDTO)
+        public async Task<staff?> LoginStaff(staff loginRequestStaffDTO,string password)
         {
             try
             {
                 using (var _context = new HealthTrackingDBContext())
                 {
+                    
                     var staff = await _context.staffs
-                        .FirstOrDefaultAsync(st => st.Email == loginRequestStaffDTO.Email && st.Password == loginRequestStaffDTO.Password);
+                        .FirstOrDefaultAsync(st => st.Email == loginRequestStaffDTO.Email);
+
+                  
+                    if (staff == null)
+                        return null;
+
+                    
+                    if (!VerifyPasswordHash(password, staff.PasswordHash, staff.PasswordSalt))
+                        return null;
 
                     return staff;
                 }
@@ -50,15 +59,34 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
+        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(storedHash);
+            }
+        }
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
 
-
-        public async Task<staff?> RegisterStaff(staff registerationRequesStafftDTO)
+        public async Task<staff?> RegisterStaff(staff registerationRequesStafftDTO, string password)
         {
             try
             {
                 using (var _context = new HealthTrackingDBContext())
                 {
+                    CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
+
+                    registerationRequesStafftDTO.PasswordHash = passwordHash;
+                    registerationRequesStafftDTO.PasswordSalt = passwordSalt;
                     _context.staffs.Add(registerationRequesStafftDTO);
                     await _context.SaveChangesAsync();
 
@@ -72,6 +100,7 @@ namespace DataAccess
 
             }
         }
+      
 
         public bool IsUniquePhonenumber(string number)
         {
@@ -179,7 +208,7 @@ namespace DataAccess
                             Dob = s.Dob,
                             StaffImage = s.StaffImage,
                             Email = s.Email,
-                            Password = s.Password,
+                           // Password = s.Password,
                             Role = s.Role,
                             StartWorkingDate = s.StartWorkingDate,
                             EndWorkingDate = s.EndWorkingDate,
@@ -287,7 +316,7 @@ namespace DataAccess
                     staffModel.Sex = staffRequest.Sex;
                     staffModel.Dob = staffRequest.Dob;  
                     staffModel.Email = staffRequest.Email;
-                    staffModel.Password = staffRequest.Password;
+                    //staffModel.Password = staffRequest.Password;
 
                     await context.SaveChangesAsync();
 
@@ -318,7 +347,7 @@ namespace DataAccess
                             Dob = s.Dob,
                             StaffImage = s.StaffImage,
                             Email = s.Email,
-                            Password = s.Password,
+                            //Password = s.Password,
                            
                             StartWorkingDate = s.StartWorkingDate,
                            

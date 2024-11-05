@@ -95,7 +95,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     var user = await context.Members.FirstOrDefaultAsync(x =>
-                  x.Email == loginRequestDTO.Email && x.Password == loginRequestDTO.Password);
+                  x.Email == loginRequestDTO.Email /*&& x.Password == loginRequestDTO.Password*/);
                     
                     return user;
                 }

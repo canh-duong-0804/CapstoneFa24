@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthTrackingManageAPI", "HealthTrackingManageAPI\HealthTrackingManageAPI.csproj", "{0058CEE8-4CBC-4464-B099-B0EA83A3CD09}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{1DF4FFCB-76AC-46CD-991B-61A5D3FBD677}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthTrackingUnitTests", "HealthTrackingUnitTests\HealthTrackingUnitTests.csproj", "{56EE0F51-8483-400C-8E41-E19F3CB31B7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,16 @@ Global
 		{0058CEE8-4CBC-4464-B099-B0EA83A3CD09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0058CEE8-4CBC-4464-B099-B0EA83A3CD09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0058CEE8-4CBC-4464-B099-B0EA83A3CD09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{56EE0F51-8483-400C-8E41-E19F3CB31B7F} = {1DF4FFCB-76AC-46CD-991B-61A5D3FBD677}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {36FAA7B5-0812-46AD-B029-5916593A666E}
