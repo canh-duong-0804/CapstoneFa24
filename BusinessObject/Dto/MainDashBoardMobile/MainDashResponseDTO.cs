@@ -9,7 +9,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
 {
     public class MainDashResponseDTO
     {
-       public MainDashBoardMobileForMemberResponseDTO mainDashBoardInfo {  get; set; }   
+       //public MainDashBoardMobileForMemberResponseDTO mainDashBoardInfo {  get; set; }   
         public FoodDiaryResponseDTO foodDiaryInforMember {  get; set; }
         public  List<FoodDiaryForMealResponseDTO> foodDiaryForMealBreakfast {  get; set; }
         public  List<FoodDiaryForMealResponseDTO> foodDiaryForMealLunch {  get; set; }

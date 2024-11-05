@@ -14,7 +14,7 @@ namespace Repository.Repo
         public Task<MainDashResponseDTO> GetFoodDairyDetailById(int memberId, DateTime date) => MainDashBoardMobileDAO.Instance.GetFoodDairyDetailById(memberId, date);
 
 
-        public Task<MainDashResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id,date);
+        public Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id,date);
 
 
     }

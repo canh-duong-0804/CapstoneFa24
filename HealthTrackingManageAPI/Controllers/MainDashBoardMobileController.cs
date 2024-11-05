@@ -47,7 +47,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [Authorize]
         [HttpGet("Get-Food-dairy-detail-for-member-by-id")]
-        public async Task<IActionResult> GetFoodDairyDetailById(int DiaryId)
+        public async Task<IActionResult> GetFoodDairyDetailById()
         {DateTime date =DateTime.Now.Date;
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)

@@ -10,6 +10,6 @@ namespace Repository.IRepo
     public interface IMainDashBoardRepository
     {
         Task<MainDashResponseDTO> GetFoodDairyDetailById(int memberId, DateTime date);
-        Task<MainDashResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date);
+        Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date);
     }
 }

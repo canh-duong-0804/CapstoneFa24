@@ -32,7 +32,7 @@ namespace DataAccess
                 }
             }
         }
-        public async Task<MainDashResponseDTO> GetMainDashBoardForMemberById(int memberId, DateTime date)
+        public async Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int memberId, DateTime date)
         {
 
             try
@@ -83,7 +83,7 @@ namespace DataAccess
 
                     var weightGoal = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân"));
                     var calorieAdjustment = 0.0;
-                    DateTime? targetDate = null;
+                    DateTime? targetDate = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân")).TargetDate;
                     string goalType = "duy trì";
                     double weightDifference = 0;
 
@@ -152,21 +152,65 @@ namespace DataAccess
                     var getIdDiary = await context.FoodDiaries
                    .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
 
-                    var foodDiaryFollowByMealBreakFast = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==1).ToListAsync();
-                    var foodDiaryFollowByMealLunch = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==2).ToListAsync();
-                    var foodDiaryFollowByMealDinner = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==3).ToListAsync();
-                    var foodDiaryFollowByMealSnack = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==4).ToListAsync();
+                    /*var foodDiaryFollowByMealBreakFast = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==1).Select(e => new
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();
+                    var foodDiaryFollowByMealLunch = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==2).Select(e => new
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();
+                    var foodDiaryFollowByMealDinner = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==3).Select(e => new
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();
+                    var foodDiaryFollowByMealSnack = await context.FoodDiaryDetails.Include(e=>e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType==4).Select(e => new
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();*/
 
-                    var mapper = MapperConfig.InitializeAutomapper();
+                   /* var mapper = MapperConfig.InitializeAutomapper();
                     var breakfastList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealBreakFast);
                     var lunchList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealLunch);
                     var dinnerList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealDinner);
-                    var snackList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealSnack);
+                    var snackList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealSnack);*/
 
 
 
 
-                    var infoFoodDaily = new FoodDiaryResponseDTO
+                  /*  var infoFoodDaily = new FoodDiaryResponseDTO
                     {
                         MemberId = foodDiary.MemberId,
                         Date = foodDiary.Date,
@@ -175,35 +219,21 @@ namespace DataAccess
                         Protein = foodDiary.Protein + breakfastList.Sum(item => item.Protein) + lunchList.Sum(item => item.Protein) + lunchList.Sum(item => item.Protein) + snackList.Sum(item => item.Protein),
                         Fat = foodDiary.Fat + breakfastList.Sum(item => item.Fat) + lunchList.Sum(item => item.Fat) + lunchList.Sum(item => item.Fat) + snackList.Sum(item => item.Fat),
                         Carbs = foodDiary.Carbs + breakfastList.Sum(item => item.Carbs) + lunchList.Sum(item => item.Carbs) + lunchList.Sum(item => item.Carbs) + snackList.Sum(item => item.Carbs),
-                    };
+                    };*/
 
 
-                    return new MainDashResponseDTO
+                    return new MainDashBoardMobileForMemberResponseDTO
                     {
-                        mainDashBoardInfo = new MainDashBoardMobileForMemberResponseDTO
-                        {
-                            DailyCalories = Math.Round(dailyCalories, 0),
-                            ProteinInGrams = Math.Round((dailyCalories * 0.3) / 4, 1),  // 30% protein
-                            CarbsInGrams = Math.Round((dailyCalories * 0.45) / 4, 1),   // 45% carbs
-                            FatInGrams = Math.Round((dailyCalories * 0.25) / 9, 1),     // 25% fat
-                            TargetDate = targetDate,
-                            GoalType = goalType,
-                            WeightDifference = Math.Round(weightDifference, 1)
-                        },
-                        foodDiaryInforMember = new FoodDiaryResponseDTO
-                        {
-                            DiaryId = getIdDiary.DiaryId,
-                            MemberId = foodDiary.MemberId,
-                            Date = foodDiary.Date,
-                            GoalCalories = foodDiary.GoalCalories,
-                            Calories = infoFoodDaily.Calories,
-                            Protein = infoFoodDaily.Protein,
-                            Fat = infoFoodDaily.Fat,
-                            Carbs = infoFoodDaily.Carbs
-
-                        }
-
+                        DailyCalories = Math.Round(dailyCalories, 0),
+                        ProteinInGrams = Math.Round((dailyCalories * 0.3) / 4, 1),  // 30% protein
+                        CarbsInGrams = Math.Round((dailyCalories * 0.45) / 4, 1),   // 45% carbs
+                        FatInGrams = Math.Round((dailyCalories * 0.25) / 9, 1),     // 25% fat
+                        TargetDate = targetDate,
+                        GoalType = goalType,
+                        WeightDifference = Math.Round(weightDifference, 1)
                     };
+
+
 
                 }
             }
@@ -219,33 +249,106 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-
+                   
                     var getIdDiary = await context.FoodDiaries
-                   .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
 
+                    if (getIdDiary == null)
+                    {
+                        throw new Exception("Diary not found for the given member and date.");
+                    }
+
+                  
                     var foodDiary = await context.FoodDiaries
-                  .Include(fd => fd.FoodDiaryDetails)
-                  .FirstOrDefaultAsync(fd => fd.MemberId == getIdDiary.MemberId && fd.Date.Date == date.Date);
+                        .Include(fd => fd.FoodDiaryDetails)
+                        .FirstOrDefaultAsync(fd => fd.MemberId == getIdDiary.MemberId && fd.Date.Date == date.Date);
 
-                    var foodDiaryFollowByMealBreakFast = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 1).ToListAsync();
-                    var foodDiaryFollowByMealLunch = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 2).ToListAsync();
-                    var foodDiaryFollowByMealDinner = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 3).ToListAsync();
-                    var foodDiaryFollowByMealSnack = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 4).ToListAsync();
 
+                    var foodDiaryFollowByMealBreakFast = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 1).Select(e => new FoodDiaryForMealResponseDTO
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();
+                    var foodDiaryFollowByMealLunch = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 2).Select(e => new FoodDiaryForMealResponseDTO
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();
+                    var foodDiaryFollowByMealDinner = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 3).Select(e => new FoodDiaryForMealResponseDTO
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();
+                    var foodDiaryFollowByMealSnack = await context.FoodDiaryDetails.Include(e => e.Food).Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == 4).Select(e => new FoodDiaryForMealResponseDTO
+                    {
+                        DiaryId = e.DiaryId,
+                        FoodId = e.FoodId,
+                        FoodName = e.Food.FoodName,
+                        Calories = e.Food.Calories,
+                        Protein = e.Food.Protein,
+                        Carbs = e.Food.Carbs,
+                        Fat = e.Food.Fat,
+                        Quantity = e.Quantity,
+                        MealType = e.MealType
+                    }).ToListAsync();
+
+                    // Mapping to DTO
                     var mapper = MapperConfig.InitializeAutomapper();
                     var breakfastList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealBreakFast);
                     var lunchList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealLunch);
                     var dinnerList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealDinner);
                     var snackList = mapper.Map<List<FoodDiaryForMealResponseDTO>>(foodDiaryFollowByMealSnack);
+
+                    // Tính toán tổng dinh dưỡng
                     var infoFoodDaily = new FoodDiaryResponseDTO
                     {
-                       
-                        Calories = foodDiary.Calories + breakfastList.Sum(item => item.Calories * item.Quantity) + lunchList.Sum(item => item.Calories * item.Quantity) + lunchList.Sum(item => item.Calories * item.Quantity) + snackList.Sum(item => item.Calories * item.Quantity),
-                        Protein = foodDiary.Protein + breakfastList.Sum(item => item.Protein * item.Quantity) + lunchList.Sum(item => item.Protein * item.Quantity) + lunchList.Sum(item => item.Protein * item.Quantity) + snackList.Sum(item => item.Protein * item.Quantity),
-                        Fat = foodDiary.Fat + breakfastList.Sum(item => item.Fat) + lunchList.Sum(item => item.Fat) + lunchList.Sum(item => item.Fat) + snackList.Sum(item => item.Fat),
-                        Carbs = foodDiary.Carbs + breakfastList.Sum(item => item.Carbs * item.Quantity) + lunchList.Sum(item => item.Carbs * item.Quantity) + lunchList.Sum(item => item.Carbs * item.Quantity) + snackList.Sum(item => item.Carbs * item.Quantity),
+                        Calories = foodDiary.Calories
+                                   + breakfastList.Sum(item => item.Calories * item.Quantity)
+                                   + lunchList.Sum(item => item.Calories * item.Quantity)
+                                   + dinnerList.Sum(item => item.Calories * item.Quantity)
+                                   + snackList.Sum(item => item.Calories * item.Quantity),
+
+                        Protein = foodDiary.Protein
+                                  + breakfastList.Sum(item => item.Protein * item.Quantity)
+                                  + lunchList.Sum(item => item.Protein * item.Quantity)
+                                  + dinnerList.Sum(item => item.Protein * item.Quantity)
+                                  + snackList.Sum(item => item.Protein * item.Quantity),
+
+                        Fat = foodDiary.Fat
+                              + breakfastList.Sum(item => item.Fat * item.Quantity)
+                              + lunchList.Sum(item => item.Fat * item.Quantity)
+                              + dinnerList.Sum(item => item.Fat * item.Quantity)
+                              + snackList.Sum(item => item.Fat * item.Quantity),
+
+                        Carbs = foodDiary.Carbs
+                                + breakfastList.Sum(item => item.Carbs * item.Quantity)
+                                + lunchList.Sum(item => item.Carbs * item.Quantity)
+                                + dinnerList.Sum(item => item.Carbs * item.Quantity)
+                                + snackList.Sum(item => item.Carbs * item.Quantity),
                     };
 
+                    // Tạo đối tượng phản hồi
                     return new MainDashResponseDTO
                     {
                         foodDiaryInforMember = new FoodDiaryResponseDTO
@@ -258,13 +361,11 @@ namespace DataAccess
                             Protein = infoFoodDaily.Protein,
                             Fat = infoFoodDaily.Fat,
                             Carbs = infoFoodDaily.Carbs
-
                         },
                         foodDiaryForMealBreakfast = breakfastList,
                         foodDiaryForMealLunch = lunchList,
                         foodDiaryForMealDinner = dinnerList,
                         foodDiaryForMealSnack = snackList
-
                     };
                 }
             }
@@ -274,20 +375,8 @@ namespace DataAccess
             }
         }
 
-        /*public  Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                   
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }*/
+
+      
     }
 
 }

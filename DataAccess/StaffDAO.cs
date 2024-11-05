@@ -67,6 +67,14 @@ namespace DataAccess
                 return computedHash.SequenceEqual(storedHash);
             }
         }
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
 
         public async Task<staff?> RegisterStaff(staff registerationRequesStafftDTO, string password)
         {
@@ -92,14 +100,7 @@ namespace DataAccess
 
             }
         }
-        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key; 
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
+      
 
         public bool IsUniquePhonenumber(string number)
         {
