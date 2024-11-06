@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace BusinessObject.Models
 {
@@ -55,11 +54,11 @@ namespace BusinessObject.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var builder = new ConfigurationBuilder()
-                   .SetBasePath(Directory.GetCurrentDirectory())
-                   .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            IConfigurationRoot configuration = builder.Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DbConnection"));
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server =localhost; database =HealthTrackingDB;uid=sa;pwd=123;TrustServerCertificate=true");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -125,7 +124,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<BodyMeasureChange>(entity =>
             {
                 entity.HasKey(e => e.BodyMeasureId)
-                    .HasName("PK__BODY_MEA__3FCFA33B07B03761");
+                    .HasName("PK__BODY_MEA__3FCFA33B362ED392");
 
                 entity.ToTable("BODY_MEASURE_CHANGE");
 
@@ -153,7 +152,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<CategoryBlog>(entity =>
             {
                 entity.HasKey(e => e.CategoryId)
-                    .HasName("PK__CATEGORY__D54EE9B4DF9D8CE5");
+                    .HasName("PK__CATEGORY__D54EE9B483607E30");
 
                 entity.ToTable("CATEGORY_BLOG");
 
@@ -257,7 +256,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<CommunityPostCategory>(entity =>
             {
                 entity.HasKey(e => e.CommunityCategoryId)
-                    .HasName("PK__COMMUNIT__14F36C7F1C7CCAE4");
+                    .HasName("PK__COMMUNIT__14F36C7FF6A19C71");
 
                 entity.ToTable("COMMUNITY_POST_CATEGORY");
 
@@ -533,7 +532,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<Faq>(entity =>
             {
                 entity.HasKey(e => e.QuestionId)
-                    .HasName("PK__FAQ__2EC2154904EDD4C2");
+                    .HasName("PK__FAQ__2EC215496C21EE34");
 
                 entity.ToTable("FAQ");
 
@@ -635,7 +634,7 @@ namespace BusinessObject.Models
                         r => r.HasOne<Food>().WithMany().HasForeignKey("FoodId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__FOOD_TAG__food_i__534D60F1"),
                         j =>
                         {
-                            j.HasKey("FoodId", "TagId").HasName("PK__FOOD_TAG__5B6527F3E3F79670");
+                            j.HasKey("FoodId", "TagId").HasName("PK__FOOD_TAG__5B6527F3C757C5DB");
 
                             j.ToTable("FOOD_TAG");
 
@@ -648,7 +647,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<FoodDiary>(entity =>
             {
                 entity.HasKey(e => e.DiaryId)
-                    .HasName("PK__FOOD_DIA__339232C89D7A623C");
+                    .HasName("PK__FOOD_DIA__339232C8D7A8C040");
 
                 entity.ToTable("FOOD_DIARY");
 
@@ -687,7 +686,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<FoodDiaryDetail>(entity =>
             {
                 entity.HasKey(e => e.DiaryDetailId)
-                    .HasName("PK__FOOD_DIA__2B203A1FDEDB84F5");
+                    .HasName("PK__FOOD_DIA__2B203A1F3FDB2E45");
 
                 entity.ToTable("FOOD_DIARY_DETAIL");
 
@@ -718,7 +717,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<FoodMember>(entity =>
             {
                 entity.HasKey(e => e.FoodId)
-                    .HasName("PK__FOOD_MEM__2F4C4DD891593F68");
+                    .HasName("PK__FOOD_MEM__2F4C4DD89B383D8A");
 
                 entity.ToTable("FOOD_MEMBER");
 
@@ -734,8 +733,6 @@ namespace BusinessObject.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-
-                entity.Property(e => e.DietId).HasColumnName("diet_id");
 
                 entity.Property(e => e.Fat).HasColumnName("fat");
 
@@ -904,7 +901,7 @@ namespace BusinessObject.Models
             {
                 entity.ToTable("MEMBER");
 
-                entity.HasIndex(e => e.Email, "UQ__MEMBER__AB6E61641A2AC5ED")
+                entity.HasIndex(e => e.Email, "UQ__MEMBER__AB6E61640E641586")
                     .IsUnique();
 
                 entity.Property(e => e.MemberId).HasColumnName("member_id");
@@ -923,6 +920,8 @@ namespace BusinessObject.Models
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
                     .HasColumnName("email");
+
+                entity.Property(e => e.EncryptedPassword).IsUnicode(false);
 
                 entity.Property(e => e.ExerciseLevel).HasColumnName("exercise_level");
 
@@ -956,7 +955,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<MemberDisease>(entity =>
             {
                 entity.HasKey(e => e.IdMemberDisease)
-                    .HasName("PK__MEMBER_D__9AA485E42C10F302");
+                    .HasName("PK__MEMBER_D__9AA485E4EA5B9739");
 
                 entity.ToTable("MEMBER_DISEASE");
 
@@ -1218,7 +1217,7 @@ namespace BusinessObject.Models
             modelBuilder.Entity<WaterIntake>(entity =>
             {
                 entity.HasKey(e => e.IntakeId)
-                    .HasName("PK__WATER_IN__A10485F0209907D2");
+                    .HasName("PK__WATER_IN__A10485F0FB838274");
 
                 entity.ToTable("WATER_INTAKE");
 
@@ -1243,7 +1242,7 @@ namespace BusinessObject.Models
             {
                 entity.ToTable("STAFF");
 
-                entity.HasIndex(e => e.Email, "UQ__STAFF__AB6E6164496E58A8")
+                entity.HasIndex(e => e.Email, "UQ__STAFF__AB6E6164646F80C3")
                     .IsUnique();
 
                 entity.Property(e => e.StaffId).HasColumnName("staff_id");
@@ -1259,6 +1258,8 @@ namespace BusinessObject.Models
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
                     .HasColumnName("email");
+
+                entity.Property(e => e.EncryptedPassword).IsUnicode(false);
 
                 entity.Property(e => e.EndWorkingDate)
                     .HasColumnType("datetime")

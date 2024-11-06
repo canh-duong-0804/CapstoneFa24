@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace DataAccess
     {
         private static StaffDAO instance = null;
         private static readonly object instanceLock = new object();
-
+        private static readonly string KeyString = "YourSecretKey123";
         public static StaffDAO Instance
         {
             get
@@ -33,22 +34,21 @@ namespace DataAccess
             }
         }
 
-        public async Task<staff?> LoginStaff(staff loginRequestStaffDTO,string password)
+        public async Task<staff?> LoginStaff(staff loginRequestStaffDTO, string password)
         {
             try
             {
                 using (var _context = new HealthTrackingDBContext())
                 {
-                    
                     var staff = await _context.staffs
                         .FirstOrDefaultAsync(st => st.Email == loginRequestStaffDTO.Email);
 
-                  
                     if (staff == null)
                         return null;
 
-                    
-                    if (!VerifyPasswordHash(password, staff.PasswordHash, staff.PasswordSalt))
+                  
+                    string decryptedStoredPassword = DecryptPassword(staff.EncryptedPassword);
+                    if (password != decryptedStoredPassword)
                         return null;
 
                     return staff;
@@ -59,22 +59,34 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
-        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+
+        private string DecryptPassword(string encryptedPassword)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            byte[] fullCipher = Convert.FromBase64String(encryptedPassword);
+
+            using (Aes aes = Aes.Create())
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(storedHash);
+                byte[] key = Encoding.UTF8.GetBytes(KeyString);
+                Array.Resize(ref key, 32);
+
+                aes.Key = key;
+
+                byte[] iv = new byte[aes.IV.Length];
+                Array.Copy(fullCipher, 0, iv, 0, iv.Length);
+                aes.IV = iv;
+
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(fullCipher, iv.Length, fullCipher.Length - iv.Length))
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                {
+                    return srDecrypt.ReadToEnd();
+                }
             }
         }
-        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
+
+
 
         public async Task<staff?> RegisterStaff(staff registerationRequesStafftDTO, string password)
         {
@@ -82,25 +94,47 @@ namespace DataAccess
             {
                 using (var _context = new HealthTrackingDBContext())
                 {
-                    CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+                   
+                    string encryptedPassword = EncryptPassword(password);
+                    registerationRequesStafftDTO.EncryptedPassword = encryptedPassword;
 
-
-                    registerationRequesStafftDTO.PasswordHash = passwordHash;
-                    registerationRequesStafftDTO.PasswordSalt = passwordSalt;
                     _context.staffs.Add(registerationRequesStafftDTO);
                     await _context.SaveChangesAsync();
-
                     return registerationRequesStafftDTO;
-
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-
             }
         }
-      
+
+        private string EncryptPassword(string password)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                byte[] key = Encoding.UTF8.GetBytes(KeyString);
+                Array.Resize(ref key, 32); // AES-256
+
+                aes.Key = key;
+                aes.GenerateIV();
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    msEncrypt.Write(aes.IV, 0, aes.IV.Length);
+
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        swEncrypt.Write(password);
+                    }
+
+                    return Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+        }
 
         public bool IsUniquePhonenumber(string number)
         {
@@ -166,7 +200,8 @@ namespace DataAccess
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)
                         .Select(s => new AllStaffsResponseDTO
-                        { StaffId=s.StaffId,
+                        {
+                            StaffId = s.StaffId,
                             FullName = s.FullName,
                             PhoneNumber = s.PhoneNumber,
 
@@ -208,7 +243,7 @@ namespace DataAccess
                             Dob = s.Dob,
                             StaffImage = s.StaffImage,
                             Email = s.Email,
-                           // Password = s.Password,
+                            // Password = s.Password,
                             Role = s.Role,
                             StartWorkingDate = s.StartWorkingDate,
                             EndWorkingDate = s.EndWorkingDate,
@@ -216,7 +251,7 @@ namespace DataAccess
                         })
                         .FirstOrDefaultAsync();
 
-                   
+
 
                     return staff;
                 }
@@ -309,12 +344,12 @@ namespace DataAccess
                     if (IsUniqueEmail(staffModel.Email)) return null;
                     if (IsUniquePhonenumber(staffModel.PhoneNumber)) return null;
 
-                   
-                    staffModel.FullName= staffRequest.FullName;
+
+                    staffModel.FullName = staffRequest.FullName;
                     staffModel.PhoneNumber = staffRequest.PhoneNumber;
                     staffModel.StaffImage = staffRequest.StaffImage;
                     staffModel.Sex = staffRequest.Sex;
-                    staffModel.Dob = staffRequest.Dob;  
+                    staffModel.Dob = staffRequest.Dob;
                     staffModel.Email = staffRequest.Email;
                     //staffModel.Password = staffRequest.Password;
 
@@ -348,9 +383,9 @@ namespace DataAccess
                             StaffImage = s.StaffImage,
                             Email = s.Email,
                             //Password = s.Password,
-                           
+
                             StartWorkingDate = s.StartWorkingDate,
-                           
+
                             Status = s.Status
                         })
                         .FirstOrDefaultAsync();

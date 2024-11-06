@@ -35,15 +35,12 @@ namespace HealthTrackingManageAPI.Controllers
         public StaffController(HealthTrackingDBContext context, IConfiguration configuration, IStaffRepository staffRepo, IOptionsMonitor<AppSettingsKey> optionsMonitor)
         {
             _configuration = configuration;
-            _staffRepo = staffRepo ?? throw new ArgumentNullException(nameof(staffRepo));
+            _staffRepo = staffRepo;
             _context = context;
             _appSettings = optionsMonitor.CurrentValue;
         }
 
-        public StaffController(IStaffRepository @object)
-        {
-            this.@object = @object;
-        }
+
 
         [HttpPost("create-account-staff-by-admin")]
         public async Task<IActionResult> Register([FromBody] RegisterationRequestStaffDTO staff)

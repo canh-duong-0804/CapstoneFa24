@@ -29,7 +29,7 @@ namespace Repository.Repo
         public bool IsUniqueUser(string username) => UserDAO.Instance.IsUniqueUser(username);
 
 
-        public Task<BusinessObject.Models.Member> Login(BusinessObject.Models.Member loginRequestDTO) => UserDAO.Instance.Login(loginRequestDTO);
+        public Task<BusinessObject.Models.Member> Login(BusinessObject.Models.Member loginRequestDTO,string password) => UserDAO.Instance.Login(loginRequestDTO,password);
 
 
         public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO) => UserDAO.Instance.Register(registerationRequestDTO);

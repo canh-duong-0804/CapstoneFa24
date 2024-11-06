@@ -1,8 +1,11 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.Login;
+using BusinessObject.Dto.Register;
+using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +15,7 @@ namespace DataAccess
     {
         private static UserDAO instance = null;
         private static readonly object instanceLock = new object();
-
+        private static readonly string KeyString = "YourSecretKey12345"; // Đảm bảo đủ độ dài cho AES-256
         public static UserDAO Instance
         {
             get
@@ -34,12 +37,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var user = context.Members.FirstOrDefault(x => x.Email == email);
-                    if (user == null)
-                    {
-                        return true;
-                    }
-                    return false;
+                    return !context.Members.Any(x => x.Email == email);
                 }
             }
             catch (Exception e)
@@ -54,12 +52,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var user = context.Members.FirstOrDefault(x => x.PhoneNumber == number);
-                    if (user == null)
-                    {
-                        return true;
-                    }
-                    return false;
+                    return !context.Members.Any(x => x.PhoneNumber == number);
                 }
             }
             catch (Exception e)
@@ -74,12 +67,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var user = context.Members.FirstOrDefault(x => x.Username == username);
-                    if (user == null)
-                    {
-                        return true;
-                    }
-                    return false;
+                    return !context.Members.Any(x => x.Username == username);
                 }
             }
             catch (Exception e)
@@ -88,23 +76,24 @@ namespace DataAccess
             }
         }
 
-        public async Task<Member> Login(Member loginRequestDTO)
+        public async Task<Member> Login(Member loginRequestDTO, string password)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var user = await context.Members.FirstOrDefaultAsync(x =>
-                  x.Email == loginRequestDTO.Email /*&& x.Password == loginRequestDTO.Password*/);
-                    
-                    return user;
+                    // Mã hóa mật khẩu đã nhập để so sánh
+                    string encryptedPassword = EncryptPassword(password);
+                    var user = await context.Members
+                        .FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email && x.EncryptedPassword == encryptedPassword);
+
+                    return user; // Trả về null nếu không tìm thấy hoặc không khớp
                 }
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
-            
         }
 
         public async Task<Member> Register(Member registerationRequestDTO)
@@ -113,6 +102,8 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                    // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
+                    registerationRequestDTO.EncryptedPassword = EncryptPassword(registerationRequestDTO.EncryptedPassword);
                     context.Members.Add(registerationRequestDTO);
                     await context.SaveChangesAsync();
 
@@ -122,6 +113,57 @@ namespace DataAccess
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        private string EncryptPassword(string password)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                byte[] key = Encoding.UTF8.GetBytes(KeyString);
+                Array.Resize(ref key, 32); // Đảm bảo khóa dài 32 byte (256-bit)
+
+                aes.Key = key;
+                aes.GenerateIV(); // Tạo IV ngẫu nhiên
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    // Ghi IV vào đầu chuỗi mã hóa
+                    msEncrypt.Write(aes.IV, 0, aes.IV.Length);
+
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                    {
+                        swEncrypt.Write(password);
+                    }
+
+                    return Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+        }
+
+        private string DecryptPassword(string encryptedPassword)
+        {
+            byte[] fullCipher = Convert.FromBase64String(encryptedPassword);
+
+            using (Aes aes = Aes.Create())
+            {
+                byte[] key = Encoding.UTF8.GetBytes(KeyString);
+                Array.Resize(ref key, 32); // Đảm bảo khóa dài 32 byte
+
+                // Tách IV từ đầu chuỗi mã hóa
+                byte[] iv = new byte[aes.BlockSize / 8];
+                Array.Copy(fullCipher, 0, iv, 0, iv.Length);
+
+                aes.Key = key;
+                aes.IV = iv;
+
+                using (MemoryStream msDecrypt = new MemoryStream(fullCipher, iv.Length, fullCipher.Length - iv.Length))
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                {
+                    return srDecrypt.ReadToEnd();
+                }
             }
         }
 

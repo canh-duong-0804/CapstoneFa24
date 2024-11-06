@@ -124,7 +124,7 @@ namespace HealthTrackingManageAPI.Controllers
             var mapper = MapperConfig.InitializeAutomapper();
 
             var model = mapper.Map<BusinessObject.Models.Member>(member);
-            var user = await _userRepo.Login(model);
+            var user = await _userRepo.Login(model,member.Password);
             if (user == null)
             {
                 return Unauthorized("Invalid username or password");
