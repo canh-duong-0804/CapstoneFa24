@@ -55,13 +55,6 @@ namespace HealthTrackingManageAPI.Controllers
         {
             var foods = await _foodRepository.SearchFoodsForMemberAsync(foodName);
 
-
-            if (foods == null || !foods.Any())
-            {
-                return NotFound("No foods found.");
-            }
-
-
             return Ok(foods);
         }
         

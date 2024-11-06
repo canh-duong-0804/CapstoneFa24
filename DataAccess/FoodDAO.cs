@@ -351,7 +351,7 @@ namespace DataAccess
 
                     var foods = await (from food in context.Foods
                                        join diet in context.Diets on food.DietId equals diet.DietId
-                                       where food.Status == true && food.FoodName.Contains(foodName)
+                                       where food.Status == true && EF.Functions.Collate(food.FoodName.ToLower(), "Vietnamese_CI_AI").Contains(foodName.ToLower())
                                        select new AllFoodForMemberResponseDTO
                                        {
                                            FoodId= food.FoodId, 

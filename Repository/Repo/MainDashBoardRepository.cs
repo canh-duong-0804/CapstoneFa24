@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.MainDashBoardMobile;
+﻿using BusinessObject.Dto.FoodDiary;
+using BusinessObject.Dto.MainDashBoardMobile;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -11,10 +12,8 @@ namespace Repository.Repo
 {
     public class MainDashBoardRepository : IMainDashBoardRepository
     {
-        public Task<MainDashResponseDTO> GetFoodDairyDetailById(int memberId, DateTime date) => MainDashBoardMobileDAO.Instance.GetFoodDairyDetailById(memberId, date);
+        public Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id, date);
 
-
-        public Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id,date);
 
 
     }
