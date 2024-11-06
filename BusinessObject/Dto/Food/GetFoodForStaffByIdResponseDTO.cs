@@ -8,7 +8,7 @@ namespace BusinessObject.Dto.Food
 {
     public class GetFoodForStaffByIdResponseDTO
     {
-       
+        public int FoodId { get; set; }
         public string FoodName { get; set; } = null!;
         public string Portion { get; set; } = null!;
 

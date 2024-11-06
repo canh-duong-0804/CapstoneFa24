@@ -50,6 +50,22 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         
+        [HttpGet("search-foods-for-member")]
+        public async Task<IActionResult> SearchFoodsForMember(string foodName)
+        {
+            var foods = await _foodRepository.SearchFoodsForMemberAsync(foodName);
+
+
+            if (foods == null || !foods.Any())
+            {
+                return NotFound("No foods found.");
+            }
+
+
+            return Ok(foods);
+        }
+        
+        
         
         [HttpGet("get-list-box-food-for-staff")]
         public async Task<IActionResult> GetListBoxFoodForStaff()
