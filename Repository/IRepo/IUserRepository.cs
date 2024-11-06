@@ -14,7 +14,7 @@ namespace Repository.IRepo
         bool IsUniqueUser(string username);
         bool IsUniquePhonenumber(string number);
         Task<Member> Register(Member registerationRequestDTO);
-        Task<Member> Login(Member loginRequestDTO);
+        Task<Member> Login(Member loginRequestDTO, string password);
         Task<Member> GetMemberByIdAsync(int userId);
         Task UpdateMemberProfileAsync(Member user);
 

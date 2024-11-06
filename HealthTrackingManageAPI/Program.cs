@@ -43,6 +43,7 @@ builder.Services.AddScoped<IFoodDiaryRepository, FoodDiaryRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
+builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 
 //builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
 builder.Services.Configure<SMSSetting>(builder.Configuration.GetSection("SMSSettingTwilio"));

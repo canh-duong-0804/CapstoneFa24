@@ -8,6 +8,7 @@ using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
+using BusinessObject.Dto.Goal;
 using BusinessObject.Dto.Ingredient;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
@@ -121,7 +122,7 @@ namespace BusinessObject
                 //.ForMember(dest => dest.Goal, opt => opt.MapFrom(src => src.Goal))
                 .ReverseMap()
                 ;
-                cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>()
+                cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>() 
                    .ForMember(dest => dest.MemberId, opt => opt.Ignore())
                    .ReverseMap();
 
@@ -183,7 +184,7 @@ namespace BusinessObject
                 .ForMember(dest => dest.Calories, opt => opt.MapFrom(src => src.Food.Calories));
 
 
-
+                cfg.CreateMap<GoalRequestDTO, BusinessObject.Models.Goal>().ReverseMap();
 
             });
 

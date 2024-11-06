@@ -23,7 +23,6 @@ namespace BusinessObject.Models
         public int CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; }
         public bool? Status { get; set; }
-        public int? DietId { get; set; }
 
         public virtual Member CreatedByNavigation { get; set; } = null!;
     }
