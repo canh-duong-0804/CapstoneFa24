@@ -13,11 +13,11 @@ namespace Repository.IRepo
         bool IsUniqueEmail(string email);
         bool IsUniqueUser(string username);
         bool IsUniquePhonenumber(string number);
-<<<<<<< Updated upstream
-        Task<Member> Register(Member registerationRequestDTO);
-=======
+
+        //Task<Member> Register(Member registerationRequestDTO);
+
         Task<Member> Register(Member registerationRequestDTO, string password);
->>>>>>> Stashed changes
+
         Task<Member> Login(Member loginRequestDTO, string password);
         Task<Member> GetMemberByIdAsync(int userId);
         Task UpdateMemberProfileAsync(Member user);

@@ -24,7 +24,8 @@ namespace BusinessObject.Models
         public int MemberId { get; set; }
         public string Username { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string EncryptedPassword { get; set; } = null!;
+        public byte[]? PasswordHash { get; set; }
+        public byte[]? PasswordSalt { get; set; }
         public DateTime Dob { get; set; }
         public string? PhoneNumber { get; set; }
         public double? Height { get; set; }

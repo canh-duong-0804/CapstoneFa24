@@ -1,6 +1,4 @@
-﻿using BusinessObject.Dto.Login;
-using BusinessObject.Dto.Register;
-using BusinessObject.Models;
+﻿using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,7 +13,7 @@ namespace DataAccess
     {
         private static UserDAO instance = null;
         private static readonly object instanceLock = new object();
-        private static readonly string KeyString = "YourSecretKey12345"; // Đảm bảo đủ độ dài cho AES-256
+
         public static UserDAO Instance
         {
             get
@@ -37,7 +35,12 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return !context.Members.Any(x => x.Email == email);
+                    var user = context.Members.FirstOrDefault(x => x.Email == email);
+                    if (user == null)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
             }
             catch (Exception e)
@@ -52,7 +55,12 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return !context.Members.Any(x => x.PhoneNumber == number);
+                    var user = context.Members.FirstOrDefault(x => x.PhoneNumber == number);
+                    if (user == null)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
             }
             catch (Exception e)
@@ -67,7 +75,12 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return !context.Members.Any(x => x.Username == username);
+                    var user = context.Members.FirstOrDefault(x => x.Username == username);
+                    if (user == null)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
             }
             catch (Exception e)
@@ -82,26 +95,17 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-<<<<<<< Updated upstream
-                    // Mã hóa mật khẩu đã nhập để so sánh
-                    string encryptedPassword = EncryptPassword(password);
-                    var user = await context.Members
-                        .FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email && x.EncryptedPassword == encryptedPassword);
-
-                    return user; // Trả về null nếu không tìm thấy hoặc không khớp
-=======
-                
+                    // Tìm thành viên dựa trên email
                     var user = await context.Members.FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email);
 
                     if (user == null)
                         return null;
 
-                  
+                    // Xác minh mật khẩu bằng cách so sánh với hash đã lưu
                     if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                         return null;
 
                     return user;
->>>>>>> Stashed changes
                 }
             }
             catch (Exception e)
@@ -116,11 +120,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-<<<<<<< Updated upstream
-                    // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
-                    registerationRequestDTO.EncryptedPassword = EncryptPassword(registerationRequestDTO.EncryptedPassword);
-=======
-                  
+                    
                     CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
                    
@@ -128,7 +128,6 @@ namespace DataAccess
                     registerationRequestDTO.PasswordSalt = passwordSalt;
 
                    
->>>>>>> Stashed changes
                     context.Members.Add(registerationRequestDTO);
                     await context.SaveChangesAsync();
 
@@ -140,77 +139,24 @@ namespace DataAccess
                 throw new Exception(e.Message);
             }
         }
-<<<<<<< Updated upstream
 
-        private string EncryptPassword(string password)
-        {
-            using (Aes aes = Aes.Create())
-            {
-                byte[] key = Encoding.UTF8.GetBytes(KeyString);
-                Array.Resize(ref key, 32); // Đảm bảo khóa dài 32 byte (256-bit)
-
-                aes.Key = key;
-                aes.GenerateIV(); // Tạo IV ngẫu nhiên
-
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    // Ghi IV vào đầu chuỗi mã hóa
-                    msEncrypt.Write(aes.IV, 0, aes.IV.Length);
-
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, aes.CreateEncryptor(), CryptoStreamMode.Write))
-                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                    {
-                        swEncrypt.Write(password);
-                    }
-
-                    return Convert.ToBase64String(msEncrypt.ToArray());
-                }
-            }
-        }
-
-        private string DecryptPassword(string encryptedPassword)
-        {
-            byte[] fullCipher = Convert.FromBase64String(encryptedPassword);
-
-            using (Aes aes = Aes.Create())
-            {
-                byte[] key = Encoding.UTF8.GetBytes(KeyString);
-                Array.Resize(ref key, 32); // Đảm bảo khóa dài 32 byte
-
-                // Tách IV từ đầu chuỗi mã hóa
-                byte[] iv = new byte[aes.BlockSize / 8];
-                Array.Copy(fullCipher, 0, iv, 0, iv.Length);
-
-                aes.Key = key;
-                aes.IV = iv;
-
-                using (MemoryStream msDecrypt = new MemoryStream(fullCipher, iv.Length, fullCipher.Length - iv.Length))
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, aes.CreateDecryptor(), CryptoStreamMode.Read))
-                using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                {
-                    return srDecrypt.ReadToEnd();
-                }
-            }
-        }
-
-=======
         private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            using (var hmac = new HMACSHA512(storedSalt))
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(storedHash);
             }
         }
-        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            using (var hmac = new HMACSHA512())
             {
                 passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
->>>>>>> Stashed changes
         public async Task<Member> GetMemberByIdAsync(int userId)
         {
             using (var context = new HealthTrackingDBContext())

@@ -17,7 +17,7 @@ namespace Repository.Repo
     {
         public Task<BusinessObject.Models.Member> GetMemberByIdAsync(int userId) => UserDAO.Instance.GetMemberByIdAsync(userId);
 
-        // Method to update a member's profile
+       
         public Task UpdateMemberProfileAsync(BusinessObject.Models.Member member) => UserDAO.Instance.UpdateMemberProfileAsync(member);
 
 
@@ -29,11 +29,11 @@ namespace Repository.Repo
         public bool IsUniqueUser(string username) => UserDAO.Instance.IsUniqueUser(username);
 
 
-<<<<<<< Updated upstream
+
         public Task<BusinessObject.Models.Member> Login(BusinessObject.Models.Member loginRequestDTO,string password) => UserDAO.Instance.Login(loginRequestDTO,password);
-=======
-        public Task<BusinessObject.Models.Member> Login(BusinessObject.Models.Member loginRequestDTO, string password) => UserDAO.Instance.Login(loginRequestDTO,  password);
->>>>>>> Stashed changes
+
+      
+
 
 
         public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO, string password) => UserDAO.Instance.Register(registerationRequestDTO, password);

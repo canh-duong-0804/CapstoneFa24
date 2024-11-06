@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +17,7 @@ namespace DataAccess
     {
         private static StaffDAO instance = null;
         private static readonly object instanceLock = new object();
-        private static readonly string KeyString = "YourSecretKey123";
+
         public static StaffDAO Instance
         {
             get
@@ -40,15 +39,16 @@ namespace DataAccess
             {
                 using (var _context = new HealthTrackingDBContext())
                 {
+
                     var staff = await _context.staffs
                         .FirstOrDefaultAsync(st => st.Email == loginRequestStaffDTO.Email);
+
 
                     if (staff == null)
                         return null;
 
-                  
-                    string decryptedStoredPassword = DecryptPassword(staff.EncryptedPassword);
-                    if (password != decryptedStoredPassword)
+
+                    if (!VerifyPasswordHash(password, staff.PasswordHash, staff.PasswordSalt))
                         return null;
 
                     return staff;
@@ -59,34 +59,22 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
-
-        private string DecryptPassword(string encryptedPassword)
+        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
-            byte[] fullCipher = Convert.FromBase64String(encryptedPassword);
-
-            using (Aes aes = Aes.Create())
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
             {
-                byte[] key = Encoding.UTF8.GetBytes(KeyString);
-                Array.Resize(ref key, 32);
-
-                aes.Key = key;
-
-                byte[] iv = new byte[aes.IV.Length];
-                Array.Copy(fullCipher, 0, iv, 0, iv.Length);
-                aes.IV = iv;
-
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-                using (MemoryStream msDecrypt = new MemoryStream(fullCipher, iv.Length, fullCipher.Length - iv.Length))
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                {
-                    return srDecrypt.ReadToEnd();
-                }
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(storedHash);
             }
         }
-
-
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
 
         public async Task<staff?> RegisterStaff(staff registerationRequesStafftDTO, string password)
         {
@@ -94,47 +82,25 @@ namespace DataAccess
             {
                 using (var _context = new HealthTrackingDBContext())
                 {
-                   
-                    string encryptedPassword = EncryptPassword(password);
-                    registerationRequesStafftDTO.EncryptedPassword = encryptedPassword;
+                    CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
+
+                    registerationRequesStafftDTO.PasswordHash = passwordHash;
+                    registerationRequesStafftDTO.PasswordSalt = passwordSalt;
                     _context.staffs.Add(registerationRequesStafftDTO);
                     await _context.SaveChangesAsync();
+
                     return registerationRequesStafftDTO;
+
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+
             }
         }
 
-        private string EncryptPassword(string password)
-        {
-            using (Aes aes = Aes.Create())
-            {
-                byte[] key = Encoding.UTF8.GetBytes(KeyString);
-                Array.Resize(ref key, 32); // AES-256
-
-                aes.Key = key;
-                aes.GenerateIV();
-
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    msEncrypt.Write(aes.IV, 0, aes.IV.Length);
-
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                    {
-                        swEncrypt.Write(password);
-                    }
-
-                    return Convert.ToBase64String(msEncrypt.ToArray());
-                }
-            }
-        }
 
         public bool IsUniquePhonenumber(string number)
         {
