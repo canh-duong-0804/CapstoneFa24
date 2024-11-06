@@ -82,12 +82,26 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+<<<<<<< Updated upstream
                     // Mã hóa mật khẩu đã nhập để so sánh
                     string encryptedPassword = EncryptPassword(password);
                     var user = await context.Members
                         .FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email && x.EncryptedPassword == encryptedPassword);
 
                     return user; // Trả về null nếu không tìm thấy hoặc không khớp
+=======
+                
+                    var user = await context.Members.FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email);
+
+                    if (user == null)
+                        return null;
+
+                  
+                    if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                        return null;
+
+                    return user;
+>>>>>>> Stashed changes
                 }
             }
             catch (Exception e)
@@ -96,14 +110,25 @@ namespace DataAccess
             }
         }
 
-        public async Task<Member> Register(Member registerationRequestDTO)
+        public async Task<Member> Register(Member registerationRequestDTO, string password)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+<<<<<<< Updated upstream
                     // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
                     registerationRequestDTO.EncryptedPassword = EncryptPassword(registerationRequestDTO.EncryptedPassword);
+=======
+                  
+                    CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                   
+                    registerationRequestDTO.PasswordHash = passwordHash;
+                    registerationRequestDTO.PasswordSalt = passwordSalt;
+
+                   
+>>>>>>> Stashed changes
                     context.Members.Add(registerationRequestDTO);
                     await context.SaveChangesAsync();
 
@@ -115,6 +140,7 @@ namespace DataAccess
                 throw new Exception(e.Message);
             }
         }
+<<<<<<< Updated upstream
 
         private string EncryptPassword(string password)
         {
@@ -167,6 +193,24 @@ namespace DataAccess
             }
         }
 
+=======
+        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(storedHash);
+            }
+        }
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+>>>>>>> Stashed changes
         public async Task<Member> GetMemberByIdAsync(int userId)
         {
             using (var context = new HealthTrackingDBContext())
