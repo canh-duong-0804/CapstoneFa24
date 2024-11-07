@@ -138,5 +138,31 @@ namespace DataAccess
 			}
 		}
 
+
+		public async Task<List<(int ExerciseId, int Duration, float CaloriesPerHour)>> GetExercisesByPlanIdAsync(int exercisePlanId)
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					var result = await context.ExercisePlanDetails
+						.Where(epd => epd.ExercisePlanId == exercisePlanId)
+						.Join(context.Exercises,
+							epd => epd.ExerciseId,
+							e => e.ExerciseId,
+							(epd, e) => new { epd.ExerciseId, epd.Duration, CaloriesPerHour = (float)e.CaloriesPerHour })
+						.ToListAsync();
+
+					return result.Select(x => (x.ExerciseId, x.Duration, x.CaloriesPerHour)).ToList();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Error fetching exercises for plan {exercisePlanId}: {ex.Message}", ex);
+			}
+		}
+
+
+
 	}
 }

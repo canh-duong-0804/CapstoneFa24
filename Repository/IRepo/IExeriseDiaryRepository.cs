@@ -15,5 +15,8 @@ namespace Repository.IRepo
 		Task<bool> CheckExercisePlanExistsAsync(int exercisePlanId);
 		Task<bool> CheckExerciseExistsAsync(int exerciseId);
 		Task<bool> DeleteExerciseDiary(int exerciseDiaryId);
+
+
+		Task<List<(int ExerciseId, int Duration, float CaloriesPerHour)>> GetExercisesByPlanIdAsync(int exercisePlanId);
 	}
 }

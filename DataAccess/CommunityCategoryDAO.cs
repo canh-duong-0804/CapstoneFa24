@@ -130,7 +130,22 @@ namespace DataAccess
                 throw new Exception("Error deleting category: " + e.Message);
             }
         }
+		// Get total count of CommunityPostCategories
+		public async Task<int> GetTotalCategoryCountAsync()
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					return await context.CommunityPostCategories.CountAsync();
+				}
+			}
+			catch (Exception e)
+			{
+				throw new Exception("Error retrieving total category count: " + e.Message);
+			}
+		}
 
-    }
+	}
 }
 

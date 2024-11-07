@@ -44,17 +44,34 @@ namespace HealthTrackingManageAPI.Controllers
 
 		// GET: api/communitycategory/user/list - User: Get all community categories with pagination
 		[HttpGet("user/list")]
-		public async Task<ActionResult<IEnumerable<CommunityCategoryDTO>>> GetAllCategories(int pageNumber , int pageSize )
+		public async Task<IActionResult> GetAllCategories([FromQuery] int? page)
 		{
-			var categories = await _categoryRepo.GetAllCategoriesAsync(pageNumber, pageSize);
+			int currentPage = page ?? 1;
+			if (currentPage < 1) currentPage = 1;
+
+			int currentPageSize = 5; // Set the desired page size
+			int totalCategories = await _categoryRepo.GetTotalCategoryCountAsync();
+			int totalPages = (int)Math.Ceiling(totalCategories / (double)currentPageSize);
+
+			if (totalCategories < currentPageSize) currentPageSize = totalCategories;
+			if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+			var categories = await _categoryRepo.GetAllCategoriesAsync(currentPage, currentPageSize);
 			var categoryDtos = categories.Select(c => new CommunityCategoryDTO
 			{
 				CommunityCategoryId = c.CommunityCategoryId,
 				CommunityCategoryName = c.CommunityCategoryName
 			}).ToList();
 
-			return Ok(categoryDtos);
+			return Ok(new
+			{
+				Categories = categoryDtos,
+				TotalPages = totalPages,
+				CurrentPage = currentPage,
+				PageSize = currentPageSize
+			});
 		}
+
 
 		// GET: api/communitycategory/user/{id} - User: Get a specific community category by ID
 		[HttpGet("user/{id}")]

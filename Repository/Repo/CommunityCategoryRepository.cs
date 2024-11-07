@@ -30,5 +30,8 @@ namespace Repository.Repo
         // Update an existing CommunityPostCategory
         public Task<CommunityPostCategory?> UpdateCategoryAsync(CommunityPostCategory category)
             => CommunityCategoryDAO.Instance.UpdateCategoryAsync(category);
-    }
+
+		public Task<int> GetTotalCategoryCountAsync() => CommunityCategoryDAO.Instance.GetTotalCategoryCountAsync();
+
+	}
 }

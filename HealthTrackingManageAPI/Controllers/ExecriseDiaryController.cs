@@ -1,13 +1,10 @@
-﻿using BusinessObject.Dto.ExerciseDiary;
+﻿using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Dto.ExerciseDiary;
 using BusinessObject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Repository.IRepo;
-using System.Threading.Tasks;
-using BusinessObject.Dto.ExecriseDiary;
-using Repository.Repo;
+using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -112,18 +109,13 @@ namespace HealthTrackingManageAPI.Controllers
 
 			return Ok("Normal exercise diary entries logged successfully.");
 		}
-
 		[Authorize]
-		[HttpGet("member/{memberId}")]
-		public async Task<IActionResult> GetDiaryByMemberId(int memberId)
+		[HttpGet("member/exercise_diary")]
+		public async Task<IActionResult> GetDiaryByMemberId()
 		{
 			var memberIdClaim = User.FindFirstValue("Id");
-			if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int authenticatedMemberId))
+			if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
 				return Unauthorized("Member ID not found in claims.");
-
-			// Check if the requesting user is authorized to access the member's diaries
-			if (authenticatedMemberId != memberId)
-				return Forbid("You are not authorized to access this member's exercise diaries.");
 
 			try
 			{
@@ -133,7 +125,21 @@ namespace HealthTrackingManageAPI.Controllers
 				if (exerciseDiaries == null || exerciseDiaries.Count == 0)
 					return NotFound("No exercise diary entries found for the specified member.");
 
-				return Ok(exerciseDiaries);
+				// Map to DTOs
+				var diaryDtos = exerciseDiaries.Select(diary => new ExerciseDiaryDto
+				{
+					ExerciseDiaryId = diary.ExerciseDiaryId,
+					Date = diary.Date,
+					Exercise = new ExerciseDto
+					{
+						ExerciseId = diary.ExerciseId ?? 0,  // Ensure it's not null if ExerciseId is nullable
+						ExerciseName = diary.Exercise?.ExerciseName ?? "Unknown", // Check for null reference
+						Duration = diary.Duration,
+						CaloriesBurned = diary.CaloriesBurned ?? 0  // Handle null CaloriesBurned
+					}
+				}).ToList();
+
+				return Ok(diaryDtos);
 			}
 			catch (Exception ex)
 			{
@@ -143,6 +149,51 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
+		[Authorize]
+		[HttpPost("logExerciseDiaryByPlan")]
+		public async Task<IActionResult> LogExerciseDiaryByPlan([FromBody] LogExerciseDiaryByPlanDTO diaryByPlanDto)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			var memberIdClaim = User.FindFirstValue("Id");
+			if (memberIdClaim == null)
+				return Unauthorized("Member ID not found in claims.");
+
+			if (!int.TryParse(memberIdClaim, out int memberId))
+				return BadRequest("Invalid member ID.");
+
+			// Validate that the ExercisePlan exists
+			var exercisePlanExists = await _exerciseDiaryRepo.CheckExercisePlanExistsAsync(diaryByPlanDto.ExercisePlanId);
+			if (!exercisePlanExists)
+				return NotFound("Exercise Plan not found.");
+
+			// Get exercises for the specified plan
+			var exercises = await _exerciseDiaryRepo.GetExercisesByPlanIdAsync(diaryByPlanDto.ExercisePlanId);
+			if (exercises == null || exercises.Count == 0)
+				return NotFound("No exercises found in the specified plan.");
+
+			// Create a list of ExerciseDiary entries
+			var exerciseDiaries = exercises.Select(exercise => new ExerciseDiary
+			{
+				MemberId = memberId,
+				ExercisePlanId = diaryByPlanDto.ExercisePlanId,
+				ExerciseId = exercise.ExerciseId,
+				Date = diaryByPlanDto.Date,
+				Duration = exercise.Duration, // Assuming duration comes from ExercisePlanDetail
+				CaloriesBurned = CalculateCaloriesBurned(exercise.Duration, exercise.CaloriesPerHour) // Function to calculate calories
+			}).ToList();
+
+			// Save entries in batch
+			await _exerciseDiaryRepo.AddExerciseDiaries(exerciseDiaries);
+
+			return Ok("Exercise diary entries logged successfully from plan.");
+		}
+
+		private float CalculateCaloriesBurned(int duration, float caloriesPerHour)
+{
+    return (caloriesPerHour / 60) * duration;
+}
 	}
 }
 

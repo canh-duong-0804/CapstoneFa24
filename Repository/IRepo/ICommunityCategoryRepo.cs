@@ -15,7 +15,8 @@ namespace Repository.IRepo
 		Task<CommunityPostCategory> GetCategoryByIdAsync(int id);
         Task<CommunityPostCategory> UpdateCategoryAsync(CommunityPostCategory category);
         Task<bool> DeleteCategoryAsync(int id);
+        Task<int> GetTotalCategoryCountAsync();
 
 
-    }
+	}
 }
