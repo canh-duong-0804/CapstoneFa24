@@ -8,7 +8,7 @@ namespace BusinessObject.Dto.FoodDiary
 {
     public class FoodDiaryForMealResponseDTO
     {
-      
+        public int DiaryDetailId { get; set; }
         public int DiaryId { get; set; }
         public int FoodId { get; set; }
         public string FoodName {  get; set; }

@@ -3,9 +3,12 @@ using BusinessObject;
 using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
 using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
+using Repository.Repo;
+using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -82,17 +85,52 @@ namespace HealthTrackingManageAPI.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpGet("Get-Food-dairy-detail-for-member-by-id")]
+        public async Task<IActionResult> GetFoodDairyDetailById()
+        {
+            DateTime date = DateTime.Now.Date;
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var mainDashBoardInfo = await _foodDiaryRepository.GetFoodDairyDetailById(memberId, date);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound(" not found.");
+            }
+            return Ok(mainDashBoardInfo);
+        }
 
 
-        /*   [HttpGet("getDailyFoodDiaryFollowMeal")]
-           public async Task<IActionResult> getDailyFoodDiaryFollowMeal(int dairyID,int mealType)
-           {
-              *//* DateTime date = DateTime.Now.Date;
-               var foodDiary = await _foodDiaryRepository.getDailyFoodDiaryFollowMeal(dairyID,mealType);*/
+        [Authorize]
+        [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
+        public async Task<IActionResult> GetFoodDairyByDate(DateTime date)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
 
-        /* var mapper = MapperConfig.InitializeAutomapper();
-         var foodDiaryModel = mapper.Map<FoodDiaryResponseDTO>(foodDiary);*//*
-         return Ok();
-     }*/
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var mainDashBoardInfo = await _foodDiaryRepository.GetFoodDairyByDate(memberId, date);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound(" not found.");
+            }
+            return Ok(mainDashBoardInfo);
+        }
+
+       
     } 
 }

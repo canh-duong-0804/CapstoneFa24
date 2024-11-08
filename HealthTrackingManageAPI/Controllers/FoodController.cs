@@ -50,6 +50,15 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         
+        [HttpGet("search-foods-for-member")]
+        public async Task<IActionResult> SearchFoodsForMember(string foodName)
+        {
+            var foods = await _foodRepository.SearchFoodsForMemberAsync(foodName);
+
+            return Ok(foods);
+        }
+        
+        
         
         [HttpGet("get-list-box-food-for-staff")]
         public async Task<IActionResult> GetListBoxFoodForStaff()
@@ -78,7 +87,8 @@ namespace HealthTrackingManageAPI.Controllers
 
 
             var createdFood = await _foodRepository.CreateFoodAsync(foodModel);
-            return CreatedAtAction(nameof(GetAllFoodsForStaff), new { id = createdFood.FoodId }, createdFood);
+            // return CreatedAtAction(nameof(GetAllFoodsForStaff), new { id = createdFood.FoodId }, createdFood);
+            return Ok();
         }
 
        

@@ -34,6 +34,8 @@ namespace Repository.Repo
 
         public Task<List<FoodListBoxResponseDTO>> GetListBoxFoodForStaffAsync() => FoodDAO.Instance.GetListBoxFoodForStaffAsync();
 
+        public Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string foodName) => FoodDAO.Instance.SearchFoodsForMemberAsync(foodName);
+        
 
         public Task<Food> UpdateFoodAsync(Food food) => FoodDAO.Instance.UpdateFoodAsync(food);
 

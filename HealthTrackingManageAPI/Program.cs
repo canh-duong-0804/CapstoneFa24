@@ -1,6 +1,7 @@
 ﻿
 using BusinessObject.Models;
 using HealthTrackingManageAPI;
+using HealthTrackingManageAPI.NewFolder.EsmsHelper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 //using Microsoft.Extensions.Configuration;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<ICommunityPostRepository, CommunityPostRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
+builder.Services.AddScoped<IMealMemberRepository, MealMemberRepository>();
 
 builder.Services.AddScoped<ICommunityCategoryRepo, CommunityCategoryRepository>();
 builder.Services.AddScoped<IBodyMesurementRepository, BodyMeasurementRepository>();
@@ -43,6 +45,11 @@ builder.Services.AddScoped<IFoodDiaryRepository, FoodDiaryRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
+builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+builder.Services.AddScoped<IMealMemberDetailsRepository, MealMemberDetailsRepository>();
+
+
+builder.Services.AddScoped<SpeedSMSService>();
 
 //builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();
 builder.Services.Configure<SMSSetting>(builder.Configuration.GetSection("SMSSettingTwilio"));

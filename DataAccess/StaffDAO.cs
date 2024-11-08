@@ -33,21 +33,21 @@ namespace DataAccess
             }
         }
 
-        public async Task<staff?> LoginStaff(staff loginRequestStaffDTO,string password)
+        public async Task<staff?> LoginStaff(staff loginRequestStaffDTO, string password)
         {
             try
             {
                 using (var _context = new HealthTrackingDBContext())
                 {
-                    
+
                     var staff = await _context.staffs
                         .FirstOrDefaultAsync(st => st.Email == loginRequestStaffDTO.Email);
 
-                  
+
                     if (staff == null)
                         return null;
 
-                    
+
                     if (!VerifyPasswordHash(password, staff.PasswordHash, staff.PasswordSalt))
                         return null;
 
@@ -100,7 +100,7 @@ namespace DataAccess
 
             }
         }
-      
+
 
         public bool IsUniquePhonenumber(string number)
         {
@@ -166,7 +166,8 @@ namespace DataAccess
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)
                         .Select(s => new AllStaffsResponseDTO
-                        { StaffId=s.StaffId,
+                        {
+                            StaffId = s.StaffId,
                             FullName = s.FullName,
                             PhoneNumber = s.PhoneNumber,
 
@@ -208,7 +209,7 @@ namespace DataAccess
                             Dob = s.Dob,
                             StaffImage = s.StaffImage,
                             Email = s.Email,
-                           // Password = s.Password,
+                            // Password = s.Password,
                             Role = s.Role,
                             StartWorkingDate = s.StartWorkingDate,
                             EndWorkingDate = s.EndWorkingDate,
@@ -216,7 +217,7 @@ namespace DataAccess
                         })
                         .FirstOrDefaultAsync();
 
-                   
+
 
                     return staff;
                 }
@@ -309,12 +310,12 @@ namespace DataAccess
                     if (IsUniqueEmail(staffModel.Email)) return null;
                     if (IsUniquePhonenumber(staffModel.PhoneNumber)) return null;
 
-                   
-                    staffModel.FullName= staffRequest.FullName;
+
+                    staffModel.FullName = staffRequest.FullName;
                     staffModel.PhoneNumber = staffRequest.PhoneNumber;
                     staffModel.StaffImage = staffRequest.StaffImage;
                     staffModel.Sex = staffRequest.Sex;
-                    staffModel.Dob = staffRequest.Dob;  
+                    staffModel.Dob = staffRequest.Dob;
                     staffModel.Email = staffRequest.Email;
                     //staffModel.Password = staffRequest.Password;
 
@@ -348,9 +349,9 @@ namespace DataAccess
                             StaffImage = s.StaffImage,
                             Email = s.Email,
                             //Password = s.Password,
-                           
+
                             StartWorkingDate = s.StartWorkingDate,
-                           
+
                             Status = s.Status
                         })
                         .FirstOrDefaultAsync();

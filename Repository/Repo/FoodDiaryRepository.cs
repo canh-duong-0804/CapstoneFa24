@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Execution;
 using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
+using BusinessObject.Dto.MainDashBoardMobile;
 using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
@@ -24,6 +25,13 @@ namespace Repository.Repo
         public Task<FoodDiary> GetOrCreateFoodDiaryByDate(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetOrCreateFoodDiaryByDate(memberId, date);
 
         public Task<UpdateFoodDiaryRequestDTO> UpdateFoodDiary(UpdateFoodDiaryRequestDTO updatedFoodDiary) => FoodDiaryDAO.Instance.UpdateFoodDiary(updatedFoodDiary);
-        
+
+        public Task<MainDashResponseDTO> GetFoodDairyDetailById(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetFoodDairyDetailById(memberId, date);
+
+
+        //public Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id, date);
+
+        public Task<FoodDiaryForMemberMobileResponse> GetFoodDairyByDate(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetFoodDairyByDate(memberId, date);
+
     }
 }

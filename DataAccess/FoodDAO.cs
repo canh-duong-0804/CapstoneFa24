@@ -127,6 +127,7 @@ namespace DataAccess
                             .Include(f=>f.CreateByNavigation)
                             .Select(food => new GetFoodForStaffByIdResponseDTO
                             {
+                                FoodId = food.FoodId,
                                 FoodName = food.FoodName,
                                 Portion = food.Portion,
                                 Calories = food.Calories,
@@ -251,6 +252,7 @@ namespace DataAccess
                                       where food.Status == true
                                       select new AllFoodForMemberResponseDTO
                                       {
+                                          FoodId = food.FoodId,
                                           FoodName = food.FoodName,
                                           FoodImage = food.FoodImage,
                                           Calories = food.Calories,
@@ -281,6 +283,7 @@ namespace DataAccess
                         .Where(f => f.FoodId == id && f.Status == true)
                         .Select(food => new GetFoodForMemberByIdResponseDTO
                         {
+                            FoodId = food.FoodId,
                             FoodName = food.FoodName,
                             Portion = food.Portion,
                             Calories = food.Calories,
@@ -337,6 +340,37 @@ namespace DataAccess
                 throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
             }
 
+        }
+
+        public async Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string foodName)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var foods = await (from food in context.Foods
+                                       join diet in context.Diets on food.DietId equals diet.DietId
+                                       where food.Status == true && EF.Functions.Collate(food.FoodName.ToLower(), "Vietnamese_CI_AI").Contains(foodName.ToLower())
+                                       select new AllFoodForMemberResponseDTO
+                                       {
+                                           FoodId= food.FoodId, 
+                                           FoodName = food.FoodName,
+                                           FoodImage = food.FoodImage,
+                                           Calories = food.Calories,
+                                           Fat = food.Fat,
+                                           Carbs = food.Carbs,
+                                           Protein = food.Protein,
+                                           DietName = food.Diet.DietName,
+                                       }).ToListAsync();
+
+                    return foods;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
+            }
         }
     }
 }
