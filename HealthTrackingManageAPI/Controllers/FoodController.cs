@@ -87,7 +87,8 @@ namespace HealthTrackingManageAPI.Controllers
 
 
             var createdFood = await _foodRepository.CreateFoodAsync(foodModel);
-            return CreatedAtAction(nameof(GetAllFoodsForStaff), new { id = createdFood.FoodId }, createdFood);
+            // return CreatedAtAction(nameof(GetAllFoodsForStaff), new { id = createdFood.FoodId }, createdFood);
+            return Ok();
         }
 
        

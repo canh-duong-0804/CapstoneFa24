@@ -9,6 +9,7 @@ namespace BusinessObject.Models
         public int MealPlanId { get; set; }
         public DateTime MealDate { get; set; }
         public string? MealType { get; set; }
+        public byte Day { get; set; }
         public string? Description { get; set; }
         public int FoodId { get; set; }
         public int Quantity { get; set; }

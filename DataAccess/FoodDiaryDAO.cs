@@ -142,13 +142,13 @@ namespace DataAccess
                .Where(fdd => fdd.DiaryId == foodDetails.DiaryId && fdd.StatusFoodDiary == true)
                .ToListAsync();
 
-                   
+
                     double totalCalories = foodDiaryDetails.Sum(detail => detail.Food.Calories * detail.Quantity);
                     double totalProtein = foodDiaryDetails.Sum(detail => detail.Food.Protein * detail.Quantity);
                     double totalFat = foodDiaryDetails.Sum(detail => detail.Food.Fat * detail.Quantity);
                     double totalCarbs = foodDiaryDetails.Sum(detail => detail.Food.Carbs * detail.Quantity);
 
-                 
+
                     var foodDiary = await context.FoodDiaries.FirstOrDefaultAsync(fd => fd.DiaryId == foodDetails.DiaryId);
                     if (foodDiary != null)
                     {
@@ -175,17 +175,17 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-               
+
                     var foodItem = await context.FoodDiaryDetails
                         .FirstOrDefaultAsync(fd => fd.DiaryDetailId == DiaryDetailId);
 
                     if (foodItem == null)
                     {
-                      
+
                         return false;
                     }
 
-                   
+
                     var foodDiary = await context.FoodDiaries
                         .FirstOrDefaultAsync(fd => fd.DiaryId == foodItem.DiaryId);
 
@@ -194,11 +194,11 @@ namespace DataAccess
                         return false;
                     }
 
-               
-                    context.FoodDiaryDetails.Remove(foodItem);
-                    await context.SaveChangesAsync(); 
 
-                
+                    context.FoodDiaryDetails.Remove(foodItem);
+                    await context.SaveChangesAsync();
+
+
                     var foodDiaryDetails = await context.FoodDiaryDetails
                         .Include(fdd => fdd.Food)
                         .Where(fdd => fdd.DiaryId == foodItem.DiaryId && fdd.StatusFoodDiary == true)
@@ -209,7 +209,7 @@ namespace DataAccess
                     double totalFat = foodDiaryDetails.Sum(detail => detail.Food.Fat * detail.Quantity);
                     double totalCarbs = foodDiaryDetails.Sum(detail => detail.Food.Carbs * detail.Quantity);
 
-                  
+
                     foodDiary.Calories = Math.Round(totalCalories, 1);
                     foodDiary.Protein = Math.Round(totalProtein, 1);
                     foodDiary.Fat = Math.Round(totalFat, 1);
@@ -237,7 +237,7 @@ namespace DataAccess
 
 
                     var foodDiary = await context.FoodDiaryDetails
-                     .Include(fd=>fd.Food)
+                     .Include(fd => fd.Food)
                     .FirstOrDefaultAsync(fd => fd.DiaryId == dairyID && fd.MealType == mealType);
 
                 }
@@ -271,13 +271,14 @@ namespace DataAccess
                         throw new Exception("Diary not found for the given member and date.");
                     }
 
-                   
+
                     async Task<List<FoodDiaryForMealResponseDTO>> GetFoodDiaryDetailsByMealType(int mealType)
                     {
                         return await context.FoodDiaryDetails.Include(e => e.Food)
                             .Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == mealType)
                             .Select(e => new FoodDiaryForMealResponseDTO
-                            { DiaryDetailId = e.DiaryDetailId,   
+                            {
+                                DiaryDetailId = e.DiaryDetailId,
                                 DiaryId = e.DiaryId,
                                 FoodId = e.FoodId,
                                 FoodName = e.Food.FoodName,
@@ -375,65 +376,65 @@ namespace DataAccess
         {
             using (var context = new HealthTrackingDBContext())
             {
-                var foodDiary = await context.FoodDiaries
+                /*var foodDiary = await context.FoodDiaries
             .Include(fd => fd.FoodDiaryDetails)
             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
+*/
+                /* if (foodDiary == null)
+                 {*/
+                var member = await context.Members
+                    .Include(m => m.Goals)
+                    .FirstOrDefaultAsync(m => m.MemberId == memberId);
 
-                if (foodDiary == null)
+                if (member == null)
+                    throw new Exception("Member not found");
+
+
+                var age = DateTime.Now.Year - member.Dob.Year;
+
+
+                var latestMeasurement = await context.BodyMeasureChanges
+                    .Where(b => b.MemberId == memberId)
+                    .OrderByDescending(b => b.DateChange)
+                    .FirstOrDefaultAsync();
+
+                double currentWeight = latestMeasurement.Weight ?? 0;
+
+
+                double bmr;
+                if (member.Gender == true)
                 {
-                    var member = await context.Members
-                        .Include(m => m.Goals)
-                        .FirstOrDefaultAsync(m => m.MemberId == memberId);
+                    bmr = (10 * currentWeight) + (6.25 * (member.Height ?? 0)) - (5 * age) + 5;
 
-                    if (member == null)
-                        throw new Exception("Member not found");
-
-
-                    var age = DateTime.Now.Year - member.Dob.Year;
-
-
-                    var latestMeasurement = await context.BodyMeasureChanges
-                        .Where(b => b.MemberId == memberId)
-                        .OrderByDescending(b => b.DateChange)
-                        .FirstOrDefaultAsync();
-
-                    double currentWeight = latestMeasurement.Weight ?? 0;
-
-
-                    double bmr;
-                    if (member.Gender == true)
-                    {
-                        bmr = (10 * currentWeight) + (6.25 * (member.Height ?? 0)) - (5 * age) + 5;
-
-                    }
-                    else
-                    {
-                        bmr = (10 * currentWeight) + (6.25 * (member.Height ?? 0)) - (5 * age) - 161;
-                    }
-
-
-                    double activityMultiplier = member.ExerciseLevel switch
-                    {
-                        1 => 1.2,
-                        2 => 1.375,
-                        3 => 1.725,
-
-                    };
-
-                    var maintenanceCalories = bmr * activityMultiplier;
-                    foodDiary = new FoodDiary
-                    {
-                        MemberId = memberId,
-                        Date = date,
-                        GoalCalories = Math.Round(maintenanceCalories, 0),
-                        Calories = 0,
-                        Protein = 0,
-                        Fat = 0,
-                        Carbs = 0
-                    };
-                    context.FoodDiaries.Add(foodDiary);
-                    await context.SaveChangesAsync();
                 }
+                else
+                {
+                    bmr = (10 * currentWeight) + (6.25 * (member.Height ?? 0)) - (5 * age) - 161;
+                }
+
+
+                double activityMultiplier = member.ExerciseLevel switch
+                {
+                    1 => 1.2,
+                    2 => 1.375,
+                    3 => 1.725,
+
+                };
+
+                var maintenanceCalories = bmr * activityMultiplier;
+                var foodDiary = new FoodDiary
+                {
+                    MemberId = memberId,
+                    Date = date,
+                    GoalCalories = Math.Round(maintenanceCalories, 0),
+                    Calories = 0,
+                    Protein = 0,
+                    Fat = 0,
+                    Carbs = 0
+                };
+                context.FoodDiaries.Add(foodDiary);
+                await context.SaveChangesAsync();
+
 
 
             }
