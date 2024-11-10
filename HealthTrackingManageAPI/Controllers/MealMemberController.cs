@@ -84,7 +84,7 @@ namespace HealthTrackingManageAPI.Controllers
             var mealMember = mapper.Map<MealMember>(mealMemberDto);
             mealMember.MemberId = memberId;
             mealMember.MealDate = DateTime.Now;
-            mealMember.NameMealMember = "hii";
+            //mealMember.NameMealMember = "hii";
 
             var mealMemberId = await _mealPlanMemberRepository.CreateMealMemberAsync(mealMember);
 
