@@ -47,6 +47,7 @@ builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 builder.Services.AddScoped<IMealMemberDetailsRepository, MealMemberDetailsRepository>();
+builder.Services.AddScoped<IFoodMemberRepository, FoodMemberRepository>();
 
 
 builder.Services.AddScoped<SpeedSMSService>();

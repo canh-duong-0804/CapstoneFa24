@@ -88,59 +88,107 @@ namespace HealthTrackingManageAPI.Controllers
         [HttpGet("get-all-account-staff-for-admin")]
         public async Task<IActionResult> GetAllAccountStaffForAdmin([FromQuery] int? page)
         {
-            int currentPage = page ?? 1;
-            if (currentPage < 1) currentPage = 1; 
-
-            int totalStaffs = await _staffRepo.GetTotalStaffCountAsync();
-            int currentPageSize = 5;
-            int totalPages = (int)Math.Ceiling(totalStaffs / (double)currentPageSize);
-
-            if (totalStaffs < currentPageSize) currentPageSize = totalStaffs;
-
-            if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
-
-            var staffs = await _staffRepo.GetAllAccountStaffsAsync(currentPage, currentPageSize);
-
-            if (staffs == null || !staffs.Any())
+            try
             {
+              
+                if (page.HasValue && page < 1)
+                {
+                    return BadRequest("Page number must be greater than or equal to 1.");
+                }
+
+                int currentPage = page ?? 1;
+                int currentPageSize = 5;
+
+               
+                int totalStaffs = await _staffRepo.GetTotalStaffCountAsync();
+
+                if (totalStaffs == 0)
+                {
+                    return NotFound("No staff found.");
+                }
+
+                int totalPages = (int)Math.Ceiling(totalStaffs / (double)currentPageSize);
+
+               
+                if (totalStaffs < currentPageSize) currentPageSize = totalStaffs;
+
+          
+                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+              
+                var staffs = await _staffRepo.GetAllAccountStaffsAsync(currentPage, currentPageSize);
+
+                if (staffs == null || !staffs.Any())
+                {
+                    return NotFound("No staff found.");
+                }
+
+                return Ok(new
+                {
+                    staffs,
+                    TotalPages = totalPages,
+                    CurrentPage = currentPage,
+                    PageSize = currentPageSize
+                });
+            }
+            catch (UnauthorizedAccessException)
+            {
+               
+                return StatusCode(403, "Access denied.");
+            }
+            catch (KeyNotFoundException)
+            {
+                
                 return NotFound("No staff found.");
             }
-
-            return Ok(new
+            catch (Exception ex)
             {
-                staffs,
-                TotalPages = totalPages,
-                CurrentPage = currentPage,
-                PageSize = currentPageSize
-            });
+               
+                return StatusCode(500, "An internal server error occurred.");
+            }
         }
 
         [HttpGet("get-account-staff-for-admin-by-id/{id}")]
         public async Task<IActionResult> GetAccountStaffById(int id)
         {
-            var staff = await _staffRepo.GetAccountStaffForAdminByIdAsync(id);
-
-            if (staff == null)
+            try
             {
-                return NotFound("staff not found.");
-            }
+                var staff = await _staffRepo.GetAccountStaffForAdminByIdAsync(id);
 
-            return Ok(staff);
+                if (staff == null)
+                {
+                    return NotFound("staff not found.");
+                }
+
+                return Ok(staff);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching the staff data.");
+            }
         }
 
 
         [HttpGet("get-account-staff-for-staff-by-id/{id}")]
         public async Task<IActionResult> GetAccountPersonalForStaffById(int id)
         {
-            var staff = await _staffRepo.GetAccountPersonalForStaffByIdAsync(id);
-
-            if (staff == null)
+            try
             {
-                return NotFound("staff not found.");
-            }
+                var staff = await _staffRepo.GetAccountPersonalForStaffByIdAsync(id);
 
-            return Ok(staff);
+                if (staff == null)
+                {
+                    return NotFound("staff not found.");
+                }
+
+                return Ok(staff);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching the staff data.");
+            }
         }
+
 
 
         [HttpDelete("delete-account-staff-by-admin/{id}")]
