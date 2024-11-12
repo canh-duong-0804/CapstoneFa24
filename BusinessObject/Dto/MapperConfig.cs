@@ -8,6 +8,7 @@ using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
+using BusinessObject.Dto.FoodMember;
 using BusinessObject.Dto.Goal;
 using BusinessObject.Dto.Ingredient;
 using BusinessObject.Dto.Login;
@@ -186,6 +187,7 @@ namespace BusinessObject
                 cfg.CreateMap<CreateIngredientRequestDTO, Ingredient>().ReverseMap();
                 cfg.CreateMap<UpdateFoodRequestDTO, Food>().ReverseMap();
                 cfg.CreateMap<FoodDiaryResponseDTO, FoodDiary>().ReverseMap();
+                cfg.CreateMap<CreateFoodMemberRequestDTO, FoodMember>().ReverseMap();
 
 
                 cfg.CreateMap<FoodDiaryDetail, FoodDiaryForMealResponseDTO>()
@@ -197,6 +199,7 @@ namespace BusinessObject
 
 
                 cfg.CreateMap<GoalRequestDTO, BusinessObject.Models.Goal>().ReverseMap();
+                cfg.CreateMap<GetAllFoodMemberResponseDTO, FoodMember>().ReverseMap();
                 cfg.CreateMap<CreateMealDetailMemberRequestDTO, BusinessObject.Models.MealsMemberDetail>().ReverseMap();
                 cfg.CreateMap<MealMember, GetAllMealMemberResonseDTO>()
              .ForMember(dest => dest.NameMealPlanMember,
