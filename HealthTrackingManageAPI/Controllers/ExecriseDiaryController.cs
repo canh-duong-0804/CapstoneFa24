@@ -148,7 +148,6 @@ namespace HealthTrackingManageAPI.Controllers
 		}
 
 
-
 		[Authorize]
 		[HttpPost("logExerciseDiaryByPlan")]
 		public async Task<IActionResult> LogExerciseDiaryByPlan([FromBody] LogExerciseDiaryByPlanDTO diaryByPlanDto)
@@ -168,21 +167,32 @@ namespace HealthTrackingManageAPI.Controllers
 			if (!exercisePlanExists)
 				return NotFound("Exercise Plan not found.");
 
-			// Get exercises for the specified plan
-			var exercises = await _exerciseDiaryRepo.GetExercisesByPlanIdAsync(diaryByPlanDto.ExercisePlanId);
-			if (exercises == null || exercises.Count == 0)
+			// Get exercises and day assignments for the specified plan from ExercisePlanDetails
+			var exerciseDetails = await _exerciseDiaryRepo.GetExercisePlanDetailsByPlanIdAsync(diaryByPlanDto.ExercisePlanId);
+			if (exerciseDetails == null || exerciseDetails.Count == 0)
 				return NotFound("No exercises found in the specified plan.");
 
 			// Create a list of ExerciseDiary entries
-			var exerciseDiaries = exercises.Select(exercise => new ExerciseDiary
+			var exerciseDiaries = new List<ExerciseDiary>();
+
+			foreach (var detail in exerciseDetails)
 			{
-				MemberId = memberId,
-				ExercisePlanId = diaryByPlanDto.ExercisePlanId,
-				ExerciseId = exercise.ExerciseId,
-				Date = diaryByPlanDto.Date,
-				Duration = exercise.Duration, // Assuming duration comes from ExercisePlanDetail
-				CaloriesBurned = CalculateCaloriesBurned(exercise.Duration, exercise.CaloriesPerHour) // Function to calculate calories
-			}).ToList();
+				// Calculate the entry date by adding (Day - 1) to the start date
+				var entryDate = diaryByPlanDto.Date.AddDays(detail.Day - 1);
+
+				// Create a new ExerciseDiary entry for each exercise in the plan
+				var exerciseDiary = new ExerciseDiary
+				{
+					MemberId = memberId,
+					ExercisePlanId = diaryByPlanDto.ExercisePlanId,
+					ExerciseId = detail.ExerciseId,
+					Date = entryDate,
+					Duration = detail.Duration,
+					CaloriesBurned = CalculateCaloriesBurned(detail.Duration, detail.CaloriesPerHour) // Assumes CaloriesPerHour is available
+				};
+
+				exerciseDiaries.Add(exerciseDiary);
+			}
 
 			// Save entries in batch
 			await _exerciseDiaryRepo.AddExerciseDiaries(exerciseDiaries);
@@ -190,10 +200,53 @@ namespace HealthTrackingManageAPI.Controllers
 			return Ok("Exercise diary entries logged successfully from plan.");
 		}
 
+		[Authorize]
+		[HttpGet("member/exercise_diary/date/{date}")]
+		public async Task<IActionResult> GetExerciseByDate(DateTime date)
+		{
+			var memberIdClaim = User.FindFirstValue("Id");
+			if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+				return Unauthorized("Member ID not found in claims.");
+
+			try
+			{
+				// Retrieve exercise diaries for the specified member ID
+				var exerciseDiaries = await _exerciseDiaryRepo.GetExerciseDiaryByMemberId(memberId);
+
+				if (exerciseDiaries == null || exerciseDiaries.Count == 0)
+					return NotFound("No exercise diary entries found for the specified member.");
+
+				// Filter exercise diaries by the exact date
+				var filteredDiaries = exerciseDiaries.Where(diary => diary.Date == date.Date).ToList();
+
+				// Map to DTOs
+				var diaryDtos = filteredDiaries.Select(diary => new ExerciseDiaryDto
+				{
+					ExerciseDiaryId = diary.ExerciseDiaryId,
+					Date = diary.Date,
+					Exercise = new ExerciseDto
+					{
+						ExerciseId = diary.ExerciseId ?? 0,  // Ensure it's not null if ExerciseId is nullable
+						ExerciseName = diary.Exercise?.ExerciseName ?? "Unknown", // Check for null reference
+						Duration = diary.Duration,
+						CaloriesBurned = diary.CaloriesBurned ?? 0  // Handle null CaloriesBurned
+					}
+				}).ToList();
+
+				return Ok(diaryDtos);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+
 		private float CalculateCaloriesBurned(int duration, float caloriesPerHour)
-{
-    return (caloriesPerHour / 60) * duration;
-}
+		{
+			return (caloriesPerHour / 60) * duration;
+		}
+
 	}
 }
 

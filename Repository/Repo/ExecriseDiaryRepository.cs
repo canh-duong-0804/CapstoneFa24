@@ -23,6 +23,7 @@ namespace Repository.Repo
 		public Task<bool> DeleteExerciseDiary(int exerciseDiaryId) => ExerciseDiaryDAO.Instance.DeleteExerciseDiary(exerciseDiaryId);
 
 		public Task<List<(int ExerciseId, int Duration, float CaloriesPerHour)>> GetExercisesByPlanIdAsync(int exercisePlanId) => ExerciseDiaryDAO.Instance.GetExercisesByPlanIdAsync(exercisePlanId);
+		public Task<List<(int ExerciseId, int Duration, byte Day, float CaloriesPerHour)>> GetExercisePlanDetailsByPlanIdAsync(int exercisePlanId) => ExerciseDiaryDAO.Instance.GetExercisePlanDetailsByPlanIdAsync(exercisePlanId);
 	}
 	
 }

@@ -25,8 +25,8 @@ namespace BusinessObject.Models
         public DateTime Dob { get; set; }
         public string StaffImage { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public byte[]? PasswordHash { get; set; }
-        public byte[]? PasswordSalt { get; set; }
+        public byte[] PasswordHash { get; set; } = null!;
+        public byte[] PasswordSalt { get; set; } = null!;
         public byte Role { get; set; }
         public DateTime StartWorkingDate { get; set; }
         public DateTime? EndWorkingDate { get; set; }

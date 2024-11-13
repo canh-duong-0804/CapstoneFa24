@@ -8,6 +8,7 @@ namespace BusinessObject.Models
         public int ExercisePlanDetailId { get; set; }
         public int ExercisePlanId { get; set; }
         public int ExerciseId { get; set; }
+        public byte Day { get; set; }
         public int Duration { get; set; }
 
         public virtual Exercise Exercise { get; set; } = null!;
