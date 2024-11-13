@@ -254,104 +254,73 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var getIdDiary = await context.FoodDiaries
+                    var foodDiary = await context.FoodDiaries
                         .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
 
-                    if (getIdDiary == null)
+                    if (foodDiary == null)
                     {
-                        GetOrCreateFoodDiaryAsync(memberId, date);
+                        await GetOrCreateFoodDiaryAsync(memberId, date);
+                        foodDiary = await context.FoodDiaries
+                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
                     }
 
-
-                    var foodDiary = await context.FoodDiaries
-               .Include(fd => fd.FoodDiaryDetails)
-               .FirstOrDefaultAsync(fd => fd.MemberId == getIdDiary.MemberId && fd.Date.Date == date.Date);
-   
-                    if(foodDiary == null)
+                    async Task<List<FoodDiaryForMealResponseDTO>> GetFoodDiaryDetailsByMealType(int mealType)
                     {
-                        return new MainDashResponseDTO
-                        {
-                            foodDiaryInforMember = new FoodDiaryResponseDTO
+                        return await context.FoodDiaryDetails
+                            .Include(e => e.Food)
+                            .Where(e => e.DiaryId == foodDiary.DiaryId && e.MealType == mealType && e.StatusFoodDiary == true)
+                            .Select(e => new FoodDiaryForMealResponseDTO
                             {
-                                DiaryId = getIdDiary.DiaryId,
-                                MemberId = getIdDiary.MemberId,
-                                Date = getIdDiary.Date,
-                                GoalCalories = getIdDiary.GoalCalories,
-                                Calories = 0,
-                                Protein = 0,
-                                Fat = 0,
-                                Carbs = 0
-                            },
-   
-                        };
+                                DiaryDetailId = e.DiaryDetailId,
+                                DiaryId = e.DiaryId,
+                                FoodId = e.FoodId,
+                                FoodName = e.Food.FoodName,
+                                Calories = e.Food.Calories,
+                                Protein = e.Food.Protein,
+                                Carbs = e.Food.Carbs,
+                                Fat = e.Food.Fat,
+                                Quantity = e.Quantity,
+                                MealType = e.MealType
+                            })
+                            .ToListAsync();
+                    }
+
+                    var hasDetails = await context.FoodDiaryDetails
+                        .AnyAsync(fd => fd.DiaryId == foodDiary.DiaryId && fd.StatusFoodDiary == true);
+
+                    var response = new MainDashResponseDTO
+                    {
+                        foodDiaryInforMember = new FoodDiaryResponseDTO
+                        {
+                            DiaryId = foodDiary.DiaryId,
+                            MemberId = foodDiary.MemberId,
+                            Date = foodDiary.Date,
+                            GoalCalories = foodDiary.GoalCalories,
+                            Calories = foodDiary.Calories,
+                            Protein = foodDiary.Protein,
+                            Fat = foodDiary.Fat,
+                            Carbs = foodDiary.Carbs
+                        }
+                    };
+
+                    if (hasDetails)
+                    {
+                        response.foodDiaryForMealBreakfast = await GetFoodDiaryDetailsByMealType(1);
+                        response.foodDiaryForMealLunch = await GetFoodDiaryDetailsByMealType(2);
+                        response.foodDiaryForMealDinner = await GetFoodDiaryDetailsByMealType(3);
+                        response.foodDiaryForMealSnack = await GetFoodDiaryDetailsByMealType(4);
                     }
                     else
                     {
-                        async Task<List<FoodDiaryForMealResponseDTO>> GetFoodDiaryDetailsByMealType(int mealType)
-                        {
-                            return await context.FoodDiaryDetails.Include(e => e.Food)
-                                .Where(e => e.DiaryId == getIdDiary.DiaryId && e.MealType == mealType)
-                                .Select(e => new FoodDiaryForMealResponseDTO
-                                {
-                                    DiaryDetailId = e.DiaryDetailId,
-                                    DiaryId = e.DiaryId,
-                                    FoodId = e.FoodId,
-                                    FoodName = e.Food.FoodName,
-                                    Calories = e.Food.Calories,
-                                    Protein = e.Food.Protein,
-                                    Carbs = e.Food.Carbs,
-                                    Fat = e.Food.Fat,
-                                    Quantity = e.Quantity,
-                                    MealType = e.MealType
-                                })
-                                .ToListAsync();
-                        }
-
-                        var mealTypes = new Dictionary<int, List<FoodDiaryForMealResponseDTO>>
-            {
-                { 1, await GetFoodDiaryDetailsByMealType(1) },
-                { 2, await GetFoodDiaryDetailsByMealType(2) },
-                { 3, await GetFoodDiaryDetailsByMealType(3) },
-                { 4, await GetFoodDiaryDetailsByMealType(4) }
-            };
-
-
-                        var totalCalories = foodDiary.Calories;
-                        var totalProtein = foodDiary.Protein;
-                        var totalFat = foodDiary.Fat;
-                        var totalCarbs = foodDiary.Carbs;
-
-                        foreach (var mealList in mealTypes.Values)
-                        {
-                            totalCalories += mealList.Sum(item => item.Calories * item.Quantity);
-                            totalProtein += mealList.Sum(item => item.Protein * item.Quantity);
-                            totalFat += mealList.Sum(item => item.Fat * item.Quantity);
-                            totalCarbs += mealList.Sum(item => item.Carbs * item.Quantity);
-                        }
-
-
-                        return new MainDashResponseDTO
-                        {
-                            foodDiaryInforMember = new FoodDiaryResponseDTO
-                            {
-                                DiaryId = getIdDiary.DiaryId,
-                                MemberId = getIdDiary.MemberId,
-                                Date = getIdDiary.Date,
-                                GoalCalories = getIdDiary.GoalCalories,
-                                Calories = totalCalories,
-                                Protein = totalProtein,
-                                Fat = totalFat,
-                                Carbs = totalCarbs
-                            },
-                            foodDiaryForMealBreakfast = mealTypes[1],
-                            foodDiaryForMealLunch = mealTypes[2],
-                            foodDiaryForMealDinner = mealTypes[3],
-                            foodDiaryForMealSnack = mealTypes[4]
-                        };
+                        response.foodDiaryForMealBreakfast = new List<FoodDiaryForMealResponseDTO>();
+                        response.foodDiaryForMealLunch = new List<FoodDiaryForMealResponseDTO>();
+                        response.foodDiaryForMealDinner = new List<FoodDiaryForMealResponseDTO>();
+                        response.foodDiaryForMealSnack = new List<FoodDiaryForMealResponseDTO>();
                     }
+
+                    return response;
                 }
             }
-                   
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while retrieving food diary details.", ex);
