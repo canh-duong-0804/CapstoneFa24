@@ -86,10 +86,10 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("Get-Food-dairy-detail-for-member-by-id")]
-        public async Task<IActionResult> GetFoodDairyDetailById()
+        [HttpGet("Get-Food-dairy-detail")]
+        public async Task<IActionResult> GetFoodDairyDetailById(DateTime date)
         {
-            DateTime date = DateTime.Now.Date;
+            
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
             {
@@ -109,7 +109,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-        [Authorize]
+       /* [Authorize]
         [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
         public async Task<IActionResult> GetFoodDairyByDate(DateTime date)
         {
@@ -129,7 +129,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return NotFound(" not found.");
             }
             return Ok(mainDashBoardInfo);
-        }
+        }*/
 
        
     } 

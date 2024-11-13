@@ -16,14 +16,14 @@ namespace Repository.Repo
     {
         public Task<bool> CreateFoodMemberAsync(FoodMember foodMemberModel) => FoodMemberDAO.Instance.CreateFoodMemberAsync(foodMemberModel);
 
-        public Task<bool> DeleteFoodMemberAsync(int foodMemberId) => FoodMemberDAO.Instance.DeleteFoodMemberAsync(foodMemberId);
+        public Task<bool> DeleteFoodMemberAsync(int foodMemberId, int memberId) => FoodMemberDAO.Instance.DeleteFoodMemberAsync(foodMemberId,memberId);
 
 
         public Task<IEnumerable<GetAllFoodMemberResponseDTO>> GetAllFoodMemberByIdAsync(int memberId) => FoodMemberDAO.Instance.GetAllFoodMemberByIdAsync(memberId);
 
-        public Task<GetFoodMemberDetailResponseDTO> GetFoodMemberDetailByIdAsync(int foodMemberId) => FoodMemberDAO.Instance.GetFoodMemberDetailByIdAsync(foodMemberId);
+        public Task<GetFoodMemberDetailResponseDTO> GetFoodMemberDetailByIdAsync(int foodMemberId, int memberId) => FoodMemberDAO.Instance.GetFoodMemberDetailByIdAsync(foodMemberId, memberId);
 
-        public Task<bool> UpdateFoodMemberAsync(UpdateFoodMemberRequestDTO updateFoodMemberDto) => FoodMemberDAO.Instance.UpdateFoodMemberAsync(updateFoodMemberDto);
+        public Task<bool> UpdateFoodMemberAsync(UpdateFoodMemberRequestDTO updateFoodMemberDto, int memberId) => FoodMemberDAO.Instance.UpdateFoodMemberAsync(updateFoodMemberDto, memberId);
        
     }
 }

@@ -129,6 +129,7 @@ namespace DataAccess
 
                    
                     context.Members.Add(registerationRequestDTO);
+                   // context.BodyMeasureChanges.Add(new);
                     await context.SaveChangesAsync();
 
                     return registerationRequestDTO;
