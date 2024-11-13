@@ -130,7 +130,7 @@ namespace DataAccess
 
                    
                     context.Members.Add(registerationRequestDTO);
-
+                    await context.SaveChangesAsync();
                     var savedMember = await context.Members
                 .FirstOrDefaultAsync(m => m.Email == registerationRequestDTO.Email);
                     var bodyMeasureChange = new BodyMeasureChange
