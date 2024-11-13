@@ -39,18 +39,18 @@ namespace HealthTrackingManageAPI.Controllers
             _appSettings = optionsMonitor.CurrentValue;
         }
 
-        [HttpPost("register")]
+       /* [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO member)
         {
             var mapper = MapperConfig.InitializeAutomapper();
 
             var model = mapper.Map<BusinessObject.Models.Member>(member);
 
-           /* bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
+           *//* bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
             if (!ifUserNameUnique)
             {
                 return BadRequest("Username already exists");
-            }*/
+            }*//*
 
 
             bool ifEmailUnique = _userRepo.IsUniqueEmail(model.Email);
@@ -75,7 +75,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             
             return Ok();
-        }
+        }*/
 
 
         [HttpPost("register-mobile")]
@@ -106,7 +106,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
 
-            var user = await _userRepo.Register(model,member.Password);
+            var user = await _userRepo.Register(model,member.Password,member.Weight);
             if (user == null)
             {
                 return BadRequest("Error while registering the user");

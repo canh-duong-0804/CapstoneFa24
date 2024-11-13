@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.Register;
+using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -95,13 +96,13 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    // Tìm thành viên dựa trên email
+                  
                     var user = await context.Members.FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email);
 
                     if (user == null)
                         return null;
 
-                    // Xác minh mật khẩu bằng cách so sánh với hash đã lưu
+                  
                     if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                         return null;
 
@@ -114,7 +115,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<Member> Register(Member registerationRequestDTO, string password)
+        public async Task<Member> Register(Member registerationRequestDTO, string password, double weight)
         {
             try
             {
@@ -129,7 +130,17 @@ namespace DataAccess
 
                    
                     context.Members.Add(registerationRequestDTO);
-                   // context.BodyMeasureChanges.Add(new);
+
+                    var savedMember = await context.Members
+                .FirstOrDefaultAsync(m => m.Email == registerationRequestDTO.Email);
+                    var bodyMeasureChange = new BodyMeasureChange
+                    {
+                        MemberId = savedMember.MemberId,  
+                        Weight = weight,
+                        DateChange = DateTime.UtcNow  
+                    };
+
+                    context.BodyMeasureChanges.Add(bodyMeasureChange);
                     await context.SaveChangesAsync();
 
                     return registerationRequestDTO;

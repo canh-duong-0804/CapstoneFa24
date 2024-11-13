@@ -14,10 +14,10 @@ namespace BusinessObject.Dto.Register
         public DateTime Dob { get; set; }
         public bool Gender { get; set; }
 
-        public double? Height { get; set; }
-        public double? Weight { get; set; }
+        public double Height { get; set; }
+        public double Weight { get; set; }
 
-        public int? ExerciseLevel { get; set; }
+        public int ExerciseLevel { get; set; }
         public string? Goal { get; set; }
         public string PhoneNumber { get; set; }
 

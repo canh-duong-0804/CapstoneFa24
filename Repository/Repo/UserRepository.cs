@@ -36,7 +36,7 @@ namespace Repository.Repo
 
 
 
-        public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO, string password) => UserDAO.Instance.Register(registerationRequestDTO, password);
+        public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO, string password, double weight) => UserDAO.Instance.Register(registerationRequestDTO, password,weight);
 
         
     }

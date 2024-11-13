@@ -16,7 +16,7 @@ namespace Repository.IRepo
 
         //Task<Member> Register(Member registerationRequestDTO);
 
-        Task<Member> Register(Member registerationRequestDTO, string password);
+        Task<Member> Register(Member registerationRequestDTO, string password, double weight);
 
         Task<Member> Login(Member loginRequestDTO, string password);
         Task<Member> GetMemberByIdAsync(int userId);
