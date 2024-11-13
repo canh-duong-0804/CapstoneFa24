@@ -262,5 +262,80 @@ namespace DataAccess
                 throw new Exception($"Error retrieving meal member details: {ex.Message}", ex);
             }
         }
+<<<<<<< Updated upstream
+=======
+
+        public async Task<bool> AddMealMemberToDiaryDetailAsync(AddMealMemberToFoodDiaryDetailRequestDTO addMealMemberToFoodDiary,int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    
+                    var existingDiary = await context.FoodDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == addMealMemberToFoodDiary.MealDate );
+                    //addMealMemberToFoodDiary.Date.Date);
+
+                    var listMealMember = await context.MealMemberDetails
+                        .Where(fd => fd.MealMemberId == addMealMemberToFoodDiary.MealMemberId && fd.MemberId== memberId).ToListAsync();
+
+                    
+
+
+
+
+
+                    foreach (var foodItem in listMealMember)
+                    {
+                        var foodDiaryDetail = new FoodDiaryDetail
+                        {
+                            DiaryId = existingDiary.DiaryId,
+                            FoodId = foodItem.FoodId,
+                            Quantity = foodItem.Quantity.HasValue ? (double)foodItem.Quantity.Value : 0.0,
+                            MealType = addMealMemberToFoodDiary.MealType,
+                            StatusFoodDiary = true
+                        };
+
+                        context.FoodDiaryDetails.Add(foodDiaryDetail);
+                    }
+
+                   
+                    await context.SaveChangesAsync();
+
+                    var foodDiaryDetails = await context.FoodDiaryDetails
+               .Include(fdd => fdd.Food)
+               .Where(fdd => fdd.DiaryId == existingDiary.DiaryId && fdd.StatusFoodDiary == true)
+               .ToListAsync();
+
+
+                    double totalCalories = foodDiaryDetails.Sum(detail => detail.Food.Calories * detail.Quantity);
+                    double totalProtein = foodDiaryDetails.Sum(detail => detail.Food.Protein * detail.Quantity);
+                    double totalFat = foodDiaryDetails.Sum(detail => detail.Food.Fat * detail.Quantity);
+                    double totalCarbs = foodDiaryDetails.Sum(detail => detail.Food.Carbs * detail.Quantity);
+
+
+                    var foodDiary = await context.FoodDiaries.FirstOrDefaultAsync(fd => fd.DiaryId == existingDiary.DiaryId);
+                    if (foodDiary != null)
+                    {
+                        foodDiary.Calories = Math.Round(totalCalories, 1);
+                        foodDiary.Protein = Math.Round(totalProtein, 1);
+                        foodDiary.Fat = Math.Round(totalFat, 1);
+                        foodDiary.Carbs = Math.Round(totalCarbs, 1);
+
+                        await context.SaveChangesAsync();
+                    }
+
+                    return true; 
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"Error adding meal to diary: {ex.Message}");
+                return false; 
+            }
+        }
+>>>>>>> Stashed changes
     }
 }

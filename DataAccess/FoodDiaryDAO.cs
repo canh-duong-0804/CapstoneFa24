@@ -259,7 +259,7 @@ namespace DataAccess
 
                     if (getIdDiary == null)
                     {
-                        GetOrCreateFoodDiaryAsync(memberId, date);
+                        await GetOrCreateFoodDiaryAsync(memberId, date);
                     }
 
 
