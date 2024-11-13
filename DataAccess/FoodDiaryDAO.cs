@@ -288,52 +288,7 @@ namespace DataAccess
                     var hasDetails = await context.FoodDiaryDetails
                         .AnyAsync(fd => fd.DiaryId == foodDiary.DiaryId && fd.StatusFoodDiary == true);
 
-
-                    var totalCalories = foodDiary.Calories;
-                    var totalProtein = foodDiary.Protein;
-                    var totalFat = foodDiary.Fat;
-                    var totalCarbs = foodDiary.Carbs;
-
-
-                    foreach (var mealList in mealTypes.Values)
-                    {
-                        totalCalories += mealList.Sum(item => item.Calories * item.Quantity);
-                        totalProtein += mealList.Sum(item => item.Protein * item.Quantity);
-                        totalFat += mealList.Sum(item => item.Fat * item.Quantity);
-                        totalCarbs += mealList.Sum(item => item.Carbs * item.Quantity);
-
-                      /*  foreach (var mealList in mealTypes.Values)
-                        {
-                            totalCalories += mealList.Sum(item => item.Calories * item.Quantity);
-                            totalProtein += mealList.Sum(item => item.Protein * item.Quantity);
-                            totalFat += mealList.Sum(item => item.Fat * item.Quantity);
-                            totalCarbs += mealList.Sum(item => item.Carbs * item.Quantity);
-                        }*/
-
-
-                        return new MainDashResponseDTO
-                        {
-                            foodDiaryInforMember = new FoodDiaryResponseDTO
-                            {
-                                DiaryId = getIdDiary.DiaryId,
-                                MemberId = getIdDiary.MemberId,
-                                Date = getIdDiary.Date,
-                                GoalCalories = getIdDiary.GoalCalories,
-                                Calories = totalCalories,
-                                Protein = totalProtein,
-                                Fat = totalFat,
-                                Carbs = totalCarbs
-                            },
-                            foodDiaryForMealBreakfast = mealTypes[1],
-                            foodDiaryForMealLunch = mealTypes[2],
-                            foodDiaryForMealDinner = mealTypes[3],
-                            foodDiaryForMealSnack = mealTypes[4]
-                        };
-
-                    }
-
-
-                    return new MainDashResponseDTO
+                    var response = new MainDashResponseDTO
                     {
                         foodDiaryInforMember = new FoodDiaryResponseDTO
                         {
