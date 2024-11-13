@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
+using BusinessObject.Dto.MainDashBoardMobile;
 using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,8 @@ namespace Repository.IRepo
         Task getDailyFoodDiaryFollowMeal(int dairyID, int mealType);
         Task<FoodDiary> GetOrCreateFoodDiaryByDate(int memberId, DateTime date);
         Task<UpdateFoodDiaryRequestDTO> UpdateFoodDiary(UpdateFoodDiaryRequestDTO updatedFoodDiary);
+        Task<MainDashResponseDTO> GetFoodDairyDetailById(int memberId, DateTime date);
+        //Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date);
+        Task<FoodDiaryForMemberMobileResponse> GetFoodDairyByDate(int memberId, DateTime date);
     }
 }

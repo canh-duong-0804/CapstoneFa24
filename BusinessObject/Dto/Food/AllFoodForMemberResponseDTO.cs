@@ -8,6 +8,7 @@ namespace BusinessObject.Dto.Food
 {
     public class AllFoodForMemberResponseDTO
     {
+        public int FoodId { get; set; }
         public string FoodName { get; set; }
         public string? FoodImage { get; set; }
         public double Calories { get; set; }

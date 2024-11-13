@@ -38,6 +38,8 @@ namespace BusinessObject.Models
         public virtual DbSet<FoodMember> FoodMembers { get; set; } = null!;
         public virtual DbSet<Goal> Goals { get; set; } = null!;
         public virtual DbSet<Ingredient> Ingredients { get; set; } = null!;
+        public virtual DbSet<MealMember> MealMembers { get; set; } = null!;
+        public virtual DbSet<MealMemberDetail> MealMemberDetails { get; set; } = null!;
         public virtual DbSet<MealPlan> MealPlans { get; set; } = null!;
         public virtual DbSet<MealPlanDetail> MealPlanDetails { get; set; } = null!;
         public virtual DbSet<Member> Members { get; set; } = null!;
@@ -814,6 +816,73 @@ namespace BusinessObject.Models
                 entity.Property(e => e.Name)
                     .HasMaxLength(100)
                     .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<MealMember>(entity =>
+            {
+                entity.ToTable("MEAL_MEMBER");
+
+                entity.Property(e => e.MealMemberId).HasColumnName("meal_member_id");
+
+                entity.Property(e => e.Image)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("image");
+
+                entity.Property(e => e.MealDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("meal_date");
+
+                entity.Property(e => e.MemberId).HasColumnName("member_id");
+
+                entity.Property(e => e.NameMealMember)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("name_meal_member");
+
+                entity.Property(e => e.TotalCalories).HasColumnName("total_calories");
+
+                entity.Property(e => e.TotalCarb).HasColumnName("total_carb");
+
+                entity.Property(e => e.TotalFat).HasColumnName("total_fat");
+
+                entity.Property(e => e.TotalProtein).HasColumnName("total_protein");
+
+                entity.HasOne(d => d.Member)
+                    .WithMany(p => p.MealMembers)
+                    .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__MEAL_MEMB__membe__2CF2ADDF");
+            });
+
+            modelBuilder.Entity<MealMemberDetail>(entity =>
+            {
+                entity.HasKey(e => e.DetailId)
+                    .HasName("PK__MEAL_MEM__38E9A2241C6D9F16");
+
+                entity.ToTable("MEAL_MEMBER_DETAILS");
+
+                entity.Property(e => e.DetailId).HasColumnName("detail_id");
+
+                entity.Property(e => e.FoodId).HasColumnName("food_id");
+
+                entity.Property(e => e.MealMemberId).HasColumnName("meal_member_id");
+
+                entity.Property(e => e.MemberId).HasColumnName("member_id");
+
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
+
+                entity.HasOne(d => d.Food)
+                    .WithMany(p => p.MealMemberDetails)
+                    .HasForeignKey(d => d.FoodId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__MEAL_MEMB__food___30C33EC3");
+
+                entity.HasOne(d => d.MealMember)
+                    .WithMany(p => p.MealMemberDetails)
+                    .HasForeignKey(d => d.MealMemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__MEAL_MEMB__meal___2FCF1A8A");
             });
 
             modelBuilder.Entity<MealPlan>(entity =>

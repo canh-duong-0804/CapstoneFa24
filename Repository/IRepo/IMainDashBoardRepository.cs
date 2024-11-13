@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.MainDashBoardMobile;
+﻿using BusinessObject.Dto.FoodDiary;
+using BusinessObject.Dto.MainDashBoardMobile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace Repository.IRepo
 {
     public interface IMainDashBoardRepository
     {
-        Task<MainDashResponseDTO> GetFoodDairyDetailById(int memberId, DateTime date);
         Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date);
     }
 }

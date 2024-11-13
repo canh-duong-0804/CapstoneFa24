@@ -9,6 +9,6 @@ namespace BusinessObject.Dto.BodyMeasurement
 		public double? Weight { get; set; }
 		public double? BodyFat { get; set; }
 		public double? Muscles { get; set; }
-		public int MemberId { get; set; }
+		//public int MemberId { get; set; }
 	}
 }

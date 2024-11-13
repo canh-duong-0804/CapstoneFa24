@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Blog.CreateBlog;
 using BusinessObject.Dto.BodyMeasurement;
@@ -8,8 +8,12 @@ using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
+using BusinessObject.Dto.Goal;
 using BusinessObject.Dto.Ingredient;
 using BusinessObject.Dto.Login;
+using BusinessObject.Dto.MealDetailMember;
+using BusinessObject.Dto.MealMember;
+using BusinessObject.Dto.MealPlanDetailMember;
 using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Recipe.CreateDTO;
 using BusinessObject.Dto.Register;
@@ -121,7 +125,7 @@ namespace BusinessObject
                 //.ForMember(dest => dest.Goal, opt => opt.MapFrom(src => src.Goal))
                 .ReverseMap()
                 ;
-                cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>()
+                cfg.CreateMap<MemberProfileDto, BusinessObject.Models.Member>() 
                    .ForMember(dest => dest.MemberId, opt => opt.Ignore())
                    .ReverseMap();
 
@@ -168,6 +172,15 @@ namespace BusinessObject
 
 
                 cfg.CreateMap<CreateRecipeRequestDTO, Recipe>().ReverseMap();
+
+                cfg.CreateMap<CreateMealMemberRequestDTO, MealMember>()
+               .ForMember(dest => dest.MealDate, opt => opt.Ignore())  // Thiết lập ngày trong controller
+               .ForMember(dest => dest.MemberId, opt => opt.Ignore()); // Thiết lập MemberId sau
+
+                cfg.CreateMap<CreateMealDetailMemberRequestDTO, MealMemberDetail>()
+                    .ForMember(dest => dest.MealMemberId, opt => opt.Ignore()) // Thiết lập MealMemberId sau
+                    .ForMember(dest => dest.MemberId, opt => opt.Ignore()); // Thiết lập MemberId sau
+
                 cfg.CreateMap<RecipeIngredientRequestDTO, RecipeIngredient>().ReverseMap();
                 cfg.CreateMap<CreateCategoryExerciseRequestDTO, ExerciseCategory>().ReverseMap();
                 cfg.CreateMap<CreateIngredientRequestDTO, Ingredient>().ReverseMap();
@@ -183,8 +196,15 @@ namespace BusinessObject
                 .ForMember(dest => dest.Calories, opt => opt.MapFrom(src => src.Food.Calories));
 
 
+                cfg.CreateMap<GoalRequestDTO, BusinessObject.Models.Goal>().ReverseMap();
+                cfg.CreateMap<CreateMealDetailMemberRequestDTO, BusinessObject.Models.MealsMemberDetail>().ReverseMap();
+                cfg.CreateMap<MealMember, GetAllMealMemberResonseDTO>()
+             .ForMember(dest => dest.NameMealPlanMember,
+                        opt => opt.MapFrom(src => src.NameMealMember)).ReverseMap();
 
-
+                cfg.CreateMap<AddMoreFoodToMealMemberRequestDTO, MealMemberDetail>()
+           .ForMember(dest => dest.MealMemberId, opt => opt.Ignore())
+           .ForMember(dest => dest.MemberId, opt => opt.Ignore());
             });
 
       

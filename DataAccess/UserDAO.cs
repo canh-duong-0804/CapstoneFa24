@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -88,15 +89,22 @@ namespace DataAccess
             }
         }
 
-        public async Task<Member> Login(Member loginRequestDTO)
+        public async Task<Member> Login(Member loginRequestDTO, string password)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var user = await context.Members.FirstOrDefaultAsync(x =>
-                  x.Email == loginRequestDTO.Email /*&& x.Password == loginRequestDTO.Password*/);
-                    
+                    // Tìm thành viên dựa trên email
+                    var user = await context.Members.FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email);
+
+                    if (user == null)
+                        return null;
+
+                    // Xác minh mật khẩu bằng cách so sánh với hash đã lưu
+                    if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                        return null;
+
                     return user;
                 }
             }
@@ -104,15 +112,22 @@ namespace DataAccess
             {
                 throw new Exception(e.Message);
             }
-            
         }
 
-        public async Task<Member> Register(Member registerationRequestDTO)
+        public async Task<Member> Register(Member registerationRequestDTO, string password)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                    
+                    CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                   
+                    registerationRequestDTO.PasswordHash = passwordHash;
+                    registerationRequestDTO.PasswordSalt = passwordSalt;
+
+                   
                     context.Members.Add(registerationRequestDTO);
                     await context.SaveChangesAsync();
 
@@ -125,6 +140,23 @@ namespace DataAccess
             }
         }
 
+        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            using (var hmac = new HMACSHA512(storedSalt))
+            {
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(storedHash);
+            }
+        }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            }
+        }
         public async Task<Member> GetMemberByIdAsync(int userId)
         {
             using (var context = new HealthTrackingDBContext())
