@@ -306,6 +306,7 @@ namespace DataAccess
                     var totalFat = foodDiary.Fat;
                     var totalCarbs = foodDiary.Carbs;
 
+
                     foreach (var mealList in mealTypes.Values)
                     {
                         totalCalories += mealList.Sum(item => item.Calories * item.Quantity);

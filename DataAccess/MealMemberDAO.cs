@@ -262,8 +262,7 @@ namespace DataAccess
                 throw new Exception($"Error retrieving meal member details: {ex.Message}", ex);
             }
         }
-<<<<<<< Updated upstream
-=======
+
 
         public async Task<bool> AddMealMemberToDiaryDetailAsync(AddMealMemberToFoodDiaryDetailRequestDTO addMealMemberToFoodDiary,int memberId)
         {
@@ -336,6 +335,6 @@ namespace DataAccess
                 return false; 
             }
         }
->>>>>>> Stashed changes
+
     }
 }
