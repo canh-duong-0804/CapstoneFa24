@@ -46,24 +46,28 @@ namespace DataAccess
             }
         }
 
-        // Read all CommunityPostCategories
-        public async Task<List<CommunityPostCategory>> GetAllCategoriesAsync()
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    return await context.CommunityPostCategories.ToListAsync();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error retrieving categories: " + e.Message);
-            }
-        }
+		// Read all CommunityPostCategories
+		public async Task<List<CommunityPostCategory>> GetAllCategoriesAsync(int pageNumber, int pageSize)
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					return await context.CommunityPostCategories
+										.Skip((pageNumber - 1) * pageSize)
+										.Take(pageSize)
+										.ToListAsync();
+				}
+			}
+			catch (Exception e)
+			{
+				throw new Exception("Error retrieving categories: " + e.Message);
+			}
+		}
 
-        // Read a single CommunityPostCategory by ID
-        public async Task<CommunityPostCategory> GetCategoryByIdAsync(int id)
+
+		// Read a single CommunityPostCategory by ID
+		public async Task<CommunityPostCategory> GetCategoryByIdAsync(int id)
         {
             try
             {
@@ -126,7 +130,22 @@ namespace DataAccess
                 throw new Exception("Error deleting category: " + e.Message);
             }
         }
+		// Get total count of CommunityPostCategories
+		public async Task<int> GetTotalCategoryCountAsync()
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					return await context.CommunityPostCategories.CountAsync();
+				}
+			}
+			catch (Exception e)
+			{
+				throw new Exception("Error retrieving total category count: " + e.Message);
+			}
+		}
 
-    }
+	}
 }
 

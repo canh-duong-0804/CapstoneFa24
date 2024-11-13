@@ -116,5 +116,80 @@ namespace DataAccess
 				throw new Exception($"Error checking Exercise existence: {ex.Message}", ex);
 			}
 		}
+
+
+		//create method to delete exercise diary by id	
+		public async Task<bool> DeleteExerciseDiary(int exerciseDiaryId)
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					var exerciseDiary = await context.ExerciseDiaries.FindAsync(exerciseDiaryId);
+					// delete exercise diary
+					context.ExerciseDiaries.Remove(exerciseDiary);
+					await context.SaveChangesAsync();
+					return true;
+				}
+			}
+			catch (Exception e)
+			{
+				throw new Exception(e.Message);
+			}
+		}
+
+
+		public async Task<List<(int ExerciseId, int Duration, float CaloriesPerHour)>> GetExercisesByPlanIdAsync(int exercisePlanId)
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					var result = await context.ExercisePlanDetails
+						.Where(epd => epd.ExercisePlanId == exercisePlanId)
+						.Join(context.Exercises,
+							epd => epd.ExerciseId,
+							e => e.ExerciseId,
+							(epd, e) => new { epd.ExerciseId, epd.Duration, CaloriesPerHour = (float)e.CaloriesPerHour })
+						.ToListAsync();
+
+					return result.Select(x => (x.ExerciseId, x.Duration, x.CaloriesPerHour)).ToList();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Error fetching exercises for plan {exercisePlanId}: {ex.Message}", ex);
+			}
+		}
+
+
+		public async Task<List<(int ExerciseId, int Duration, byte Day, float CaloriesPerHour)>> GetExercisePlanDetailsByPlanIdAsync(int exercisePlanId)
+		{
+			try
+			{
+				using (var context = new HealthTrackingDBContext())
+				{
+					var result = await context.ExercisePlanDetails
+						.Where(epd => epd.ExercisePlanId == exercisePlanId)
+						.Join(context.Exercises,
+							epd => epd.ExerciseId,
+							e => e.ExerciseId,
+							(epd, e) => new
+							{
+								epd.ExerciseId,
+								epd.Duration,
+								epd.Day, // Fetching the Day field
+								CaloriesPerHour = (float)e.CaloriesPerHour // Assuming this is available in Exercise
+							})
+						.ToListAsync();
+
+					return result.Select(x => (x.ExerciseId, x.Duration, x.Day, x.CaloriesPerHour)).ToList();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Error fetching exercise details for plan {exercisePlanId}: {ex.Message}", ex);
+			}
+		}
 	}
 }

@@ -11,7 +11,6 @@ namespace BusinessObject.Dto.MealPlan
         public int MealPlanId { get; set; }
      
         public string? MealPlanImage { get; set; }
-
      
         public string Name { get; set; } = null!;
         public double TotalCalories { get; set; }

@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Food;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.Food;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
 using BusinessObject.Models;
@@ -263,7 +264,6 @@ namespace DataAccess
             }
         }
 
-
         public async Task<bool> AddMealMemberToDiaryDetailAsync(AddMealMemberToFoodDiaryDetailRequestDTO addMealMemberToFoodDiary,int memberId)
         {
             try
@@ -335,6 +335,5 @@ namespace DataAccess
                 return false; 
             }
         }
-
     }
 }

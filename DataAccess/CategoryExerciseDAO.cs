@@ -154,5 +154,5 @@ namespace DataAccess
                 throw new Exception($"Error retrieving exercises: {ex.Message}", ex);
             }
         }
-    }
+	}
 }

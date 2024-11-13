@@ -24,8 +24,8 @@ namespace Repository.IRepo
 		// Soft delete a post (set Status to false)
 		Task<bool> SoftDeletePost(int postId);
 
-		Task<IEnumerable<CommunityPost>> GetAllPosts();
+		Task<IEnumerable<CommunityPost>> GetAllPostsAsync(int page, int pageSize);
 
-
+		Task<int> GetTotalPostCountAsync();
 	}
 }

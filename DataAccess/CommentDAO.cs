@@ -115,25 +115,27 @@ namespace DataAccess
             }
         }
 
-        // Get all active comments for a specific post ID
-        public async Task<IEnumerable<Comment>> GetCommentsByPostId(int postId)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    return await context.Comments
-                        .Include(comment => comment.CreateByNavigation)
-                        .Where(comment => comment.PostId == postId && comment.Status == true) // Active comments only
-                        .OrderByDescending(comment => comment.CreateDate)
-                        .ToListAsync();
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
+		// Get all active comments for a specific post ID
+		public async Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(int postId, int page, int pageSize)
+		{
+			using (var context = new HealthTrackingDBContext())
+			{
+				return await context.Comments
+					.Where(c => c.PostId == postId)
+					.OrderByDescending(c => c.CreateDate)
+					.Skip((page - 1) * pageSize)
+					.Take(pageSize)
+					.ToListAsync();
+			}
+		}
 
-    }
+		public async Task<int> GetTotalCommentsByPostIdAsync(int postId)
+		{
+			using (var context = new HealthTrackingDBContext())
+			{
+				return await context.Comments.CountAsync(c => c.PostId == postId);
+			}
+		}
+
+	}
 }

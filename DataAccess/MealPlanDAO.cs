@@ -1,4 +1,4 @@
-﻿using BusinessObject.Dto.MealPlan;
+using BusinessObject.Dto.MealPlan;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -36,7 +36,6 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     return await context.MealPlans
-
                     .Select(mp => new GetAllMealPlanForMemberResponseDTO
                     {
                         MealPlanId = mp.MealPlanId,
@@ -63,13 +62,11 @@ namespace DataAccess
                 {
                     var today = DateTime.Today;
 
-
                     var mealPlan = await context.MealPlans.FirstOrDefaultAsync(mp => mp.MealPlanId == mealPlanId);
                     if (mealPlan == null)
                     {
                         throw new Exception("Meal plan not found.");
                     }
-
 
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(mpd => mpd.MealPlanId == mealPlanId)
@@ -87,7 +84,6 @@ namespace DataAccess
 
                         if (targetDiary == null)
                         {
-
                             targetDiary = new FoodDiary
                             {
                                 MemberId = memberId,
@@ -113,7 +109,6 @@ namespace DataAccess
                             context.FoodDiaryDetails.RemoveRange(existingDetails);
                         }
 
-
                         var foodDiaryDetail = new FoodDiaryDetail
                         {
                             DiaryId = targetDiary.DiaryId,
@@ -135,7 +130,6 @@ namespace DataAccess
 
                     foreach (var diary in diariesToUpdate)
                     {
-
                         var diaryDetails = await context.FoodDiaryDetails
                             .Where(fdd => fdd.DiaryId == diary.DiaryId)
                             .ToListAsync();
