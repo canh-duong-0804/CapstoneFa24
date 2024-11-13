@@ -8,8 +8,8 @@ namespace BusinessObject.Dto.MealMember
 {
     public class GetAllMealMemberResonseDTO
     {
-        public int MealPlanId { get; set; }
-        
+        public int MealMemberId { get; set; }
+
         public string? Image { get; set; }
         public string NameMealPlanMember { get; set; } = null!;
         public int? TotalCalories { get; set; }

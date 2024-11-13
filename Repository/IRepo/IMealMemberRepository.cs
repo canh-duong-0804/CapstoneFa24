@@ -11,6 +11,7 @@ namespace Repository.IRepo
 {
     public interface IMealMemberRepository
     {
+        Task<bool> AddMealMemberToDiaryDetailAsync(AddMealMemberToFoodDiaryDetailRequestDTO addMealMemberTOFoodDiary,int memberId);
         Task<int> CreateMealMemberAsync(MealMember mealMember);
         Task CreateMealMemberDetailsAsync(List<MealMemberDetail> mealMemberDetails);
         Task<bool> CreateMealPlanForMember(MealMember mealMember);

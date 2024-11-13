@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
+using Repository.Repo;
 using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
@@ -40,11 +41,11 @@ namespace HealthTrackingManageAPI.Controllers
                 return BadRequest();
             }
 
-          
+
             var mealMembers = await _mealPlanMemberRepository.GetAllMealMembersAsync(memberId);
             var mapper = MapperConfig.InitializeAutomapper();
 
-           
+
             var mealMemberDtos = mapper.Map<List<GetAllMealMemberResonseDTO>>(mealMembers);
 
             if (mealMemberDtos == null || !mealMemberDtos.Any())
@@ -84,7 +85,7 @@ namespace HealthTrackingManageAPI.Controllers
             var mealMember = mapper.Map<MealMember>(mealMemberDto);
             mealMember.MemberId = memberId;
             mealMember.MealDate = DateTime.Now;
-            mealMember.NameMealMember = "hii";
+            //mealMember.NameMealMember = "hii";
 
             var mealMemberId = await _mealPlanMemberRepository.CreateMealMemberAsync(mealMember);
 
@@ -97,10 +98,10 @@ namespace HealthTrackingManageAPI.Controllers
 
             await _mealPlanMemberRepository.CreateMealMemberDetailsAsync(mealMemberDetails);
 
-            
+
             await _mealPlanMemberRepository.UpdateMealMemberTotalCaloriesAsync(mealMemberId);
 
-            return Ok() ;
+            return Ok();
         }
 
         [Authorize]
@@ -113,13 +114,34 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return NotFound();
             }
-
-
-
-
             return Ok(mealMember);
         }
+        [Authorize]
+        [HttpPost("Add-meal-member-to-diary")]
+        public async Task<IActionResult> AddMealMemberToDiary([FromBody] AddMealMemberToFoodDiaryDetailRequestDTO addMealMemberTOFoodDiary)
+        {
 
+
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest();
+            }
+
+            var success = await _mealPlanMemberRepository.AddMealMemberToDiaryDetailAsync(addMealMemberTOFoodDiary, memberId);
+
+            if (!success)
+            {
+                return StatusCode(500);
+            }
+
+            return Ok("Meal successfully added to the diary.");
+
+        }
 
 
 
@@ -127,7 +149,7 @@ namespace HealthTrackingManageAPI.Controllers
         [HttpDelete("delete-meal-member-detail/{detailId}")]
         public async Task<IActionResult> DeleteMealMemberDetail(int detailId)
         {
-           
+
 
             await _mealPlanMemberRepository.DeleteMealMemberDetailAsync(detailId);
             return Ok();
