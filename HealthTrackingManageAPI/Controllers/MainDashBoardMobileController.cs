@@ -43,10 +43,22 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return NotFound("Exercise not found.");
             }
-            return Ok(mainDashBoardInfo);
+            var infoCalorinesMember = await _mainDashBoardRepository.GetInfoCaloInDashBoardForMemberById(memberId, date);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound("Exercise not found.");
+            }
+            var response = new MainResponseDTO
+            {
+                MainDashBoardInfo = mainDashBoardInfo,
+                InfoCalorinesMember = infoCalorinesMember
+            };
+
+            return Ok(response);
+
         }
 
-        [Authorize]
+        /*[Authorize]
         [HttpGet("Get-info-calo-in-of-dashboard-for-member")]
         public async Task<IActionResult> GetInfoCaloInDashBoardForMemberById()
         {
@@ -68,7 +80,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return NotFound("Exercise not found.");
             }
             return Ok(mainDashBoardInfo);
-        }
+        }*/
 
         /* [Authorize]
          [HttpGet("Get-Food-dairy-detail-for-member-by-id")]
