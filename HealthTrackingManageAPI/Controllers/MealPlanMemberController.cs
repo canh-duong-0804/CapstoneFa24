@@ -80,5 +80,15 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(success);
 
         }
+
+
+
+        [HttpGet("search-meal-plan-for-member")]
+        public async Task<IActionResult> SearchFoodsForMember(string mealPlanName)
+        {
+            var foods = await _mealPlanRepository.SearchMealPlanForMemberAsync(mealPlanName);
+
+            return Ok(foods);
+        }
     }
 }

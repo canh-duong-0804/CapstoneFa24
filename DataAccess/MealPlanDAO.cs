@@ -1,3 +1,4 @@
+using BusinessObject.Dto.Food;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealPlan;
 using BusinessObject.Models;
@@ -274,5 +275,31 @@ namespace DataAccess
             }
         }
 
+        public async Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> SearchMealPlanForMemberAsync(string mealPlanName)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    return await (from mp in context.MealPlans
+                                  
+                                  where mp.Status == true && EF.Functions.Collate(mp.Name.ToLower(), "Vietnamese_CI_AI").Contains(mealPlanName.ToLower())
+                                  select new GetAllMealPlanForMemberResponseDTO
+                    {
+                        MealPlanId = mp.MealPlanId,
+                        Name = mp.Name,
+                        ShortDescription = mp.ShortDescription,
+                        MealPlanImage = mp.MealPlanImage,
+                        TotalCalories = mp.TotalCalories,
+
+                    })
+                    .ToListAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

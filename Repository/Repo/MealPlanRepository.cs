@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Dto.MealPlan;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -17,6 +18,9 @@ namespace Repository.Repo
         public Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlansForMemberAsync() => MealPlanDAO.Instance.GetAllMealPlansForMemberAsync();
 
        public Task<MealPlanDetailResponseDTO> GetMealPlanDetailForMemberAsync(int mealPlanId, int day) => MealPlanDAO.Instance.GetMealPlanDetailForMemberAsync(mealPlanId,day);
-     
+
+        public Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> SearchMealPlanForMemberAsync(string mealPlanName) => MealPlanDAO.Instance.SearchMealPlanForMemberAsync(mealPlanName);
+
+        
     }
 }
