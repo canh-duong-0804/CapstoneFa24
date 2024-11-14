@@ -60,7 +60,7 @@ namespace DataAccess
             }
         }
 
-        public async Task UpdateGoalAsync(Goal goal)
+        /*public async Task UpdateGoalAsync(Goal goal,int memberid)
         {
             try
             {
@@ -74,6 +74,6 @@ namespace DataAccess
             {
                 throw new Exception("An error occurred while updating the goal.", ex);
             }
-        }
+        }*/
     }
 }

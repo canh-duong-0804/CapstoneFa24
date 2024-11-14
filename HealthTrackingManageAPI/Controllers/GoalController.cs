@@ -72,7 +72,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-        [HttpPut("update-goal/{id}")]
+        /*[HttpPut("update-goal/{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateGoal([FromBody] GoalResponseDTO updatedGoal)
         {
@@ -95,6 +95,6 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
-        }
+        }*/
     }
 }

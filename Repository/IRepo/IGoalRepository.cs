@@ -12,6 +12,6 @@ namespace Repository.IRepo
     {
         Task AddGoalAsync(Goal goal);
         Task<Goal> GetGoalByIdAsync(int id);
-        Task<bool> updateGoal(int memberId, GoalResponseDTO updatedGoal);
+        /*Task<bool> updateGoal(int memberId, GoalResponseDTO updatedGoal);*/
     }
 }
