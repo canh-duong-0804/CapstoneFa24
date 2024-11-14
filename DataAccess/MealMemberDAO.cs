@@ -272,9 +272,11 @@ namespace DataAccess
                 {
 
                     
-                    var existingDiary = await context.FoodDiaries
-                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == addMealMemberToFoodDiary.MealDate );
+                    /*var existingDiary = await context.FoodDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == DateTime.Now.Date );*/
                     //addMealMemberToFoodDiary.Date.Date);
+
+
 
                     var listMealMember = await context.MealMemberDetails
                         .Where(fd => fd.MealMemberId == addMealMemberToFoodDiary.MealMemberId && fd.MemberId== memberId).ToListAsync();
@@ -289,7 +291,7 @@ namespace DataAccess
                     {
                         var foodDiaryDetail = new FoodDiaryDetail
                         {
-                            DiaryId = existingDiary.DiaryId,
+                            DiaryId = addMealMemberToFoodDiary.DiaryId,
                             FoodId = foodItem.FoodId,
                             Quantity = foodItem.Quantity.HasValue ? (double)foodItem.Quantity.Value : 0.0,
                             MealType = addMealMemberToFoodDiary.MealType,
@@ -304,7 +306,7 @@ namespace DataAccess
 
                     var foodDiaryDetails = await context.FoodDiaryDetails
                .Include(fdd => fdd.Food)
-               .Where(fdd => fdd.DiaryId == existingDiary.DiaryId && fdd.StatusFoodDiary == true)
+               .Where(fdd => fdd.DiaryId == addMealMemberToFoodDiary.DiaryId && fdd.StatusFoodDiary == true)
                .ToListAsync();
 
 
@@ -314,7 +316,7 @@ namespace DataAccess
                     double totalCarbs = foodDiaryDetails.Sum(detail => detail.Food.Carbs * detail.Quantity);
 
 
-                    var foodDiary = await context.FoodDiaries.FirstOrDefaultAsync(fd => fd.DiaryId == existingDiary.DiaryId);
+                    var foodDiary = await context.FoodDiaries.FirstOrDefaultAsync(fd => fd.DiaryId == addMealMemberToFoodDiary.DiaryId);
                     if (foodDiary != null)
                     {
                         foodDiary.Calories = Math.Round(totalCalories, 1);

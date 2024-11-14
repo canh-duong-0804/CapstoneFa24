@@ -15,10 +15,10 @@ namespace BusinessObject.Dto.MealMember
 
 
         //public DateTime? MealDate { get; set; }
-
+        public int DiaryId { get; set; }
         public int MealType { get; set; }
         public int MealMemberId { get; set; }
-        public DateTime MealDate { get; set; }
+      //  public DateTime MealDate { get; set; }
 
 
 
