@@ -13,6 +13,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
         public double ProteinInGrams { get; set; }
         public double CarbsInGrams { get; set; }
         public double FatInGrams { get; set; }
+        public double? Weight { get; set; }
 
         //public DateTime? TargetDate { get; set; }
         public string GoalType { get; set; }

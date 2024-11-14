@@ -157,6 +157,7 @@ namespace DataAccess
                         CarbsInGrams = Math.Round((dailyCalories * 0.45) / 4, 1),   // 45% carbs
                         FatInGrams = Math.Round((dailyCalories * 0.25) / 9, 1),     // 25% fat
                         //TargetDate = targetDate,
+                        Weight= currentWeight,
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
                         BMI = Math.Round(bmi.Value, 0)
@@ -172,6 +173,80 @@ namespace DataAccess
             }
         }
 
-       
+        public async Task<MainDashBoardCaloInOfMemberResponseDTO> GetInfoCaloInDashBoardForMemberById(int memberId, DateTime date)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var foodDiary = await context.FoodDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
+
+                    if (foodDiary == null)
+                    {
+                        await FoodDiaryDAO.Instance.GetOrCreateFoodDiaryAsync(memberId, date);
+                        foodDiary = await context.FoodDiaries
+                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
+                    }
+
+                    var waterLog = await context.WaterIntakes
+                .FirstOrDefaultAsync(wl => wl.MemberId == memberId && wl.Date.Date == date.Date);
+
+                    if (waterLog == null)
+                    {
+                        waterLog = new WaterIntake
+                        {
+                            MemberId = memberId,
+                            Date = date,
+                            Amount = 0 
+                        };
+                        context.WaterIntakes.Add(waterLog);
+                        await context.SaveChangesAsync();
+                    }
+
+                    async Task<List<FoodDiaryForMealResponseDTO>> GetFoodDiaryDetailsByMealType(int mealType)
+                    {
+                        return await context.FoodDiaryDetails
+                            .Include(e => e.Food)
+                            .Where(e => e.DiaryId == foodDiary.DiaryId && e.MealType == mealType)
+                            .Select(e => new FoodDiaryForMealResponseDTO
+                            {
+                                DiaryDetailId = e.DiaryDetailId,
+                                DiaryId = e.DiaryId,
+                                FoodId = e.FoodId,
+                                FoodName = e.Food.FoodName,
+                                Calories = e.Food.Calories,
+                                Protein = e.Food.Protein,
+                                Carbs = e.Food.Carbs,
+                                Fat = e.Food.Fat,
+                                Quantity = e.Quantity,
+                                MealType = e.MealType
+                            })
+                            .ToListAsync();
+                    }
+
+                   
+
+                    var response = new MainDashBoardCaloInOfMemberResponseDTO
+                    {
+                      
+                            Calories = foodDiary.Calories,
+                            Protein = foodDiary.Protein,
+                            Fat = foodDiary.Fat,
+                            AmountWater= waterLog.Amount,
+                            Carbs = foodDiary.Carbs
+                        
+                    };
+
+                   
+
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

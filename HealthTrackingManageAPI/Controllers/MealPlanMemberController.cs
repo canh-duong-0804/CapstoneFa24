@@ -72,12 +72,12 @@ namespace HealthTrackingManageAPI.Controllers
             if (day <= 1) day = 1;
             var success = await _mealPlanRepository.GetMealPlanDetailForMemberAsync(mealPlanId, day);
 
-            if (!success)
+            if (success==null)
             {
-                return StatusCode(500, "An error occurred while adding the meal plan to the diary.");
+                return NotFound();
             }
 
-            return Ok();
+            return Ok(success);
 
         }
     }

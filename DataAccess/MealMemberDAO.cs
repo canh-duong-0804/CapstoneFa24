@@ -295,7 +295,7 @@ namespace DataAccess
                             FoodId = foodItem.FoodId,
                             Quantity = foodItem.Quantity.HasValue ? (double)foodItem.Quantity.Value : 0.0,
                             MealType = addMealMemberToFoodDiary.MealType,
-                            StatusFoodDiary = true
+                           
                         };
 
                         context.FoodDiaryDetails.Add(foodDiaryDetail);
@@ -306,7 +306,7 @@ namespace DataAccess
 
                     var foodDiaryDetails = await context.FoodDiaryDetails
                .Include(fdd => fdd.Food)
-               .Where(fdd => fdd.DiaryId == addMealMemberToFoodDiary.DiaryId && fdd.StatusFoodDiary == true)
+               .Where(fdd => fdd.DiaryId == addMealMemberToFoodDiary.DiaryId )
                .ToListAsync();
 
 

@@ -12,6 +12,9 @@ namespace Repository.Repo
 {
     public class MainDashBoardRepository : IMainDashBoardRepository
     {
+        public Task<MainDashBoardCaloInOfMemberResponseDTO> GetInfoCaloInDashBoardForMemberById(int memberId, DateTime date) => MainDashBoardMobileDAO.Instance.GetInfoCaloInDashBoardForMemberById(memberId, date);
+       
+
         public Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date) => MainDashBoardMobileDAO.Instance.GetMainDashBoardForMemberById(id, date);
 
 
