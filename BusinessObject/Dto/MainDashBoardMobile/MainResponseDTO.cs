@@ -8,9 +8,32 @@ namespace BusinessObject.Dto.MainDashBoardMobile
 {
     public class MainResponseDTO
     {
-       
-            public object MainDashBoardInfo { get; set; }
-            public object InfoCalorinesMember { get; set; }
-        
+
+        public double totalCalories { get; set; }
+        public double BMI { get; set; }
+        public double totalProtein { get; set; }
+        public double totalCarb { get; set; }
+        public double totalFat { get; set; }
+        public double? Weight { get; set; }
+
+        //public DateTime? TargetDate { get; set; }
+        public string GoalType { get; set; }
+        public double WeightDifference { get; set; }
+
+
+
+
+        public double? CaloriesIntake { get; set; }
+        public double AmountWater { get; set; }
+
+        public double? ProteinIntake { get; set; }
+        public double? FatIntake { get; set; }
+        public double? CarbsIntake { get; set; }
+
+
+
+
+
+
     }
 }

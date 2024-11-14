@@ -50,12 +50,24 @@ namespace HealthTrackingManageAPI.Controllers
             }
             var response = new MainResponseDTO
             {
-                MainDashBoardInfo = mainDashBoardInfo,
-                InfoCalorinesMember = infoCalorinesMember
+                totalCalories = mainDashBoardInfo.DailyCalories,
+                BMI = mainDashBoardInfo.BMI,
+                totalProtein = mainDashBoardInfo.ProteinInGrams,
+                totalCarb = mainDashBoardInfo.CarbsInGrams,
+                totalFat = mainDashBoardInfo.FatInGrams,
+                Weight = mainDashBoardInfo.Weight,
+                GoalType = mainDashBoardInfo.GoalType,
+                WeightDifference = mainDashBoardInfo.WeightDifference,
+
+                // Dữ liệu từ infoCalorinesMember
+                CaloriesIntake = infoCalorinesMember.Calories,
+                AmountWater = infoCalorinesMember.AmountWater,
+                ProteinIntake = infoCalorinesMember.Protein,
+                FatIntake = infoCalorinesMember.Fat,
+                CarbsIntake = infoCalorinesMember.Carbs
             };
 
             return Ok(response);
-
         }
 
         /*[Authorize]
