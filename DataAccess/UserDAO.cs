@@ -14,7 +14,7 @@ namespace DataAccess
     {
         private static UserDAO instance = null;
         private static readonly object instanceLock = new object();
-
+   
         public static UserDAO Instance
         {
             get

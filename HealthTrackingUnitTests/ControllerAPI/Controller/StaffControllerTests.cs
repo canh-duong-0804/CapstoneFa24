@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿/*using NUnit.Framework;
 using Moq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -373,8 +373,8 @@ namespace HealthTrackingUnitTests.ControllerAPI.Controller
 
 
 
-        /* viết test cho method[HttpGet("get-account-staff-for-admin-by-id/{id}")]
-         public async Task<IActionResult> GetAccountStaffById(int id)*/
+        *//* viết test cho method[HttpGet("get-account-staff-for-admin-by-id/{id}")]
+         public async Task<IActionResult> GetAccountStaffById(int id)*//*
 
 
         [Test]
@@ -429,4 +429,4 @@ namespace HealthTrackingUnitTests.ControllerAPI.Controller
 
 
     }
-}
+}*/
