@@ -32,9 +32,8 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 var response = _smsService.SendSMS(
                     request.Phones,
-                    request.Content,
-                    request.Type,
-                    request.DeviceId
+                    request.Content
+                   
                 );
 
                 if (string.IsNullOrEmpty(response))
@@ -54,11 +53,8 @@ namespace HealthTrackingManageAPI.Controllers
 
     public class SmsRequest
     {
-        public string[] Phones { get; set; }
+        public string Phones { get; set; } 
         public string Content { get; set; }
-        public int Type { get; set; }
-        public string DeviceId { get; set; }
     }
-
 
 }

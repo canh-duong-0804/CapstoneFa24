@@ -11,5 +11,7 @@ namespace Repository.IRepo
     public interface IGoalRepository
     {
         Task AddGoalAsync(Goal goal);
+        Task<Goal> GetGoalByIdAsync(int id);
+        Task<bool> updateGoal(int memberId, GoalResponseDTO updatedGoal);
     }
 }

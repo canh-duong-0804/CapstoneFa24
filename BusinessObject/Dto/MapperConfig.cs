@@ -188,6 +188,7 @@ namespace BusinessObject
                 cfg.CreateMap<UpdateFoodRequestDTO, Food>().ReverseMap();
                 cfg.CreateMap<FoodDiaryResponseDTO, FoodDiary>().ReverseMap();
                 cfg.CreateMap<CreateFoodMemberRequestDTO, FoodMember>().ReverseMap();
+                cfg.CreateMap<GoalResponseDTO, Goal>().ReverseMap();
 
 
                 cfg.CreateMap<FoodDiaryDetail, FoodDiaryForMealResponseDTO>()
