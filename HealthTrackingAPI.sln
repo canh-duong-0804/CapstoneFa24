@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthTrackingManageAPI", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{1DF4FFCB-76AC-46CD-991B-61A5D3FBD677}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthTrackingUnitTests", "HealthTrackingUnitTests\HealthTrackingUnitTests.csproj", "{56EE0F51-8483-400C-8E41-E19F3CB31B7F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HTUnitTests", "HTUnitTests\HTUnitTests.csproj", "{DF8A4941-6D72-414E-A18B-EEE2F16B8EEC}"
 EndProject
 Global
@@ -39,10 +37,6 @@ Global
 		{0058CEE8-4CBC-4464-B099-B0EA83A3CD09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0058CEE8-4CBC-4464-B099-B0EA83A3CD09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0058CEE8-4CBC-4464-B099-B0EA83A3CD09}.Release|Any CPU.Build.0 = Release|Any CPU
-		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56EE0F51-8483-400C-8E41-E19F3CB31B7F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF8A4941-6D72-414E-A18B-EEE2F16B8EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DF8A4941-6D72-414E-A18B-EEE2F16B8EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF8A4941-6D72-414E-A18B-EEE2F16B8EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -52,7 +46,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{56EE0F51-8483-400C-8E41-E19F3CB31B7F} = {1DF4FFCB-76AC-46CD-991B-61A5D3FBD677}
 		{DF8A4941-6D72-414E-A18B-EEE2F16B8EEC} = {1DF4FFCB-76AC-46CD-991B-61A5D3FBD677}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
