@@ -40,9 +40,61 @@ namespace HealthTrackingManageAPI.Controllers
             goalModel.MemberId = memberId;
 
             await _goalRepository.AddGoalAsync(goalModel);
-                return Ok(new { message = "Goal inserted successfully" });
-          
+            return Ok(new { message = "Goal inserted successfully" });
+
         }
 
+        [HttpGet("get-goal-detail/{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetGoalDetail(int id)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+            var goal = await _goalRepository.GetGoalByIdAsync(id);
+            if (goal == null || goal.MemberId != memberId)
+            {
+                return NotFound("Goal not found or does not belong to the authenticated user.");
+            }
+
+            var mapper = MapperConfig.InitializeAutomapper();
+            var goalResponse = mapper.Map<GoalResponseDTO>(goal);
+
+            return Ok(goalResponse);
+        }
+
+
+        [HttpPut("update-goal/{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateGoal([FromBody] GoalResponseDTO updatedGoal)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+
+            bool success = _goalRepository.updateGoal(memberId,updatedGoal);
+            if (success)
+                return Ok();
+            else return BadRequest();
+
+
+
+        }
     }
 }

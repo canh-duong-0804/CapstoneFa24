@@ -131,7 +131,7 @@ namespace DataAccess
                         FoodId = foodDetails.FoodId,
                         Quantity = foodDetails.Quantity,
                         MealType = foodDetails.MealType,
-                        StatusFoodDiary = true
+                        
                     };
                     await context.FoodDiaryDetails.AddAsync(foodDiaryDetail);
                     await context.SaveChangesAsync();
@@ -139,7 +139,7 @@ namespace DataAccess
 
                     var foodDiaryDetails = await context.FoodDiaryDetails
                                                         .Include(fdd => fdd.Food)
-                                                        .Where(fdd => fdd.DiaryId == foodDetails.DiaryId && fdd.StatusFoodDiary == true)
+                                                        .Where(fdd => fdd.DiaryId == foodDetails.DiaryId)
                                                         .ToListAsync();
 
 
@@ -201,7 +201,7 @@ namespace DataAccess
 
                     var foodDiaryDetails = await context.FoodDiaryDetails
                         .Include(fdd => fdd.Food)
-                        .Where(fdd => fdd.DiaryId == foodItem.DiaryId && fdd.StatusFoodDiary == true)
+                        .Where(fdd => fdd.DiaryId == foodItem.DiaryId)
                         .ToListAsync();
 
                     double totalCalories = foodDiaryDetails.Sum(detail => detail.Food.Calories * detail.Quantity);
@@ -268,7 +268,7 @@ namespace DataAccess
                     {
                         return await context.FoodDiaryDetails
                             .Include(e => e.Food)
-                            .Where(e => e.DiaryId == foodDiary.DiaryId && e.MealType == mealType && e.StatusFoodDiary == true)
+                            .Where(e => e.DiaryId == foodDiary.DiaryId && e.MealType == mealType)
                             .Select(e => new FoodDiaryForMealResponseDTO
                             {
                                 DiaryDetailId = e.DiaryDetailId,
@@ -286,7 +286,7 @@ namespace DataAccess
                     }
 
                     var hasDetails = await context.FoodDiaryDetails
-                        .AnyAsync(fd => fd.DiaryId == foodDiary.DiaryId && fd.StatusFoodDiary == true);
+                        .AnyAsync(fd => fd.DiaryId == foodDiary.DiaryId);
 
                     var response = new MainDashResponseDTO
                     {

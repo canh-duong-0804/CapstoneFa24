@@ -14,6 +14,7 @@ namespace Repository.Repo
     {
         public Task AddGoalAsync(Goal goal) => GoalDAO.Instance.AddGoalAsync(goal);
 
-
+        public Task<Goal> GetGoalByIdAsync(int id) => GoalDAO.Instance.GetGoalByIdAsync(id);
+       
     }
 }

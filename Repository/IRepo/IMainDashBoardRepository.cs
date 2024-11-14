@@ -10,6 +10,7 @@ namespace Repository.IRepo
 {
     public interface IMainDashBoardRepository
     {
+        Task<MainDashBoardCaloInOfMemberResponseDTO> GetInfoCaloInDashBoardForMemberById(int memberId, DateTime date);
         Task<MainDashBoardMobileForMemberResponseDTO> GetMainDashBoardForMemberById(int id, DateTime date);
     }
 }

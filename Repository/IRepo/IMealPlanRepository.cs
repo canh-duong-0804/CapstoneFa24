@@ -12,6 +12,6 @@ namespace Repository.IRepo
     {
         Task<bool> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId);
         Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlansForMemberAsync();
-       Task<bool> GetMealPlanDetailForMemberAsync(int mealPlanId,int day);
+        Task<MealPlanDetailResponseDTO> GetMealPlanDetailForMemberAsync(int mealPlanId,int day);
     }
 }

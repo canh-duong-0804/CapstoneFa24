@@ -1,3 +1,4 @@
+using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealPlan;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +41,7 @@ namespace DataAccess
                     {
                         MealPlanId = mp.MealPlanId,
                         Name = mp.Name,
+                        ShortDescription = mp.ShortDescription,
                         MealPlanImage = mp.MealPlanImage,
                         TotalCalories = mp.TotalCalories,
 
@@ -115,7 +117,7 @@ namespace DataAccess
                             FoodId = detail.FoodId,
                             Quantity = detail.Quantity,
                             MealType = detail.MealType,
-                            StatusFoodDiary = true
+
                         };
                         context.FoodDiaryDetails.Add(foodDiaryDetail);
                     }
@@ -155,21 +157,122 @@ namespace DataAccess
             }
         }
 
-        public async Task<bool> GetMealPlanDetailForMemberAsync(int mealPlanId, int day)
+        public async Task<MealPlanDetailResponseDTO> GetMealPlanDetailForMemberAsync(int mealPlanId, int day)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var mealPlanDetail= context.MealPlanDetails.Where(mp=>mp.MealPlanId==mealPlanId).ToListAsync();
-                    return true;
+                    var mealPlanData = await context.MealPlans
+                        .Where(mp => mp.MealPlanId == mealPlanId)
+                        .Select(mp => new
+                        {
+                            mp.MealPlanId,
+                            mp.MealPlanImage,
+                            mp.DietId,
+                            mp.ShortDescription,
+                            mp.LongDescription,
+                            mp.Name,
+                            mp.TotalCalories,
+                            BreakfastFoods = mp.MealPlanDetails
+                                .Where(mpd => mpd.Day == day && mpd.MealType == 1)
+                                .Select(mpd => new GetAllFoodOfMealMemberResonseDTO
+                                {
+                                    FoodId = mpd.FoodId,
+                                    FoodName = mpd.Food.FoodName,
+                                    FoodImage = mpd.Food.FoodImage,
+                                    Calories = mpd.Food.Calories,
+                                    Protein = mpd.Food.Protein,
+                                    Carbs = mpd.Food.Carbs,
+                                    Fat = mpd.Food.Fat,
+                                    DietName = mpd.Food.Diet.DietName,
+                                    Quantity = mpd.Quantity
+                                }).ToList(),
+                            LunchFoods = mp.MealPlanDetails
+                                .Where(mpd => mpd.Day == day && mpd.MealType == 2)
+                                .Select(mpd => new GetAllFoodOfMealMemberResonseDTO
+                                {
+                                    FoodId = mpd.FoodId,
+                                    FoodName = mpd.Food.FoodName,
+                                    FoodImage = mpd.Food.FoodImage,
+                                    Calories = mpd.Food.Calories,
+                                    Protein = mpd.Food.Protein,
+                                    Carbs = mpd.Food.Carbs,
+                                    Fat = mpd.Food.Fat,
+                                    DietName = mpd.Food.Diet.DietName,
+                                    Quantity = mpd.Quantity
+                                }).ToList(),
+                            AfternoonSnackFoods = mp.MealPlanDetails
+                                .Where(mpd => mpd.Day == day && mpd.MealType == 3)
+                                .Select(mpd => new GetAllFoodOfMealMemberResonseDTO
+                                {
+                                    FoodId = mpd.FoodId,
+                                    FoodName = mpd.Food.FoodName,
+                                    FoodImage = mpd.Food.FoodImage,
+                                    Calories = mpd.Food.Calories,
+                                    Protein = mpd.Food.Protein,
+                                    Carbs = mpd.Food.Carbs,
+                                    Fat = mpd.Food.Fat,
+                                    DietName = mpd.Food.Diet.DietName,
+                                    Quantity = mpd.Quantity
+                                }).ToList(),
+                            DinnerFoods = mp.MealPlanDetails
+                                .Where(mpd => mpd.Day == day && mpd.MealType == 4)
+                                .Select(mpd => new GetAllFoodOfMealMemberResonseDTO
+                                {
+                                    FoodId = mpd.FoodId,
+                                    FoodName = mpd.Food.FoodName,
+                                    FoodImage = mpd.Food.FoodImage,
+                                    Calories = mpd.Food.Calories,
+                                    Protein = mpd.Food.Protein,
+                                    Carbs = mpd.Food.Carbs,
+                                    Fat = mpd.Food.Fat,
+                                    DietName = mpd.Food.Diet.DietName,
+                                    Quantity = mpd.Quantity
+                                }).ToList()
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (mealPlanData == null)
+                    {
+                        return null;
+                    }
+
+                    string? GetMainFoodImage(List<GetAllFoodOfMealMemberResonseDTO> foods) =>
+                        foods.OrderByDescending(f => f.Calories).FirstOrDefault()?.FoodImage;
+
+                    var response = new MealPlanDetailResponseDTO
+                    {
+                        MealPlanId = mealPlanData.MealPlanId,
+                        MealPlanImage = mealPlanData.MealPlanImage,
+                        DietId = mealPlanData.DietId,
+                        ShortDescription = mealPlanData.ShortDescription,
+                        LongDescription = mealPlanData.LongDescription,
+                        Name = mealPlanData.Name,
+                        TotalCalories = mealPlanData.TotalCalories,
+
+                        BreakfastFoods = mealPlanData.BreakfastFoods,
+                        MainFoodImageForBreakfast = GetMainFoodImage(mealPlanData.BreakfastFoods),
+
+                        LunchFoods = mealPlanData.LunchFoods,
+                        MainFoodImageForLunch = GetMainFoodImage(mealPlanData.LunchFoods),
+
+                        DinnerFoods = mealPlanData.DinnerFoods,
+                        MainFoodImageForDinner = GetMainFoodImage(mealPlanData.DinnerFoods),
+
+                        SnackFoods = mealPlanData.AfternoonSnackFoods,
+                        MainFoodImageForSnack = GetMainFoodImage(mealPlanData.AfternoonSnackFoods),
+                    };
+
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error updating diary with meal plan: {ex.Message}");
-                return false;
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
             }
         }
+
     }
 }

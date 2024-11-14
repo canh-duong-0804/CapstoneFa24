@@ -17,6 +17,8 @@ namespace BusinessObject.Models
         public DateTime? ChangeDate { get; set; }
         public int? ChangeBy { get; set; }
         public int? DietId { get; set; }
+        public string? ShortDescription { get; set; }
+        public string? LongDescription { get; set; }
         public string Name { get; set; } = null!;
         public double TotalCalories { get; set; }
         public DateTime CreatedAt { get; set; }
