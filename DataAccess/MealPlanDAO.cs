@@ -275,25 +275,49 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> SearchMealPlanForMemberAsync(string mealPlanName)
+        public async Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> SearchMealPlanForMemberAsync(string? mealPlanName)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return await (from mp in context.MealPlans
-                                  
-                                  where mp.Status == true && EF.Functions.Collate(mp.Name.ToLower(), "Vietnamese_CI_AI").Contains(mealPlanName.ToLower())
-                                  select new GetAllMealPlanForMemberResponseDTO
+                   
+                    if (string.IsNullOrWhiteSpace(mealPlanName))
                     {
-                        MealPlanId = mp.MealPlanId,
-                        Name = mp.Name,
-                        ShortDescription = mp.ShortDescription,
-                        MealPlanImage = mp.MealPlanImage,
-                        TotalCalories = mp.TotalCalories,
+                       
+                        return await (from mp in context.MealPlans
+                                      where mp.Status == true
+                                      select new GetAllMealPlanForMemberResponseDTO
+                                      {
+                                          MealPlanId = mp.MealPlanId,
+                                          Name = mp.Name,
+                                          ShortDescription = mp.ShortDescription,
+                                          MealPlanImage = mp.MealPlanImage,
+                                          TotalCalories = mp.TotalCalories
+                                      }).ToListAsync();
+                    }
 
-                    })
-                    .ToListAsync();
+                  
+                    var query = from mp in context.MealPlans
+                                where mp.Status == true && EF.Functions.Collate(mp.Name.ToLower(), "Vietnamese_CI_AI").Contains(mealPlanName.ToLower())
+                                select new GetAllMealPlanForMemberResponseDTO
+                                {
+                                    MealPlanId = mp.MealPlanId,
+                                    Name = mp.Name,
+                                    ShortDescription = mp.ShortDescription,
+                                    MealPlanImage = mp.MealPlanImage,
+                                    TotalCalories = mp.TotalCalories
+                                };
+
+                    var result = await query.ToListAsync();
+
+                    
+                    if (!result.Any())
+                    {
+                        return await GetAllMealPlansForMemberAsync();
+                    }
+
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -301,5 +325,8 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
+
     }
+
 }
+

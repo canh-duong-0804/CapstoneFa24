@@ -37,10 +37,10 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
+
                     await context.Foods.AddAsync(food);
 
-                    
+
                     await context.SaveChangesAsync();
 
                     return food;
@@ -58,7 +58,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                
+
                     var existingFood = await context.Foods.FindAsync(id);
 
                     if (existingFood == null)
@@ -66,8 +66,8 @@ namespace DataAccess
                         throw new Exception("Food not found.");
                     }
 
-                    
-                    existingFood.Status = false; 
+
+                    existingFood.Status = false;
 
                     await context.SaveChangesAsync();
 
@@ -91,10 +91,11 @@ namespace DataAccess
                                        join diet in context.Diets on food.DietId equals diet.DietId
                                        where food.Status == true
                                        select new AllFoodForStaffResponseDTO
-                                       { FoodId =food.FoodId,
-                                           CreateByName=food.CreateByNavigation.FullName,
-                                           ChangeBy=food.ChangeBy,
-                                           ChangeByName=food.CreateByNavigation.FullName,
+                                       {
+                                           FoodId = food.FoodId,
+                                           CreateByName = food.CreateByNavigation.FullName,
+                                           ChangeBy = food.ChangeBy,
+                                           ChangeByName = food.CreateByNavigation.FullName,
 
                                            FoodName = food.FoodName,
                                            CreateBy = food.CreateBy,
@@ -118,41 +119,41 @@ namespace DataAccess
         {
             try
             {
-             
-                    using (var context = new HealthTrackingDBContext())
-                    {
-                       
-                        var responseDto = await context.Foods
-                            .Where(f => f.FoodId == id && f.Status == true)
-                            .Include(f=>f.CreateByNavigation)
-                            .Select(food => new GetFoodForStaffByIdResponseDTO
-                            {
-                                FoodId = food.FoodId,
-                                FoodName = food.FoodName,
-                                Portion = food.Portion,
-                                Calories = food.Calories,
-                                CreateBy = food.CreateByNavigation.FullName,
-                                CreateDate = food.CreateDate,
-                                ChangeBy = food.CreateByNavigation.FullName,
-                                ChangeDate = food.ChangeDate,
-                                FoodImage = food.FoodImage,
-                                Protein = food.Protein,
-                                Carbs = food.Carbs,
-                                Fat = food.Fat,
-                                VitaminA = food.VitaminA,
-                                VitaminC = food.VitaminC,
-                                VitaminD = food.VitaminD,
-                                VitaminE = food.VitaminE,
-                                VitaminB1 = food.VitaminB1,
-                                VitaminB2 = food.VitaminB2,
-                                VitaminB3 = food.VitaminB3,
-                                Status = food.Status,
-                                DietId = food.DietId,
-                                DietName = food.Diet.DietName 
-                            })
-                            .FirstOrDefaultAsync();
 
-                        return responseDto;
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var responseDto = await context.Foods
+                        .Where(f => f.FoodId == id && f.Status == true)
+                        .Include(f => f.CreateByNavigation)
+                        .Select(food => new GetFoodForStaffByIdResponseDTO
+                        {
+                            FoodId = food.FoodId,
+                            FoodName = food.FoodName,
+                            Portion = food.Portion,
+                            Calories = food.Calories,
+                            CreateBy = food.CreateByNavigation.FullName,
+                            CreateDate = food.CreateDate,
+                            ChangeBy = food.CreateByNavigation.FullName,
+                            ChangeDate = food.ChangeDate,
+                            FoodImage = food.FoodImage,
+                            Protein = food.Protein,
+                            Carbs = food.Carbs,
+                            Fat = food.Fat,
+                            VitaminA = food.VitaminA,
+                            VitaminC = food.VitaminC,
+                            VitaminD = food.VitaminD,
+                            VitaminE = food.VitaminE,
+                            VitaminB1 = food.VitaminB1,
+                            VitaminB2 = food.VitaminB2,
+                            VitaminB3 = food.VitaminB3,
+                            Status = food.Status,
+                            DietId = food.DietId,
+                            DietName = food.Diet.DietName
+                        })
+                        .FirstOrDefaultAsync();
+
+                    return responseDto;
                 }
             }
             catch (Exception ex)
@@ -220,12 +221,12 @@ namespace DataAccess
 
                     var diets = await context.Diets.ToListAsync();
 
-                    
+
                     var dietResponse = diets.Select(d => new DietResponseDTO
                     {
                         DietId = d.DietId,
                         DietName = d.DietName,
-                      
+
                     }).ToList();
 
                     return dietResponse;
@@ -247,20 +248,20 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var foods = await(from food in context.Foods
-                                      join diet in context.Diets on food.DietId equals diet.DietId
-                                      where food.Status == true
-                                      select new AllFoodForMemberResponseDTO
-                                      {
-                                          FoodId = food.FoodId,
-                                          FoodName = food.FoodName,
-                                          FoodImage = food.FoodImage,
-                                          Calories = food.Calories,
-                                          Fat=food.Fat,
-                                          Carbs = food.Carbs,
-                                          Protein = food.Protein,
-                                          DietName = food.Diet.DietName,
-                                      }).ToListAsync();
+                    var foods = await (from food in context.Foods
+                                       join diet in context.Diets on food.DietId equals diet.DietId
+                                       where food.Status == true
+                                       select new AllFoodForMemberResponseDTO
+                                       {
+                                           FoodId = food.FoodId,
+                                           FoodName = food.FoodName,
+                                           FoodImage = food.FoodImage,
+                                           Calories = food.Calories,
+                                           Fat = food.Fat,
+                                           Carbs = food.Carbs,
+                                           Protein = food.Protein,
+                                           DietName = food.Diet.DietName,
+                                       }).ToListAsync();
 
                     return foods;
                 }
@@ -321,47 +322,15 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var foods = await(from food in context.Foods
-                                      join diet in context.Diets on food.DietId equals diet.DietId
-                                      where food.Status == true
-                                      select new FoodListBoxResponseDTO
-                                      {
-                                          Value =food.FoodId,
-                                          Label =food.FoodName,
-                                        
-
-                                      }).ToListAsync();
-
-                    return foods;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
-            }
-
-        }
-
-        public async Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string foodName)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-
                     var foods = await (from food in context.Foods
                                        join diet in context.Diets on food.DietId equals diet.DietId
-                                       where food.Status == true && EF.Functions.Collate(food.FoodName.ToLower(), "Vietnamese_CI_AI").Contains(foodName.ToLower())
-                                       select new AllFoodForMemberResponseDTO
+                                       where food.Status == true
+                                       select new FoodListBoxResponseDTO
                                        {
-                                           FoodId= food.FoodId, 
-                                           FoodName = food.FoodName,
-                                           FoodImage = food.FoodImage,
-                                           Calories = food.Calories,
-                                           Fat = food.Fat,
-                                           Carbs = food.Carbs,
-                                           Protein = food.Protein,
-                                           DietName = food.Diet.DietName,
+                                           Value = food.FoodId,
+                                           Label = food.FoodName,
+
+
                                        }).ToListAsync();
 
                     return foods;
@@ -371,6 +340,65 @@ namespace DataAccess
             {
                 throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
             }
+
         }
+
+        public async Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string? foodName)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                   
+                    if (string.IsNullOrWhiteSpace(foodName))
+                    {
+                        
+                        return await (from food in context.Foods
+                                      join diet in context.Diets on food.DietId equals diet.DietId
+                                      where food.Status == true
+                                      select new AllFoodForMemberResponseDTO
+                                      {
+                                          FoodId = food.FoodId,
+                                          FoodName = food.FoodName,
+                                          FoodImage = food.FoodImage,
+                                          Calories = food.Calories,
+                                          Fat = food.Fat,
+                                          Carbs = food.Carbs,
+                                          Protein = food.Protein,
+                                          DietName = diet.DietName
+                                      }).ToListAsync();
+                    }
+
+                  
+                    var foods = await (from food in context.Foods
+                                       join diet in context.Diets on food.DietId equals diet.DietId
+                                       where food.Status == true && EF.Functions.Collate(food.FoodName.ToLower(), "Vietnamese_CI_AI").Contains(foodName.ToLower())
+                                       select new AllFoodForMemberResponseDTO
+                                       {
+                                           FoodId = food.FoodId,
+                                           FoodName = food.FoodName,
+                                           FoodImage = food.FoodImage,
+                                           Calories = food.Calories,
+                                           Fat = food.Fat,
+                                           Carbs = food.Carbs,
+                                           Protein = food.Protein,
+                                           DietName = diet.DietName
+                                       }).ToListAsync();
+
+                   
+                    if (!foods.Any())
+                    {
+                        return await GetAllFoodsForMemberAsync();
+                    }
+
+                    return foods;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

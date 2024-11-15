@@ -84,11 +84,11 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("search-meal-plan-for-member")]
-        public async Task<IActionResult> SearchFoodsForMember(string mealPlanName)
+        public async Task<IActionResult> SearchFoodsForMember([FromQuery]string? mealPlanName)
         {
-            var foods = await _mealPlanRepository.SearchMealPlanForMemberAsync(mealPlanName);
+            var mealPlan = await _mealPlanRepository.SearchMealPlanForMemberAsync(mealPlanName);
 
-            return Ok(foods);
+            return Ok(mealPlan);
         }
     }
 }

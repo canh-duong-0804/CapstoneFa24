@@ -33,14 +33,14 @@ namespace DataAccess
         {
             try
             {
-                using(var context = new HealthTrackingDBContext())
+                using (var context = new HealthTrackingDBContext())
                 {
                     var ingredients = await context.Ingredients
                                     .Select(i => new IngredientResponseDTO
                                     {
                                         IngredientId = i.IngredientId,
                                         Name = i.Name,
-                                      
+
                                     })
                                     .ToListAsync();
 
@@ -113,7 +113,7 @@ namespace DataAccess
 
                     existingIngredient.Name = ingredientModel.Name;
                     existingIngredient.Description = ingredientModel.Description;
-                    
+
 
 
                     await context.SaveChangesAsync();
