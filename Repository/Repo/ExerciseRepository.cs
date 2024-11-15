@@ -14,7 +14,7 @@ namespace Repository.Repo
 {
     public class ExerciseRepository : IExerciseRepository
     {
-       public Task<Exercise> CreateExerciseAsync(Exercise exercise) => ExerciseDAO.Instance.CreateExerciseAsync(exercise);
+      /* public Task<Exercise> CreateExerciseAsync(Exercise exercise) => ExerciseDAO.Instance.CreateExerciseAsync(exercise);
 
       
         //
@@ -35,7 +35,7 @@ namespace Repository.Repo
         public Task<IEnumerable<AllExerciseResponseDTO >> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO searchName) => ExerciseDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName);
        
 
-        public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);
+        public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);*/
         
     }
 }

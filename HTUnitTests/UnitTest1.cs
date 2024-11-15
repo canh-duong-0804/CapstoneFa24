@@ -1,4 +1,4 @@
-namespace HTUnitTests
+/*namespace HTUnitTests
 {
     public class UnitTest1
     {
@@ -8,4 +8,4 @@ namespace HTUnitTests
 
         }
     }
-}
+}*/

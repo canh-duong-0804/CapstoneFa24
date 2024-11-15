@@ -157,7 +157,7 @@ namespace DataAccess
                         CarbsInGrams = Math.Round((dailyCalories * 0.45) / 4, 1),   // 45% carbs
                         FatInGrams = Math.Round((dailyCalories * 0.25) / 9, 1),     // 25% fat
                         //TargetDate = targetDate,
-                        Weight= currentWeight,
+                        Weight = currentWeight,
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
                         BMI = Math.Round(bmi.Value, 0)
@@ -182,11 +182,21 @@ namespace DataAccess
                     var foodDiary = await context.FoodDiaries
                         .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
 
+                    var exerciseDiary = await context.ExerciseDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.HasValue && fd.Date.Value.Date == date.Date);
+
                     if (foodDiary == null)
                     {
                         await FoodDiaryDAO.Instance.GetOrCreateFoodDiaryAsync(memberId, date);
                         foodDiary = await context.FoodDiaries
                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
+                    }
+                    if (exerciseDiary == null)
+                    {
+                       /* await ExerciseDiaryDAO.Instance.GetOrCreateExerciseDiaryAsync(memberId, date);
+                        exerciseDiary = await context.ExerciseDiaries
+                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.HasValue && fd.Date.Value.Date == date.Date);*/
+
                     }
 
                     var waterLog = await context.WaterIntakes
@@ -198,7 +208,7 @@ namespace DataAccess
                         {
                             MemberId = memberId,
                             Date = date,
-                            Amount = 0 
+                            Amount = 0
                         };
                         context.WaterIntakes.Add(waterLog);
                         await context.SaveChangesAsync();
@@ -225,20 +235,20 @@ namespace DataAccess
                             .ToListAsync();
                     }
 
-                   
+
 
                     var response = new MainDashBoardCaloInOfMemberResponseDTO
                     {
-                      
-                            Calories = foodDiary.Calories,
-                            Protein = foodDiary.Protein,
-                            Fat = foodDiary.Fat,
-                            AmountWater= waterLog.Amount,
-                            Carbs = foodDiary.Carbs
-                        
+
+                        Calories = foodDiary.Calories,
+                        Protein = foodDiary.Protein,
+                        Fat = foodDiary.Fat,
+                        AmountWater = waterLog.Amount,
+                        Carbs = foodDiary.Carbs
+
                     };
 
-                   
+
 
                     return response;
                 }

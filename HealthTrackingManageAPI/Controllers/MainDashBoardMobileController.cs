@@ -43,10 +43,34 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return NotFound("Exercise not found.");
             }
-            return Ok(mainDashBoardInfo);
+            var infoCalorinesMember = await _mainDashBoardRepository.GetInfoCaloInDashBoardForMemberById(memberId, date);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound("Exercise not found.");
+            }
+            var response = new MainResponseDTO
+            {
+                totalCalories = mainDashBoardInfo.DailyCalories,
+                BMI = mainDashBoardInfo.BMI,
+                totalProtein = mainDashBoardInfo.ProteinInGrams,
+                totalCarb = mainDashBoardInfo.CarbsInGrams,
+                totalFat = mainDashBoardInfo.FatInGrams,
+                Weight = mainDashBoardInfo.Weight,
+                GoalType = mainDashBoardInfo.GoalType,
+                WeightDifference = mainDashBoardInfo.WeightDifference,
+
+                // Dữ liệu từ infoCalorinesMember
+                CaloriesIntake = infoCalorinesMember.Calories,
+                AmountWater = infoCalorinesMember.AmountWater,
+                ProteinIntake = infoCalorinesMember.Protein,
+                FatIntake = infoCalorinesMember.Fat,
+                CarbsIntake = infoCalorinesMember.Carbs
+            };
+
+            return Ok(response);
         }
 
-        [Authorize]
+        /*[Authorize]
         [HttpGet("Get-info-calo-in-of-dashboard-for-member")]
         public async Task<IActionResult> GetInfoCaloInDashBoardForMemberById()
         {
@@ -68,7 +92,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return NotFound("Exercise not found.");
             }
             return Ok(mainDashBoardInfo);
-        }
+        }*/
 
         /* [Authorize]
          [HttpGet("Get-Food-dairy-detail-for-member-by-id")]

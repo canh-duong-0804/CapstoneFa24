@@ -13,13 +13,13 @@ namespace Repository.IRepo
     public interface IExerciseRepository
     {
 
-        Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync(); 
+        /*Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync(); 
         Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id);
         Task<IEnumerable<AllExerciseResponseDTO>> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO searchName); 
        Task<Exercise> CreateExerciseAsync(Exercise exercise); 
         
         Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise); 
-        Task<bool> DeleteExerciseAsync(int id);
+        Task<bool> DeleteExerciseAsync(int id);*/
         
     }
 }

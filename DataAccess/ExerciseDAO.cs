@@ -1,4 +1,4 @@
-﻿using BusinessObject.Dto.CategoryExerice;
+﻿/*using BusinessObject.Dto.CategoryExerice;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
@@ -271,3 +271,4 @@ namespace DataAccess
        
     }
 }
+*/
