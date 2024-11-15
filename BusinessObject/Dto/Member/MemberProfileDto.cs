@@ -15,7 +15,7 @@ namespace BusinessObject.Dto.Member
 		public DateTime Dob { get; set; }
 		public bool Gender { get; set; }
 		public float Height { get; set; }
-		public float Weight { get; set; }
+		public double Weight { get; set; }
 
 	}
 

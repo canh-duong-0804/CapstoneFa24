@@ -44,9 +44,9 @@ namespace HealthTrackingManageAPI.Controllers
 
         }
 
-        [HttpGet("get-goal-detail/{id}")]
+        [HttpGet("get-goal-detail")]
         [Authorize]
-        public async Task<IActionResult> GetGoalDetail(int id)
+        public async Task<IActionResult> GetGoalDetail()
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -59,22 +59,26 @@ namespace HealthTrackingManageAPI.Controllers
                 return BadRequest("Invalid member ID.");
             }
 
-            var goal = await _goalRepository.GetGoalByIdAsync(id);
-            if (goal == null || goal.MemberId != memberId)
+            var goal = await _goalRepository.GetGoalByIdAsync(memberId);
+          /*  var body= goal.Member.BodyMeasureChanges.FirstOrDefault();
+            var member= goal.Member.ExerciseLevel;*/
+            if (goal == null)
             {
                 return NotFound("Goal not found or does not belong to the authenticated user.");
             }
 
-            var mapper = MapperConfig.InitializeAutomapper();
-            var goalResponse = mapper.Map<GoalResponseDTO>(goal);
+           
 
-            return Ok(goalResponse);
+            return Ok(goal);
         }
 
 
-        /*[HttpPut("update-goal/{id}")]
+
+
+
+        [HttpPut("update-goal")]
         [Authorize]
-        public async Task<IActionResult> UpdateGoal([FromBody] GoalResponseDTO updatedGoal)
+        public async Task<IActionResult> UpdateGoal([FromBody] GoalRequestDTO updatedGoal)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -88,13 +92,18 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
 
-            bool success = _goalRepository.updateGoal(memberId,updatedGoal);
-            if (success)
-                return Ok();
-            else return BadRequest();
+            var success = await _goalRepository.UpdateGoalAsync(memberId, updatedGoal);
+
+            if (!success) // Negating the result after awaiting it
+            {
+                return StatusCode(500, "An error occurred while updating the goal.");
+            }
+
+            return Ok("Goal updated successfully.");
 
 
 
-        }*/
+
+        }
     }
 }
