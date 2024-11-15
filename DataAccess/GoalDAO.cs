@@ -116,20 +116,122 @@ namespace DataAccess
             return false;
         }
 
-        /*public async Task UpdateGoalAsync(Goal goal,int memberid)
+        public async Task<bool> AddCurrentWeightAsync(int memberId, double weightCurrent)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    context.Goals.Update(goal);
-                    await context.SaveChangesAsync();
+                    var addNewWeightCurrent = new BodyMeasureChange
+                    {
+                        MemberId = memberId,
+                        Weight = weightCurrent,
+                        DateChange = DateTime.Now,
+                        BodyFat=0,
+                        Muscles=0,
+                    };
+
+                        context.BodyMeasureChanges.Add(addNewWeightCurrent);
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while updating the goal.", ex);
+
+                //throw new Exception("An error occurred while updating the goal.", ex);
             }
-        }*/
+            return false;
+        }
+
+        public async Task<bool> AddGoalLevelExercise(int memberId, string goalWeekDaily)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var getGoal = await context.Goals.OrderByDescending(b=>b.GoalId).Where(b=>b.MemberId==memberId).FirstOrDefaultAsync();
+
+
+                    var addNewWeightCurrent = new Goal
+                    {
+                        MemberId = memberId,
+                        GoalType = goalWeekDaily,
+                        TargetDate =getGoal.TargetDate,
+                        TargetValue=getGoal.TargetValue,
+
+                    };
+
+                    context.Goals.Add(addNewWeightCurrent);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //throw new Exception("An error occurred while updating the goal.", ex);
+            }
+            return false;
+        }
+
+        public async Task<bool> AddGoalWeekDaily(int memberId, string goalWeekDaily)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var getGoal = await context.Goals.OrderByDescending(b => b.GoalId).Where(b => b.MemberId == memberId).FirstOrDefaultAsync();
+
+
+                    var addNewWeightCurrent = new Goal
+                    {
+                        MemberId = memberId,
+                        GoalType = goalWeekDaily,
+                        TargetDate = getGoal.TargetDate,
+                        TargetValue = getGoal.TargetValue,
+
+                    };
+
+                    context.Goals.Add(addNewWeightCurrent);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //throw new Exception("An error occurred while updating the goal.", ex);
+            }
+            return false;
+        }
+
+        public async Task<bool> AddGoalWeightAsync(int memberId, double weightCurrent)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var getGoal = await context.Goals.OrderByDescending(b => b.GoalId).Where(b => b.MemberId == memberId).FirstOrDefaultAsync();
+
+
+                    var addNewWeightCurrent = new Goal
+                    {
+                        MemberId = memberId,
+                        //GoalType = goalWeekDaily,
+                        TargetDate = getGoal.TargetDate,
+                        TargetValue = getGoal.TargetValue,
+
+                    };
+
+                    context.Goals.Add(addNewWeightCurrent);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //throw new Exception("An error occurred while updating the goal.", ex);
+            }
+            return false;
+        }
+
     }
 }

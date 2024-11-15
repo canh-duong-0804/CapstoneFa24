@@ -160,7 +160,8 @@ namespace DataAccess
                         Weight = currentWeight,
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
-                        BMI = Math.Round(bmi.Value, 0)
+                        BMI = Math.Round(bmi.Value, 0),
+                        UserName=member.Username
                     };
 
 

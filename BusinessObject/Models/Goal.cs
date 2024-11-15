@@ -8,6 +8,7 @@ namespace BusinessObject.Models
         public int GoalId { get; set; }
         public int MemberId { get; set; }
         public string GoalType { get; set; } = null!;
+        public int? ExerciseLevel { get; set; }
         public double TargetValue { get; set; }
         public DateTime TargetDate { get; set; }
 

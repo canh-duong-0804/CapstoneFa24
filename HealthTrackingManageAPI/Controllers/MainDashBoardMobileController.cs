@@ -58,13 +58,15 @@ namespace HealthTrackingManageAPI.Controllers
                 Weight = mainDashBoardInfo.Weight,
                 GoalType = mainDashBoardInfo.GoalType,
                 WeightDifference = mainDashBoardInfo.WeightDifference,
+                FullName = mainDashBoardInfo.UserName,
 
                 // Dữ liệu từ infoCalorinesMember
                 CaloriesIntake = infoCalorinesMember.Calories,
                 AmountWater = infoCalorinesMember.AmountWater,
                 ProteinIntake = infoCalorinesMember.Protein,
                 FatIntake = infoCalorinesMember.Fat,
-                CarbsIntake = infoCalorinesMember.Carbs
+                CarbsIntake = infoCalorinesMember.Carbs,
+                
             };
 
             return Ok(response);

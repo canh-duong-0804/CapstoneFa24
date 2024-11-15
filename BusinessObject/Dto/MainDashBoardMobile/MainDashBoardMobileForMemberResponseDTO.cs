@@ -17,6 +17,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
 
         //public DateTime? TargetDate { get; set; }
         public string GoalType { get; set; }
+        public string UserName { get; set; }
         public double WeightDifference { get; set; }
     }
 }

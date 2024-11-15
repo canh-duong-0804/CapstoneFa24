@@ -120,19 +120,89 @@ namespace HealthTrackingManageAPI.Controllers
                 return BadRequest("Invalid member ID.");
             }
 
-           /* var success = await _goalRepository.AddCurrentWeightAsync(memberId, weightCurrent);
+            var success = await _goalRepository.AddCurrentWeightAsync(memberId, weightCurrent);
 
             if (!success)
             {
                 return StatusCode(500);
-            }*/
+            }
 
             return Ok();
+        }
 
 
+        [HttpPost("add-goal-weight")]
+        [Authorize]
+        public async Task<IActionResult> AddGoalWeight(double weightCurrent)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
 
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
 
-           
+            var success = await _goalRepository.AddGoalWeightAsync(memberId, weightCurrent);
+
+            if (!success)
+            {
+                return StatusCode(500);
+            }
+
+            return Ok();
+        }
+        [HttpPost("add-goal-week-daily")]
+        [Authorize]
+        public async Task<IActionResult> AddGoalWeekDaily(string goalWeekDaily)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+            var success = await _goalRepository.AddGoalWeekDaily(memberId, goalWeekDaily);
+
+            if (!success)
+            {
+                return StatusCode(500);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("add-level-goal-exercise")]
+        [Authorize]
+        public async Task<IActionResult> AddGoalLevelExercise(string goalWeekDaily)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+            var success = await _goalRepository.AddGoalLevelExercise(memberId, goalWeekDaily);
+
+            if (!success)
+            {
+                return StatusCode(500);
+            }
+
+            return Ok();
         }
     }
 }
