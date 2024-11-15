@@ -369,16 +369,17 @@ namespace HealthTrackingManageAPI.Controllers
 
 				// Get user details
 				var user = await _userRepo.GetMemberByIdAsync(parsedUserId);
-
-				if (user == null)
+                var bodyMeasureChange = user.BodyMeasureChanges.FirstOrDefault();
+                if (user == null)
 				{
 					return NotFound("User not found");
 				}
 
 				var mapper = MapperConfig.InitializeAutomapper();
 				var userProfileDto = mapper.Map<MemberProfileDto>(user);
+                userProfileDto.Weight = bodyMeasureChange.Weight ?? 0;
 
-				return Ok(userProfileDto);
+                return Ok(userProfileDto);
 			}
 			catch (Exception ex)
 			{

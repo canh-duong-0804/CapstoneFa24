@@ -173,7 +173,7 @@ namespace DataAccess
         {
             using (var context = new HealthTrackingDBContext())
             {
-                return await context.Members.FirstOrDefaultAsync(x => x.MemberId == userId);
+                return await context.Members.Include(x=>x.BodyMeasureChanges).FirstOrDefaultAsync(x => x.MemberId == userId);
             }
         }
 
