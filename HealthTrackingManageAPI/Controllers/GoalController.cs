@@ -60,14 +60,14 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
             var goal = await _goalRepository.GetGoalByIdAsync(memberId);
-          /*  var body= goal.Member.BodyMeasureChanges.FirstOrDefault();
-            var member= goal.Member.ExerciseLevel;*/
+            /*  var body= goal.Member.BodyMeasureChanges.FirstOrDefault();
+              var member= goal.Member.ExerciseLevel;*/
             if (goal == null)
             {
                 return NotFound("Goal not found or does not belong to the authenticated user.");
             }
 
-           
+
 
             return Ok(goal);
         }
@@ -76,7 +76,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
-        [HttpPut("update-goal")]
+        [HttpPost("update-goal")]
         [Authorize]
         public async Task<IActionResult> UpdateGoal([FromBody] GoalRequestDTO updatedGoal)
         {
@@ -94,16 +94,45 @@ namespace HealthTrackingManageAPI.Controllers
 
             var success = await _goalRepository.UpdateGoalAsync(memberId, updatedGoal);
 
-            if (!success) // Negating the result after awaiting it
+            if (!success)
             {
                 return StatusCode(500, "An error occurred while updating the goal.");
             }
 
             return Ok("Goal updated successfully.");
+        }
 
 
 
 
+        [HttpPost("add-current-weight")]
+        [Authorize]
+        public async Task<IActionResult> AddCurrentWeight(double weightCurrent)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+           /* var success = await _goalRepository.AddCurrentWeightAsync(memberId, weightCurrent);
+
+            if (!success)
+            {
+                return StatusCode(500);
+            }*/
+
+            return Ok();
+
+
+
+
+           
         }
     }
 }

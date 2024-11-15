@@ -21,7 +21,6 @@ namespace Repository.Repo
         public Task<bool> UpdateGoalAsync(int memberId, GoalRequestDTO updatedGoal) => GoalDAO.Instance.updateGoal(memberId, updatedGoal);
         
 
-        /* public Task<bool> updateGoal(int memberId, GoalResponseDTO updatedGoal) => GoalDAO.Instance.UpdateGoalAsync(updatedGoal,memberId);*/
-
+      
     }
 }
