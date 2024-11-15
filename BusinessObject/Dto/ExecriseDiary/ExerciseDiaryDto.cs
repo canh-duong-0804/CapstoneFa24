@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BusinessObject.Dto.ExerciseDiary
+﻿namespace BusinessObject.DTOs
 {
-	public class ExerciseDiaryDto
-	{
-		public int ExerciseDiaryId { get; set; }
-		public DateTime? Date { get; set; }
-		public ExerciseDto Exercise { get; set; }  // Single Exercise, not a List
-	}
-
-	public class ExerciseDto
-	{
-		public int ExerciseId { get; set; }
-		public string ExerciseName { get; set; }
-		public int? Duration { get; set; }
-		public double CaloriesBurned { get; set; }
-	}
+    public class ExerciseDiaryDTO
+    {
+        public int ExerciseDiaryId { get; set; }
+        public int MemberId { get; set; }
+        public int? ExercisePlanId { get; set; }
+        public DateTime? Date { get; set; }
+        public int? TotalDuration { get; set; }
+        public double? TotalCaloriesBurned { get; set; }
+        public List<ExerciseDiaryDetailDTO>? ExerciseDiaryDetails { get; set; }
+    }
 }
