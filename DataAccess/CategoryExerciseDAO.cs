@@ -36,7 +36,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    context.ExerciseCategories.Add(cate);
+                    //context.ExerciseCategories.Add(cate);
 
 
                     await context.SaveChangesAsync();
@@ -59,7 +59,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var cateExercises = await context.ExerciseCategories
+                    /*var cateExercises = await context.ExerciseCategories
                         .Where(e => e.Status == true)
                         .Select(e => new GetAllCategoryExeriseResponseDTO
                         {
@@ -70,7 +70,8 @@ namespace DataAccess
                         })
                         .ToListAsync();
 
-                    return cateExercises;
+                    return cateExercises;*/
+                    return null;
                 }
             }
             catch (Exception ex)
@@ -86,16 +87,18 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var category = await context.ExerciseCategories.FindAsync(id);
-                    if (category != null)
-                    {
-                        category.Status = false;
-                        await context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        throw new Exception("Exercise category not found.");
-                    }
+                    /* var category = await context.ExerciseCategories.FindAsync(id);
+                     if (category != null)
+                     {
+                         category.Status = false;
+                         await context.SaveChangesAsync();
+                     }
+                     else
+                     {
+                         throw new Exception("Exercise category not found.");
+                     }*/
+
+                    
                 }
             }
             catch (Exception ex)
@@ -110,7 +113,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var category = await context.ExerciseCategories.FindAsync(cate.ExerciseCategoryId);
+                   /* var category = await context.ExerciseCategories.FindAsync(cate.ExerciseCategoryId);
                     if (category != null)
                     {
                         category.ExerciseCategoryName = cate.ExerciseCategoryName;
@@ -119,7 +122,7 @@ namespace DataAccess
                     else
                     {
                         throw new Exception("Exercise category not found.");
-                    }
+                    }*/
                 }
             }
             catch (Exception ex)
@@ -135,7 +138,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var cateExercises = await context.ExerciseCategories
+                    /*var cateExercises = await context.ExerciseCategories
                         .Where(e => e.Status == true)
                         .Select(e => new ListBoxResponseDTO
                         {
@@ -145,7 +148,8 @@ namespace DataAccess
                         })
                         .ToListAsync();
 
-                    return cateExercises;
+                    return cateExercises;*/
+                    return null;
                 }
             }
             catch (Exception ex)

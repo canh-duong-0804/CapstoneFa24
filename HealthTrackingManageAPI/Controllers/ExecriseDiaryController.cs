@@ -1,4 +1,4 @@
-﻿using BusinessObject.Dto.ExecriseDiary;
+﻿/*using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.Dto.ExerciseDiary;
 using BusinessObject.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -250,3 +250,4 @@ namespace HealthTrackingManageAPI.Controllers
 	}
 }
 
+*/

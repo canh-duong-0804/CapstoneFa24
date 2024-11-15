@@ -12,6 +12,8 @@ namespace Repository.Repo
 {
     public class MealPlanRepository : IMealPlanRepository
     {
+        public Task<bool> AddMealPlanDetailWithDayToFoodDiaryAsync(AddMealPlanDetailDayToFoodDiaryDetailRequestDTO addMealPlanDetail, int memberId) => MealPlanDAO.Instance.AddMealPlanDetailWithDayToFoodDiaryAsync(addMealPlanDetail, memberId);
+
         public Task<bool> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId) => MealPlanDAO.Instance.AddMealPlanToFoodDiaryAsync(mealPlanId,memberId);
         
 

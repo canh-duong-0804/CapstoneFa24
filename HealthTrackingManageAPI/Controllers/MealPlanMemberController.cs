@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BusinessObject.Dto.MealPlan;
+using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
@@ -59,10 +61,10 @@ namespace HealthTrackingManageAPI.Controllers
 
             if (!success)
             {
-                return StatusCode(500, "An error occurred while adding the meal plan to the diary.");
+                return StatusCode(500);
             }
 
-            return Ok("Meal plan successfully added to the diary.");
+            return Ok("");
         }
 
         [HttpGet("get-meal-plan-detail-for-member")]
@@ -72,7 +74,7 @@ namespace HealthTrackingManageAPI.Controllers
             if (day <= 1) day = 1;
             var success = await _mealPlanRepository.GetMealPlanDetailForMemberAsync(mealPlanId, day);
 
-            if (success==null)
+            if (success == null)
             {
                 return NotFound();
             }
@@ -84,11 +86,34 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("search-meal-plan-for-member")]
-        public async Task<IActionResult> SearchFoodsForMember([FromQuery]string? mealPlanName)
+        public async Task<IActionResult> SearchFoodsForMember([FromQuery] string? mealPlanName)
         {
             var mealPlan = await _mealPlanRepository.SearchMealPlanForMemberAsync(mealPlanName);
 
             return Ok(mealPlan);
+        }
+
+        [HttpPost("add-meal-plan-detail-with-day-to-food-diary")]
+        public async Task<IActionResult> AddMealPlanDetailWithDayToFoodDiary([FromBody] AddMealPlanDetailDayToFoodDiaryDetailRequestDTO addMealPlanDetail)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest();
+            }
+
+            var success = await _mealPlanRepository.AddMealPlanDetailWithDayToFoodDiaryAsync(addMealPlanDetail,memberId);
+
+            if (!success)
+            {
+                return StatusCode(500);
+            }
+
+            return Ok("");
         }
     }
 }

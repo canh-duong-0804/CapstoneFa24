@@ -281,10 +281,10 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
+
                     if (string.IsNullOrWhiteSpace(mealPlanName))
                     {
-                       
+
                         return await (from mp in context.MealPlans
                                       where mp.Status == true
                                       select new GetAllMealPlanForMemberResponseDTO
@@ -297,7 +297,7 @@ namespace DataAccess
                                       }).ToListAsync();
                     }
 
-                  
+
                     var query = from mp in context.MealPlans
                                 where mp.Status == true && EF.Functions.Collate(mp.Name.ToLower(), "Vietnamese_CI_AI").Contains(mealPlanName.ToLower())
                                 select new GetAllMealPlanForMemberResponseDTO
@@ -311,7 +311,7 @@ namespace DataAccess
 
                     var result = await query.ToListAsync();
 
-                    
+
                     if (!result.Any())
                     {
                         return await GetAllMealPlansForMemberAsync();
@@ -326,6 +326,21 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> AddMealPlanDetailWithDayToFoodDiaryAsync(AddMealPlanDetailDayToFoodDiaryDetailRequestDTO addMealPlanDetail, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var mealPlanDetail = await context.MealPlanDetails.Where(mp => mp.MealPlanId == addMealPlanDetail.MealPlanId && mp.Day == addMealPlanDetail.day).ToListAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return true;
+        }
     }
 
 }

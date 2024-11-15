@@ -7,29 +7,27 @@ namespace BusinessObject.Models
     {
         public Exercise()
         {
-            ExerciseDiaries = new HashSet<ExerciseDiary>();
+            ExerciseCardios = new HashSet<ExerciseCardio>();
+            ExerciseDiaryDetails = new HashSet<ExerciseDiaryDetail>();
             ExercisePlanDetails = new HashSet<ExercisePlanDetail>();
+            ExerciseResistances = new HashSet<ExerciseResistance>();
         }
 
         public int ExerciseId { get; set; }
-        public int ExerciseCategoryId { get; set; }
         public int CreateBy { get; set; }
         public DateTime CreateDate { get; set; }
-        public int? ExerciseLevel { get; set; }
         public int? ChangeBy { get; set; }
-        public int? Reps { get; set; }
-        public int? Sets { get; set; }
-        public int? Minutes { get; set; }
+        public bool? IsCardio { get; set; }
         public string? ExerciseImage { get; set; }
         public DateTime? ChangeDate { get; set; }
         public string ExerciseName { get; set; } = null!;
         public string? Description { get; set; }
-        public double CaloriesPerHour { get; set; }
         public bool? Status { get; set; }
 
         public virtual staff CreateByNavigation { get; set; } = null!;
-        public virtual ExerciseCategory ExerciseCategory { get; set; } = null!;
-        public virtual ICollection<ExerciseDiary> ExerciseDiaries { get; set; }
+        public virtual ICollection<ExerciseCardio> ExerciseCardios { get; set; }
+        public virtual ICollection<ExerciseDiaryDetail> ExerciseDiaryDetails { get; set; }
         public virtual ICollection<ExercisePlanDetail> ExercisePlanDetails { get; set; }
+        public virtual ICollection<ExerciseResistance> ExerciseResistances { get; set; }
     }
 }
