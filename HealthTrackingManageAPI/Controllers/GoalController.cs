@@ -38,8 +38,9 @@ namespace HealthTrackingManageAPI.Controllers
             var mapper = MapperConfig.InitializeAutomapper();
             var goalModel = mapper.Map<Goal>(goal);
             goalModel.MemberId = memberId;
+            goalModel.TargetValue = goal.TargetWeight;
 
-            await _goalRepository.AddGoalAsync(goalModel);
+            await _goalRepository.AddGoalAsync(goalModel, goal.Weight);
             return Ok(new { message = "Goal inserted successfully" });
 
         }
@@ -76,7 +77,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
-        [HttpPost("update-goal")]
+        /*[HttpPost("update-goal")]
         [Authorize]
         public async Task<IActionResult> UpdateGoal([FromBody] GoalRequestDTO updatedGoal)
         {
@@ -203,6 +204,6 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
             return Ok();
-        }
+        }*/
     }
 }

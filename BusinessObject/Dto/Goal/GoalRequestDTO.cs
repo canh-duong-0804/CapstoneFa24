@@ -10,7 +10,9 @@ namespace BusinessObject.Dto.Goal
     {
         
         public string GoalType { get; set; } = null!;
-        public double TargetValue { get; set; }
+        public double Weight { get; set; }
+        public int? ExerciseLevel { get; set; }
+        public double TargetWeight { get; set; }
         public DateTime TargetDate { get; set; }
     }
 }

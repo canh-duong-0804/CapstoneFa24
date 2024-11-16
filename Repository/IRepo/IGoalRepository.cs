@@ -11,7 +11,7 @@ namespace Repository.IRepo
     public interface IGoalRepository
     {
         Task<bool> AddCurrentWeightAsync(int memberId, double weightCurrent);
-        Task AddGoalAsync(Goal goal);
+        Task AddGoalAsync(Goal goal, double weight);
         Task<bool> AddGoalLevelExercise(int memberId, string goalWeekDaily);
         Task<bool> AddGoalWeekDaily(int memberId, string goalWeekDaily);
         Task<bool> AddGoalWeightAsync(int memberId, double weightCurrent);

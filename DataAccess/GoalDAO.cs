@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Goal;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.Goal;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,12 +31,23 @@ namespace DataAccess
             }
         }
 
-        public async Task AddGoalAsync(Goal goal)
+        public async Task AddGoalAsync(Goal goal, double weight)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                    var addNewWeightCurrent = new BodyMeasureChange
+                    {
+                        MemberId = goal.MemberId,
+                        Weight = weight,
+                        DateChange = DateTime.Now,
+                        BodyFat = 0,
+                        Muscles = 0,
+                    };
+
+                    context.BodyMeasureChanges.Add(addNewWeightCurrent);
+                    context.SaveChanges();
                     await context.Goals.AddAsync(goal);
                     await context.SaveChangesAsync();
                 }

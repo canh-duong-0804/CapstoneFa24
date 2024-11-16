@@ -14,7 +14,7 @@ namespace Repository.Repo
     {
         public Task<bool> AddCurrentWeightAsync(int memberId, double weightCurrent) => GoalDAO.Instance.AddCurrentWeightAsync(memberId,weightCurrent);
         
-        public Task AddGoalAsync(Goal goal) => GoalDAO.Instance.AddGoalAsync(goal);
+        public Task AddGoalAsync(Goal goal,double weight) => GoalDAO.Instance.AddGoalAsync(goal, weight);
 
         public Task<bool> AddGoalLevelExercise(int memberId, string goalLevelDaily) => GoalDAO.Instance.AddGoalLevelExercise(memberId, goalLevelDaily);
        
