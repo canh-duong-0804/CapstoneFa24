@@ -111,7 +111,7 @@ namespace DataAccess
                 {
 
                     var getGoal = await context.Goals.FindAsync(memberId);
-                    getGoal.TargetValue = updatedGoal.TargetValue;
+                    getGoal.TargetValue = updatedGoal.TargetWeight;
                     getGoal.TargetDate = updatedGoal.TargetDate;
                     getGoal.GoalType = updatedGoal.GoalType;
                     context.SaveChanges();
