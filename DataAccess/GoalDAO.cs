@@ -67,6 +67,14 @@ namespace DataAccess
 
                     var result = await context.Goals.Include(g => g.Member).ThenInclude(g => g.BodyMeasureChanges).FirstOrDefaultAsync(g => g.MemberId == id);
                     var getCurrentWeight = await context.BodyMeasureChanges.OrderByDescending(g => g.BodyMeasureId).FirstOrDefaultAsync(g => g.MemberId == id);
+                    if (result == null)
+                    {
+                       
+                        return new GoalResponseDTO
+                        {
+                            CurrentWeight = getCurrentWeight?.Weight ?? 0 
+                        };
+                    }
                     var response = new GoalResponseDTO()
                     {
                         GoalId = result.GoalId,
