@@ -1,4 +1,5 @@
 ﻿
+using BusinessObject.Dto.Register;
 using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,11 @@ namespace Repository.IRepo
 
         //Task<Member> Register(Member registerationRequestDTO);
 
-        Task<Member> Register(Member registerationRequestDTO, string password, double weight);
+        Task<Member> Register(Member registerationRequestDTO, RegisterationMobileRequestDTO member);
 
         Task<Member> Login(Member loginRequestDTO, string password);
         Task<Member> GetMemberByIdAsync(int userId);
         Task UpdateMemberProfileAsync(Member user);
-
-
+        
     }
 }
