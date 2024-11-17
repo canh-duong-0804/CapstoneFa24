@@ -6,7 +6,8 @@ namespace BusinessObject.Models
     public partial class FoodMember
     {
         public int FoodId { get; set; }
-        public string FoodName { get; set; } = null!;
+        public string? FormattedId { get; set; }
+        public string? FoodName { get; set; }
         public string? Portion { get; set; }
         public double? Calories { get; set; }
         public double? Protein { get; set; }

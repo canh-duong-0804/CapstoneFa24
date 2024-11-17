@@ -65,7 +65,7 @@ namespace DataAccess
                         {
                             ExerciseCategoryId = e.ExerciseCategoryId,
                             ExerciseCategoryName = e.ExerciseCategoryName,
-                            Status = e.Status,
+                            Status = e.Status,      
                             //Value = e.ExerciseCategoryId,
                         })
                         .ToListAsync();
