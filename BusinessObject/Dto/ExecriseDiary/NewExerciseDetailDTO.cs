@@ -12,6 +12,8 @@ namespace BusinessObject.Dto.ExecriseDiary
 		public int ExerciseId { get; set; }
 		public int DurationInMinutes { get; set; }
 		public bool IsPractice { get; set; }
-		
-	}
+
+		public float CaloriesBurned { get; set; }
+
+    }
 }

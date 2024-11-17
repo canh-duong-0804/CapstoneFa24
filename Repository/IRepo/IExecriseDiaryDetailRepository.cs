@@ -14,5 +14,9 @@ namespace Repository.IRepo
 		Task<double?> GetLatestBodyWeightAsync(string memberId);
 		Task<double?> GetExerciseMetValueAsync(int exerciseId);
 		Task<Exercise?> GetExerciseAsync(int exerciseId);
-	}
+
+		Task UpdateExerciseDiaryDetailAsync(ExerciseDiaryDetail detail);
+		Task<ExerciseDiaryDetail?> GetExerciseDiaryDetailById(int exerciseDiaryDetailId);
+
+    }
 }

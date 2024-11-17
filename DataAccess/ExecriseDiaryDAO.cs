@@ -98,23 +98,7 @@ namespace DataAccess
 			}
 		}
 
-		//rewrite using try catch block like above
-		public async Task<ExerciseDiary> GetExerciseDiaryByDate(int memberId, DateTime date)
-		{
-			try
-			{
-				using (var context = new HealthTrackingDBContext())
-				{
-					return await context.ExerciseDiaries
-				.Include(d => d.ExerciseDiaryDetails) // Include related details
-				.FirstOrDefaultAsync(d => d.MemberId == memberId && d.Date == date);
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
+		
 
 		public async Task UpdateTotalDurationAndCaloriesAsync(int exerciseDiaryId)
 		{
@@ -172,5 +156,24 @@ namespace DataAccess
 			}
 		}
 
-	}
+        public async Task<ExerciseDiary?> GetExerciseDiaryByDate(int memberId, DateTime date)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    return await context.ExerciseDiaries
+                        .Include(d => d.ExerciseDiaryDetails)
+                        .FirstOrDefaultAsync(d => d.MemberId == memberId && d.Date == date);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving diary by date: {ex.Message}");
+                throw;
+            }
+        }
+
+
+    }
 }

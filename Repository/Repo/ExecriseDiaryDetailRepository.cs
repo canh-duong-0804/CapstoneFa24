@@ -16,7 +16,10 @@ namespace Repository.Repo
 		public Task<double?> GetLatestBodyWeightAsync(string memberId) => ExecriseDiaryDetailDAO.Instance.GetLatestBodyWeightAsync(memberId);
 		public Task<double?> GetExerciseMetValueAsync(int exerciseId) => ExecriseDiaryDetailDAO.Instance.GetExerciseMetValueAsync(exerciseId);
 		public Task<Exercise?> GetExerciseAsync(int exerciseId) => ExecriseDiaryDetailDAO.Instance.GetExerciseAsync(exerciseId);
-	}
+       public Task UpdateExerciseDiaryDetailAsync(ExerciseDiaryDetail detail) => ExecriseDiaryDetailDAO.Instance.UpdateExerciseDiaryDetailAsync(detail);
+       public Task<ExerciseDiaryDetail?> GetExerciseDiaryDetailById(int exerciseDiaryDetailId) => ExecriseDiaryDetailDAO.Instance.GetExerciseDiaryDetailById(exerciseDiaryDetailId);
+
+    }
 	
 
 }

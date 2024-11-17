@@ -1,4 +1,5 @@
 ﻿
+using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.DTOs;
 using BusinessObject.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -8,28 +9,30 @@ using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class ExerciseDiaryController : ControllerBase
-	{
-		private readonly HealthTrackingDBContext _context;
-		private readonly IExeriseDiaryRepository _exerciseDiaryRepo;
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ExerciseDiaryController : ControllerBase
+    {
+        private readonly HealthTrackingDBContext _context;
+        private readonly IExeriseDiaryRepository _exerciseDiaryRepo;
+        private readonly IExecriseDiaryDetailRepository _exerciseDiaryDetailRepo;
 
-		public ExerciseDiaryController(HealthTrackingDBContext context, IExeriseDiaryRepository exerciseDiaryRepo)
-		{
-			_exerciseDiaryRepo = exerciseDiaryRepo;
-			_context = context;
-		}
-
-		
-
+        public ExerciseDiaryController(HealthTrackingDBContext context, IExeriseDiaryRepository exerciseDiaryRepo, IExecriseDiaryDetailRepository exerciseDiaryDetailRepo)
+        {
+            _exerciseDiaryRepo = exerciseDiaryRepo;
+            _context = context;
+            _exerciseDiaryDetailRepo = exerciseDiaryDetailRepo;
+        }
 
 
-		
-		[Authorize]
-		[HttpGet("member/exercise_diary")]
-		public async Task<IActionResult> GetDiaryByMemberId()
-		{
+
+
+
+
+        [Authorize]
+        [HttpGet("member/exercise_diary")]
+        public async Task<IActionResult> GetDiaryByMemberId()
+        {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
                 return Unauthorized("Member ID not found in claims.");
@@ -71,128 +74,123 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-		[Authorize]
-		[HttpPost("member/check_or_create_today_diary")]
-		public async Task<IActionResult> CheckOrCreateTodayDiary()
-		{
-			var memberIdClaim = User.FindFirstValue("Id");
-			if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
-				return Unauthorized("Member ID not found in claims.");
 
-			try
-			{
-				// Check if today's diary exists for the member
-				var today = DateTime.UtcNow.Date; // Use UTC to ensure consistency
-				var existingDiary = await _exerciseDiaryRepo.GetTodayExerciseDiaryByMemberId(memberId, today);
+        [Authorize]
+        [HttpGet("member/exercise_diary_by_date")]
+        public async Task<IActionResult> GetDiaryByDate(DateTime date)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                return Unauthorized("Member ID not found in claims.");
 
-				if (existingDiary != null)
-				{
-					// If a diary for today already exists, return it
-					return Ok(new
-					{
-						message = "Today's diary already exists.",
-						diaryId = existingDiary.ExerciseDiaryId
-					});
-				}
+            try
+            {
+                var targetDate = date.Date;
 
-				// If not, create a new diary
-				var newDiary = new ExerciseDiary
-				{
-					MemberId = memberId,
-					Date = today,
-					TotalDuration = null, // No duration yet
-					TotalCaloriesBurned = null, // No calories burned yet
-					ExercisePlanId = null // Assuming it’s optional; set if applicable
-				};
+                var existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryByDate(memberId, targetDate);
 
-				await _exerciseDiaryRepo.AddExerciseDiaryAsync(newDiary);
+                if (existingDiary == null)
+                {
+                    var newDiary = new ExerciseDiary
+                    {
+                        MemberId = memberId,
+                        Date = targetDate,
+                        TotalDuration = null,
+                        TotalCaloriesBurned = null,
+                        ExercisePlanId = null
+                    };
 
-				return Ok(new
-				{
-					message = "New diary created for today.",
-					diaryId = newDiary.ExerciseDiaryId
-				});
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
-		[Authorize]
-		[HttpGet("member/exercise_diary_by_date")]
-		public async Task<IActionResult> GetDiaryByDate(DateTime date)
-		{
-			var memberIdClaim = User.FindFirstValue("Id");
-			if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
-				return Unauthorized("Member ID not found in claims.");
+                    await _exerciseDiaryRepo.AddExerciseDiaryAsync(newDiary);
 
-			try
-			{
-				// Retrieve the exercise diary for the specified date
-				var diary = await _exerciseDiaryRepo.GetExerciseDiaryByDate(memberId, date.Date);
+                    existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryById(newDiary.ExerciseDiaryId);
+                }
 
-				if (diary == null)
-					return NotFound($"No exercise diary found for the date: {date.Date.ToShortDateString()}.");
-				
-				// Map to DTO (assuming the repository returns an ExerciseDiary object)
-				var diaryDto = new ExerciseDiaryDTO
-				{
-					ExerciseDiaryId = diary.ExerciseDiaryId,
-					MemberId = diary.MemberId,
-					ExercisePlanId = diary.ExercisePlanId,
-					Date = diary.Date,
-					TotalDuration = diary.TotalDuration,
-					TotalCaloriesBurned = diary.TotalCaloriesBurned,
-					ExerciseDiaryDetails = diary.ExerciseDiaryDetails.Select(ed => new ExerciseDiaryDetailDTO
-					{
-						ExerciseDiaryDetailsId = ed.ExerciseDiaryDetailsId,
-						ExerciseDiaryId = ed.ExerciseDiaryId,
-						IsPractice = ed.IsPractice,
-						ExerciseId = ed.ExerciseId,
-						Duration = ed.Duration,
-						CaloriesBurned = ed.CaloriesBurned
-					}).ToList()
-				};
+                await _exerciseDiaryRepo.UpdateTotalDurationAndCaloriesAsync(existingDiary.ExerciseDiaryId);
+                /*existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryById(existingDiary.ExerciseDiaryId);*/
 
-				return Ok(diaryDto);
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
+                var diaryDto = new ExerciseDiaryDTO
+                {
+                    ExerciseDiaryId = existingDiary.ExerciseDiaryId,
+                    MemberId = existingDiary.MemberId,
+                    ExercisePlanId = existingDiary.ExercisePlanId,
+                    Date = existingDiary.Date,
+                    TotalDuration = existingDiary.TotalDuration,
+                    TotalCaloriesBurned = existingDiary.TotalCaloriesBurned,
+                    ExerciseDiaryDetails = existingDiary.ExerciseDiaryDetails.Select(ed => new ExerciseDiaryDetailDTO
+                    {
+                        ExerciseDiaryDetailsId = ed.ExerciseDiaryDetailsId,
+                        ExerciseDiaryId = ed.ExerciseDiaryId,
+                        IsPractice = ed.IsPractice,
+                        ExerciseId = ed.ExerciseId,
+                        Duration = ed.Duration,
+                        CaloriesBurned = ed.CaloriesBurned
+                    }).ToList()
+                };
 
-		[HttpPost("update_totals")]
-		[Authorize]
-		public async Task<IActionResult> UpdateDiaryTotals(int exerciseDiaryId)
-		{
-			try
-			{
-				// Fetch member ID from claims
-				var memberIdClaim = User.FindFirstValue("Id");
-				if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
-				{
-					return Unauthorized("Member ID not found in claims.");
-				}
+                return Ok(diaryDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-				// Fetch the diary to ensure it belongs to the logged-in member
-				var diary = await _exerciseDiaryRepo.GetExerciseDiaryById(exerciseDiaryId);
-				if (diary == null || diary.MemberId != memberId)
-				{
-					return NotFound("Exercise diary not found or does not belong to the logged-in user.");
-				}
+        [Authorize]
+        [HttpPut("update_is_practice")]
+        public async Task<IActionResult> UpdateIsPracticeStatus([FromBody] UpdateIsPracticeDTO request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid input data.");
+                }
 
-				// Update totals
-				await _exerciseDiaryRepo.UpdateTotalDurationAndCaloriesAsync(exerciseDiaryId);
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
 
-				return Ok("Totals updated successfully.");
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
-	}
+                // Validate and fetch the diary detail
+                var exerciseDetail = await _exerciseDiaryDetailRepo.GetExerciseDiaryDetailById(request.ExerciseDiaryDetailId);
+                if (exerciseDetail == null)
+                {
+                    return NotFound("Exercise detail not found.");
+                }
+
+                // Check if the exercise detail belongs to the diary of the logged-in user
+                var diary = await _exerciseDiaryRepo.GetExerciseDiaryById(exerciseDetail.ExerciseDiaryId.Value);
+
+                if (diary == null || diary.MemberId != memberId)
+                {
+                    return NotFound("Diary not found or does not belong to the logged-in user.");
+                }
+
+                // Update the IsPractice field
+                exerciseDetail.IsPractice = request.IsPractice;
+                await _exerciseDiaryDetailRepo.UpdateExerciseDiaryDetailAsync(exerciseDetail);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Updated IsPractice status successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Internal server error.",
+                    error = ex.Message
+                });
+            }
+        }
+
+
+
+    }
 
 }
 
