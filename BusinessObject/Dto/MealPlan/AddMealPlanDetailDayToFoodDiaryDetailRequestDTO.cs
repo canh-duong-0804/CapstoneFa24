@@ -8,8 +8,8 @@ namespace BusinessObject.Dto.MealPlan
 {
     public class AddMealPlanDetailDayToFoodDiaryDetailRequestDTO
     {
-        public int DiaryId { get; set; }
-       
+        //public int DiaryId { get; set; }
+        public DateTime selectDate { get; set; } 
         public int day { get; set; }  
         public int MealPlanId { get; set; }
     }

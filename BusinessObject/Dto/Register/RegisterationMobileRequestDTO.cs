@@ -18,6 +18,8 @@ namespace BusinessObject.Dto.Register
         public double Weight { get; set; }
         //
         public double? TargetWeight { get; set; }
+        public double? TargetDate { get; set; }
+        public int? DietId { get; set; }
         //
 
 

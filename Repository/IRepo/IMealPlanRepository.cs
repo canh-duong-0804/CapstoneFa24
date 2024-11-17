@@ -11,7 +11,8 @@ namespace Repository.IRepo
     public interface IMealPlanRepository
     {
         Task<bool> AddMealPlanDetailWithDayToFoodDiaryAsync(AddMealPlanDetailDayToFoodDiaryDetailRequestDTO addMealPlanDetail, int memberId);
-        Task<bool> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId);
+        Task<bool> AddMealPlanDetailWithMealTypeDayToFoodDiary(AddMealPlanDetailMealTypeDayToFoodDiaryDetailRequestDTO addMealPlanDetail, int memberId);
+        Task<bool> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId, DateTime selectDate);
         Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlansForMemberAsync();
         Task<MealPlanDetailResponseDTO> GetMealPlanDetailForMemberAsync(int mealPlanId,int day);
         Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> SearchMealPlanForMemberAsync(string mealPlanName);

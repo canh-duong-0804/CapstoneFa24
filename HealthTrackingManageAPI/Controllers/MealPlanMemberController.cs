@@ -40,7 +40,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpPost("add-meal-plan-to-diary")]
         [Authorize]
-        public async Task<IActionResult> AddMealPlanToDiary(int mealPlanId)
+        public async Task<IActionResult> AddMealPlanToDiary(int mealPlanId,DateTime selectDate)
         {
             /* if (request == null || request.FoodDiaryDetails == null || !request.FoodDiaryDetails.Any())
              {
@@ -57,7 +57,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return BadRequest();
             }
 
-            var success = await _mealPlanRepository.AddMealPlanToFoodDiaryAsync(mealPlanId, memberId);
+            var success = await _mealPlanRepository.AddMealPlanToFoodDiaryAsync(mealPlanId, memberId, selectDate);
 
             if (!success)
             {
@@ -115,5 +115,30 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok("");
         }
+
+        [HttpPost("add-meal-plan-detail-with-meal-type-day-to-food-diary")]
+        public async Task<IActionResult> AddMealPlanDetailWithMealTypeDayToFoodDiary([FromBody] AddMealPlanDetailMealTypeDayToFoodDiaryDetailRequestDTO addMealPlanDetail)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest();
+            }
+
+            var success = await _mealPlanRepository.AddMealPlanDetailWithMealTypeDayToFoodDiary(addMealPlanDetail, memberId);
+
+            if (!success)
+            {
+                return StatusCode(500);
+            }
+
+            return Ok("");
+        }
+
+
     }
 }
