@@ -1,7 +1,7 @@
 ﻿
 using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.DTOs;
-using BusinessObject.DTOs.BusinessObject.DTOs;
+
 using BusinessObject.Models;
 using DataAccess;
 using Microsoft.AspNetCore.Authorization;
@@ -111,11 +111,13 @@ namespace HealthTrackingManageAPI.Controllers
                     existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryById(newDiary.ExerciseDiaryId);
                 }
 
+
+
                 // Update totals (duration and calories)
                 await _exerciseDiaryRepo.UpdateTotalDurationAndCaloriesAsync(existingDiary.ExerciseDiaryId);
 
                 // Reload the diary to reflect updated totals
-               /* existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryById(existingDiary.ExerciseDiaryId);*/
+                existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryByDate(memberId, targetDate);
 
                 // Map to DTO
                 var diaryDto = new ExerciseDiaryDTO
