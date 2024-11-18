@@ -35,7 +35,7 @@ builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
 builder.Services.AddScoped<IMealMemberRepository, MealMemberRepository>();
-
+builder.Services.AddScoped<IExecriseDiaryDetailRepository, ExecriseDiaryDetailRepository>();
 builder.Services.AddScoped<ICommunityCategoryRepo, CommunityCategoryRepository>();
 builder.Services.AddScoped<IBodyMesurementRepository, BodyMeasurementRepository>();
 builder.Services.AddScoped<IExeriseDiaryRepository, ExecriseDiaryRepository>();

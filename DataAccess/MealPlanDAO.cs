@@ -117,7 +117,7 @@ namespace DataAccess
                             DiaryId = targetDiary.DiaryId,
                             FoodId = detail.FoodId,
                             Quantity = detail.Quantity,
-                            MealType = detail.MealType,
+                            MealType = detail.MealType ?? 0,
 
                         };
                         context.FoodDiaryDetails.Add(foodDiaryDetail);
