@@ -1,7 +1,7 @@
 ﻿
 using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.DTOs;
-using BusinessObject.DTOs.BusinessObject.DTOs;
+
 using BusinessObject.Models;
 using DataAccess;
 using Microsoft.AspNetCore.Authorization;
