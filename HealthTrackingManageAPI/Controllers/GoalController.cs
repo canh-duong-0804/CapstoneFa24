@@ -39,7 +39,7 @@ namespace HealthTrackingManageAPI.Controllers
             var goalModel = mapper.Map<Goal>(goal);
             goalModel.MemberId = memberId;
             goalModel.TargetValue = goal.TargetWeight;
-
+            goalModel.GoalType = goal.GoalType.ToString("F1");
             await _goalRepository.AddGoalAsync(goalModel, goal.Weight);
             return Ok(new { message = "Goal inserted successfully" });
 

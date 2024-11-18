@@ -280,7 +280,9 @@ namespace DataAccess
                                 Carbs = e.Food.Carbs,
                                 Fat = e.Food.Fat,
                                 Quantity = e.Quantity,
-                                MealType = e.MealType
+                                MealType = e.MealType,
+                                Portion=e.Food.Portion,
+                                
                             })
                             .ToListAsync();
                     }

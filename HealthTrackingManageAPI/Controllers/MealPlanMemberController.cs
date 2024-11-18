@@ -40,7 +40,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpPost("add-meal-plan-to-diary")]
         [Authorize]
-        public async Task<IActionResult> AddMealPlanToDiary(int mealPlanId,DateTime selectDate)
+        public async Task<IActionResult> AddMealPlanToDiary([FromBody]int mealPlanId, DateTime selectDate)
         {
             /* if (request == null || request.FoodDiaryDetails == null || !request.FoodDiaryDetails.Any())
              {

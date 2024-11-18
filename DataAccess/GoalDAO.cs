@@ -75,6 +75,9 @@ namespace DataAccess
                             CurrentWeight = getCurrentWeight?.Weight ?? 0 
                         };
                     }
+                 
+
+
                     var response = new GoalResponseDTO()
                     {
                         GoalId = result.GoalId,
@@ -82,7 +85,7 @@ namespace DataAccess
                         ExerciseLevel = MapExerciseLevel(result.Member.ExerciseLevel),
 
                         DateInitial = result.Member.BodyMeasureChanges.FirstOrDefault()?.DateChange,
-                        GoalType = result.GoalType,
+                        GoalType = float.Parse(result.GoalType),
                         TargetDate = result.TargetDate,
                         startWeight = result.Member.BodyMeasureChanges.FirstOrDefault()?.Weight,
                     };
@@ -120,8 +123,8 @@ namespace DataAccess
 
                     var getGoal = await context.Goals.FindAsync(memberId);
                     getGoal.TargetValue = updatedGoal.TargetWeight;
-                    getGoal.TargetDate = updatedGoal.TargetDate;
-                    getGoal.GoalType = updatedGoal.GoalType;
+                    //getGoal.TargetDate = updatedGoal.TargetDate;
+                   // getGoal.GoalType = updatedGoal.GoalType;
                     context.SaveChanges();
                     return true;
                     /* context.Goals.Update(updatedGoal);

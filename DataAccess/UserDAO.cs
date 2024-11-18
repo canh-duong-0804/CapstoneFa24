@@ -147,8 +147,9 @@ namespace DataAccess
 
 
                         TargetDate = DateTime.Now.AddMonths(1),
-                    ExerciseLevel = member.ExerciseLevel,
-                      GoalType=""
+                        ExerciseLevel = member.ExerciseLevel,
+                        // dang goal type 1 2 3 
+                        GoalType=member.Goal,
                     };
 
                     await context.Goals.AddAsync(goal);

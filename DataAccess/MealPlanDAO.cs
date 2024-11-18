@@ -204,7 +204,7 @@ namespace DataAccess
                                     Quantity = mpd.Quantity
                                 }).ToList(),
                             AfternoonSnackFoods = mp.MealPlanDetails
-                                .Where(mpd => mpd.Day == day && mpd.MealType == 3)
+                                .Where(mpd => mpd.Day == day && mpd.MealType == 4)
                                 .Select(mpd => new GetAllFoodOfMealMemberResonseDTO
                                 {
                                     FoodId = mpd.FoodId,
@@ -218,7 +218,7 @@ namespace DataAccess
                                     Quantity = mpd.Quantity
                                 }).ToList(),
                             DinnerFoods = mp.MealPlanDetails
-                                .Where(mpd => mpd.Day == day && mpd.MealType == 4)
+                                .Where(mpd => mpd.Day == day && mpd.MealType == 3)
                                 .Select(mpd => new GetAllFoodOfMealMemberResonseDTO
                                 {
                                     FoodId = mpd.FoodId,

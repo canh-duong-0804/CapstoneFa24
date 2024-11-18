@@ -11,6 +11,7 @@ namespace BusinessObject.Dto.FoodDiary
         public int DiaryDetailId { get; set; }
         public int DiaryId { get; set; }
         public int FoodId { get; set; }
+        public string Portion { get; set; } = null!;
         public string FoodName {  get; set; }
         public double Calories { get; set; }
         public double Protein { get; set; }
