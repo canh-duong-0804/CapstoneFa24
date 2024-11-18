@@ -1,4 +1,6 @@
-﻿namespace BusinessObject.DTOs
+﻿using BusinessObject.DTOs.BusinessObject.DTOs;
+
+namespace BusinessObject.DTOs
 {
     public class ExerciseDiaryDTO
     {

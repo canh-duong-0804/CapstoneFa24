@@ -146,7 +146,7 @@ namespace DataAccess
 			{
 				using (var context = new HealthTrackingDBContext())
 				{
-					return await context.ExerciseDiaries
+					return await context.ExerciseDiaries.Include(e => e.ExerciseDiaryDetails)
 				.FirstOrDefaultAsync(d => d.ExerciseDiaryId == exerciseDiaryId);
 				}
 			}
@@ -164,15 +164,16 @@ namespace DataAccess
                 {
                     return await context.ExerciseDiaries
                         .Include(d => d.ExerciseDiaryDetails)
+                            .ThenInclude(detail => detail.Exercise) // Include related Exercise entity
                         .FirstOrDefaultAsync(d => d.MemberId == memberId && d.Date == date);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error retrieving diary by date: {ex.Message}");
-                throw;
+                throw ex;
             }
         }
+
 
 
     }

@@ -1,7 +1,9 @@
 ﻿
 using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.DTOs;
+using BusinessObject.DTOs.BusinessObject.DTOs;
 using BusinessObject.Models;
+using DataAccess;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
@@ -60,6 +62,8 @@ namespace HealthTrackingManageAPI.Controllers
                         ExerciseDiaryId = ed.ExerciseDiaryId,
                         IsPractice = ed.IsPractice,
                         ExerciseId = ed.ExerciseId,
+                        ExerciseImage = ed.Exercise.ExerciseImage,
+                        ExerciseName = ed.Exercise.ExerciseName,
                         Duration = ed.Duration,
                         CaloriesBurned = ed.CaloriesBurned
                     }).ToList()
@@ -75,7 +79,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
-        [Authorize]
+      [Authorize]
         [HttpGet("member/exercise_diary_by_date")]
         public async Task<IActionResult> GetDiaryByDate(DateTime date)
         {
@@ -87,6 +91,7 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 var targetDate = date.Date;
 
+                // Fetch or create the diary
                 var existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryByDate(memberId, targetDate);
 
                 if (existingDiary == null)
@@ -102,12 +107,17 @@ namespace HealthTrackingManageAPI.Controllers
 
                     await _exerciseDiaryRepo.AddExerciseDiaryAsync(newDiary);
 
+                    // Fetch the newly created diary
                     existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryById(newDiary.ExerciseDiaryId);
                 }
 
+                // Update totals (duration and calories)
                 await _exerciseDiaryRepo.UpdateTotalDurationAndCaloriesAsync(existingDiary.ExerciseDiaryId);
-                /*existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryById(existingDiary.ExerciseDiaryId);*/
 
+                // Reload the diary to reflect updated totals
+               /* existingDiary = await _exerciseDiaryRepo.GetExerciseDiaryById(existingDiary.ExerciseDiaryId);*/
+
+                // Map to DTO
                 var diaryDto = new ExerciseDiaryDTO
                 {
                     ExerciseDiaryId = existingDiary.ExerciseDiaryId,
@@ -123,7 +133,9 @@ namespace HealthTrackingManageAPI.Controllers
                         IsPractice = ed.IsPractice,
                         ExerciseId = ed.ExerciseId,
                         Duration = ed.Duration,
-                        CaloriesBurned = ed.CaloriesBurned
+                        CaloriesBurned = ed.CaloriesBurned,
+                        ExerciseName  = ed.Exercise.ExerciseName,
+                        ExerciseImage = ed.Exercise.ExerciseImage   
                     }).ToList()
                 };
 
@@ -134,6 +146,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [Authorize]
         [HttpPut("update_is_practice")]
