@@ -1,10 +1,12 @@
 ﻿using BusinessObject;
 using BusinessObject.Dto.Food;
 using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
 using System.Reflection.Metadata;
+using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -131,13 +133,39 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
             return Ok(food);
-        } 
-        
-        
-        [HttpGet("get-food-for-member-by-id/{id}")]
-        public async Task<IActionResult> GetFoodForMemberById(int id)
+        }
+
+
+        /* [HttpGet("get-food-for-member-by-id/{id}")]
+         public async Task<IActionResult> GetFoodForMemberById(int id)
+         {
+             var food = await _foodRepository.GetFoodForMemberByIdAsync(id);
+
+             if (food == null)
+             {
+                 return NotFound("Food not found.");
+             }
+
+             return Ok(food);
+         }*/
+
+        [HttpGet("get-food-for-member-by-id")]
+        [Authorize]
+        public async Task<IActionResult> GetFoodForMemberById(int FoodId, DateTime SelectDate)
         {
-            var food = await _foodRepository.GetFoodForMemberByIdAsync(id);
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+           
+
+            var food = await _foodRepository.GetFoodForMemberByIdAsync(FoodId, SelectDate, memberId);
 
             if (food == null)
             {

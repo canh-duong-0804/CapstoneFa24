@@ -106,7 +106,8 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
 
-            var user = await _userRepo.Register(model,member.Password,member.Weight);
+           // var user = await _userRepo.Register(model,member.Password,member.Weight);
+            var user = await _userRepo.Register(model,member);
             if (user == null)
             {
                 return BadRequest("Error while registering the user");

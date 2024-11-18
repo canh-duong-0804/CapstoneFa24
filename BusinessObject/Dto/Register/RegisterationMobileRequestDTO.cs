@@ -16,6 +16,14 @@ namespace BusinessObject.Dto.Register
 
         public double Height { get; set; }
         public double Weight { get; set; }
+        //  
+
+        public double weightPerWeek { get; set; }
+        public double? TargetWeight { get; set; }
+       // public double? TargetDate { get; set; }
+        public int? DietId { get; set; }
+        //
+
 
         public int ExerciseLevel { get; set; }
         public string? Goal { get; set; }

@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Dto.MealPlan
 {
-    public class AddMealPlanDetailDayToFoodDiaryDetailRequestDTO
+    public class MealPlanDetailRequestDTO
     {
-        //public int DiaryId { get; set; }
-        public DateTime selectDate { get; set; } 
-        public int day { get; set; }  
         public int MealPlanId { get; set; }
+        public int Day { get; set; }
     }
+
 }

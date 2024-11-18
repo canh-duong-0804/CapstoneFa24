@@ -10,7 +10,7 @@ namespace BusinessObject.Dto.Goal
     {
         public int GoalId { get; set; }
      
-        public string GoalType { get; set; } = null!;
+        public float GoalType { get; set; }
         public string ExerciseLevel { get; set; } = null!;
         public double WeightGoal { get; set; }
 

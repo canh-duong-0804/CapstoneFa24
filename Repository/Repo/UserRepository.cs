@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper.Execution;
+using BusinessObject.Dto.Register;
 using BusinessObject.Models;
 using DataAccess;
 
@@ -36,7 +37,7 @@ namespace Repository.Repo
 
 
 
-        public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO, string password, double weight) => UserDAO.Instance.Register(registerationRequestDTO, password,weight);
+        public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO, RegisterationMobileRequestDTO member) => UserDAO.Instance.Register(registerationRequestDTO, member);
 
         
     }

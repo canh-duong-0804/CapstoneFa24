@@ -28,5 +28,14 @@ namespace BusinessObject.Dto.Food
         public bool? Status { get; set; }
         public int? DietId { get; set; }
         public string DietName { get; set; }
+
+
+
+
+        public double? totalCalories { get; set; }
+       
+        public double? totalProtein { get; set; }
+        public double? totalCarb { get; set; }
+        public double? totalFat { get; set; }
     }
 }

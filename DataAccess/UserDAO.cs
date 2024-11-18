@@ -115,14 +115,14 @@ namespace DataAccess
             }
         }
 
-        public async Task<Member> Register(Member registerationRequestDTO, string password, double weight)
+        public async Task<Member> Register(Member registerationRequestDTO, RegisterationMobileRequestDTO member)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
                     
-                    CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+                    CreatePasswordHash(member.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                    
                     registerationRequestDTO.PasswordHash = passwordHash;
@@ -132,13 +132,28 @@ namespace DataAccess
                     context.Members.Add(registerationRequestDTO);
                     await context.SaveChangesAsync();
                     var savedMember = await context.Members
-                .FirstOrDefaultAsync(m => m.Email == registerationRequestDTO.Email);
+                    .FirstOrDefaultAsync(m => m.Email == registerationRequestDTO.Email);
                     var bodyMeasureChange = new BodyMeasureChange
                     {
                         MemberId = savedMember.MemberId,  
-                        Weight = weight,
+                        Weight = member.Weight,
                         DateChange = DateTime.UtcNow  
                     };
+
+                    var goal = new Goal
+                    {
+                        MemberId = savedMember.MemberId,
+                        TargetValue = (member.TargetWeight.HasValue ? member.TargetWeight : member.Weight) ?? 0.0,
+
+
+                        TargetDate = DateTime.Now.AddMonths(1),
+                        ExerciseLevel = member.ExerciseLevel,
+                        // dang goal type 1 2 3 
+                        GoalType=member.Goal,
+                    };
+
+                    await context.Goals.AddAsync(goal);
+                    await context.SaveChangesAsync();
 
                     context.BodyMeasureChanges.Add(bodyMeasureChange);
                     await context.SaveChangesAsync();

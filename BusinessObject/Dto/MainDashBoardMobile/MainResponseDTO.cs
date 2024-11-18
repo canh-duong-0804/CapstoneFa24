@@ -8,7 +8,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
 {
     public class MainResponseDTO
     {
-
+        public string FullName { get; set; } = null!;
         public double totalCalories { get; set; }
         public double BMI { get; set; }
         public double totalProtein { get; set; }

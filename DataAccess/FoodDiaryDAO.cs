@@ -280,7 +280,9 @@ namespace DataAccess
                                 Carbs = e.Food.Carbs,
                                 Fat = e.Food.Fat,
                                 Quantity = e.Quantity,
-                                MealType = e.MealType
+                                MealType = e.MealType,
+                                Portion=e.Food.Portion,
+                                
                             })
                             .ToListAsync();
                     }
@@ -413,10 +415,10 @@ namespace DataAccess
                     MemberId = memberId,
                     Date = date,
                     GoalCalories = Math.Round(maintenanceCalories, 0),
-                    Calories = 0,
-                    Protein = 0,
-                    Fat = 0,
-                    Carbs = 0
+                    //Calories = Math.Round((maintenanceCalories * 0.3) / 4, 1),
+                    Protein = Math.Round((maintenanceCalories * 0.3) / 4, 1),
+                    Fat = Math.Round((maintenanceCalories * 0.25) / 9, 1),
+                    Carbs = Math.Round((maintenanceCalories * 0.45) / 4, 1)
                 };
                 context.FoodDiaries.Add(foodDiary);
                 await context.SaveChangesAsync();

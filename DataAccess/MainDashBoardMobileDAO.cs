@@ -85,6 +85,8 @@ namespace DataAccess
                     var weightGoal = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân"));
                     var calorieAdjustment = 0.0;
                     //DateTime? targetDate = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân")).TargetDate;
+
+                    // bo goal type lay ra o db
                     string goalType = "duy trì";
                     double weightDifference = 0;
 
@@ -160,7 +162,8 @@ namespace DataAccess
                         Weight = currentWeight,
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
-                        BMI = Math.Round(bmi.Value, 0)
+                        BMI = Math.Round(bmi.Value, 0),
+                        UserName=member.Username
                     };
 
 

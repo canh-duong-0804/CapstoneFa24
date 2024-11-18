@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Diet;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.Diet;
 using BusinessObject.Dto.Food;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
@@ -272,7 +273,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int id)
+        public async Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int FoodId, DateTime SelectDate, int memberId)
         {
             try
             {
@@ -281,7 +282,7 @@ namespace DataAccess
                 {
 
                     var responseDto = await context.Foods
-                        .Where(f => f.FoodId == id && f.Status == true)
+                        .Where(f => f.FoodId == FoodId && f.Status == true)
                         .Select(food => new GetFoodForMemberByIdResponseDTO
                         {
                             FoodId = food.FoodId,
@@ -306,6 +307,35 @@ namespace DataAccess
                         })
                         .FirstOrDefaultAsync();
 
+
+
+
+
+
+
+
+                    var getGoalCalo = await context.FoodDiaries
+                   .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == SelectDate);
+
+                    if (getGoalCalo == null)
+                    {
+
+
+                        await FoodDiaryDAO.Instance.GetOrCreateFoodDiaryAsync(memberId, SelectDate);
+                        getGoalCalo = await context.FoodDiaries
+                           .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == SelectDate);
+
+                    }
+
+
+
+
+
+
+                    responseDto.totalFat = getGoalCalo.Fat;
+                    responseDto.totalCalories = getGoalCalo.GoalCalories;
+                    responseDto.totalCarb = getGoalCalo.Carbs; ;
+                    responseDto.totalProtein = getGoalCalo.Protein;
                     return responseDto;
                 }
             }
@@ -349,10 +379,10 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
+
                     if (string.IsNullOrWhiteSpace(foodName))
                     {
-                        
+
                         return await (from food in context.Foods
                                       join diet in context.Diets on food.DietId equals diet.DietId
                                       where food.Status == true
@@ -369,7 +399,7 @@ namespace DataAccess
                                       }).ToListAsync();
                     }
 
-                  
+
                     var foods = await (from food in context.Foods
                                        join diet in context.Diets on food.DietId equals diet.DietId
                                        where food.Status == true && EF.Functions.Collate(food.FoodName.ToLower(), "Vietnamese_CI_AI").Contains(foodName.ToLower())
@@ -385,7 +415,7 @@ namespace DataAccess
                                            DietName = diet.DietName
                                        }).ToListAsync();
 
-                   
+
                     if (!foods.Any())
                     {
                         return await GetAllFoodsForMemberAsync();

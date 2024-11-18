@@ -12,7 +12,18 @@ namespace Repository.Repo
 {
     public class GoalRepository : IGoalRepository
     {
-        public Task AddGoalAsync(Goal goal) => GoalDAO.Instance.AddGoalAsync(goal);
+        public Task<bool> AddCurrentWeightAsync(int memberId, double weightCurrent) => GoalDAO.Instance.AddCurrentWeightAsync(memberId,weightCurrent);
+        
+        public Task AddGoalAsync(Goal goal,double weight) => GoalDAO.Instance.AddGoalAsync(goal, weight);
+
+        public Task<bool> AddGoalLevelExercise(int memberId, string goalLevelDaily) => GoalDAO.Instance.AddGoalLevelExercise(memberId, goalLevelDaily);
+       
+
+        public Task<bool> AddGoalWeekDaily(int memberId, string goalWeekDaily) => GoalDAO.Instance.AddGoalWeekDaily(memberId, goalWeekDaily);
+
+
+        public Task<bool> AddGoalWeightAsync(int memberId, double weightCurrent) => GoalDAO.Instance.AddGoalWeightAsync(memberId, weightCurrent);
+
 
         public Task<GoalResponseDTO> GetGoalByIdAsync(int id) => GoalDAO.Instance.GetGoalByIdAsync(id);
 

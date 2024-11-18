@@ -28,7 +28,7 @@ namespace Repository.Repo
         public Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync() => FoodDAO.Instance.GetAllFoodsForStaffAsync();
        
 
-        public Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int id) => FoodDAO.Instance.GetFoodForMemberByIdAsync(id);
+        public Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int FoodId, DateTime SelectDate, int memberId) => FoodDAO.Instance.GetFoodForMemberByIdAsync(FoodId,SelectDate,memberId);
 
         public Task<GetFoodForStaffByIdResponseDTO> GetFoodForStaffByIdAsync(int id) => FoodDAO.Instance.GetFoodForStaffByIdAsync(id);
 
