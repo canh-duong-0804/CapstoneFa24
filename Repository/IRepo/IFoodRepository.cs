@@ -26,7 +26,7 @@ namespace Repository.IRepo
         Task<bool> DeleteFoodAsync(int id);
         Task<IEnumerable<DietResponseDTO>> GetAllDietAsync();
         Task<IEnumerable<AllFoodForMemberResponseDTO>> GetAllFoodsForMemberAsync();
-        Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int id);
+        Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int FoodId, DateTime SelectDate, int memberId);
         Task<List<FoodListBoxResponseDTO>> GetListBoxFoodForStaffAsync();
         Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string foodName);
     }

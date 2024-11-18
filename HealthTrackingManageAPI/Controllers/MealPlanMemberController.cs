@@ -67,12 +67,14 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok("");
         }
 
-        [HttpGet("get-meal-plan-detail-for-member")]
+        [HttpPost("get-meal-plan-detail-for-member")]
         [Authorize]
-        public async Task<IActionResult> GetMealPlanDetailForMember(int mealPlanId, int day)
+        public async Task<IActionResult> GetMealPlanDetailForMember(int MealPlanId ,int Day)
         {
-            if (day <= 1) day = 1;
-            var success = await _mealPlanRepository.GetMealPlanDetailForMemberAsync(mealPlanId, day);
+          
+
+            if (Day <= 1) Day = 1;
+            var success = await _mealPlanRepository.GetMealPlanDetailForMemberAsync(MealPlanId, Day);
 
             if (success == null)
             {
