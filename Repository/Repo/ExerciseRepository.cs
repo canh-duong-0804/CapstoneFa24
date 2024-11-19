@@ -36,7 +36,7 @@ namespace Repository.Repo
 
 
           public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);*/
-        public Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync() => ExerciseDAO.Instance.GetAllExercisesForMemberAsync();
+        public Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, bool? isCardioFilter) => ExerciseDAO.Instance.GetAllExercisesForMemberAsync(search,isCardioFilter);
         
     }
 }

@@ -32,30 +32,46 @@ namespace DataAccess
             }
         }
 
-        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync()
+        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, bool? isCardioFilter)
         {
-            using (var context = new HealthTrackingDBContext())
+            try
             {
-                try
+                using (var context = new HealthTrackingDBContext())
                 {
-                    var exercises = await context.Exercises
-                    .Select(e => new GetAllExerciseForMember
+                    var query = context.Exercises.AsQueryable();
+
+
+                    if (!string.IsNullOrEmpty(search))
                     {
-                        ExerciseId = e.ExerciseId,
-                        CategoryExercise = e.IsCardio == true ? "Cardio" : "Kháng lực",
-                        ExerciseImage = e.ExerciseImage,
-                        ExerciseName = e.ExerciseName
-                    })
-                    .ToListAsync();
+                        query = query.Where((e => EF.Functions.Collate(e.ExerciseName.ToLower(), "Vietnamese_CI_AI").Contains(search.ToLower())));
+                    }
+
+
+                    if (isCardioFilter.HasValue)
+                    {
+                        query = query.Where(e => e.IsCardio == isCardioFilter.Value);
+                    }
+
+                    var exercises = await query
+                        .Select(e => new GetAllExerciseForMember
+                        {
+                            ExerciseId = e.ExerciseId,
+
+                            ExerciseImage = e.ExerciseImage,
+                            ExerciseName = e.ExerciseName,
+                            CategoryExercise = e.IsCardio == true ? "Cardio" : "Kháng lực"
+                        })
+                        .ToListAsync();
 
                     return exercises;
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error creating food: {ex.Message}", ex);
-                }
             }
-        }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
 
+
+        }
     }
 }
