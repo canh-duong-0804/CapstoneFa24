@@ -28,6 +28,40 @@ namespace HealthTrackingManageAPI.Controllers
             var exercises = await _exerciseRepository.GetAllExercisesForMemberAsync(search, isCardioFilter);
             return Ok(exercises);
         }
+        [HttpGet("Get-exercise-cardio-detail-for-member/{ExerciseId}")]
+        [Authorize]
+        public async Task<IActionResult> GetExercisesDetailForMember(int ExerciseId)
+        {
+            
+            var exercises = await _exerciseRepository.GetExercisesCardioDetailForMemberrAsync(ExerciseId);
+
+            
+            if (exercises == null)
+            {
+                return NotFound("No exercises found for the member.");
+            }
+
+           
+            return Ok(exercises);
+        }
+
+        [HttpGet("Get-exercise-resistance-detail-for-member/{ExerciseId}")]
+        [Authorize]
+        public async Task<IActionResult> GetExercisesResistanceDetailForMember(int ExerciseId)
+        {
+
+            var exercises = await _exerciseRepository.GetExercisesResistanceDetailForMemberAsync(ExerciseId);
+
+
+            if (exercises == null)
+            {
+                return NotFound("No exercises found for the member.");
+            }
+
+
+            return Ok(exercises);
+        }
+
 
 
 
