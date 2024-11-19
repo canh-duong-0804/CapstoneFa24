@@ -164,7 +164,7 @@ namespace BusinessObject
 	.ReverseMap(); // Optional, if you want to map back
 
 
-				cfg.CreateMap<CreateExerciseRequestDTO, Exercise>().ReverseMap();
+				
                 cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
                 cfg.CreateMap<DietResponseDTO, Diet>().ReverseMap();

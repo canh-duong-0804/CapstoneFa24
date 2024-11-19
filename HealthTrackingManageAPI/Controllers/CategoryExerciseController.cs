@@ -1,4 +1,4 @@
-﻿using BusinessObject;
+﻿/*using BusinessObject;
 using BusinessObject.Dto.CategoryExerice;
 using BusinessObject.Models;
 using Microsoft.AspNetCore.Http;
@@ -48,8 +48,8 @@ namespace HealthTrackingManageAPI.Controllers
         [HttpPut("Update-category-exercise")]
         public async Task<IActionResult> UpdateCategoryExercises([FromBody] UpdateCategoryExerciseRequestDTO cate)
         {
-           /* var mapper = MapperConfig.InitializeAutomapper();
-            var cateExerciseModel = mapper.Map<BusinessObject.Models.ExerciseCategory>(cate);*/
+           *//* var mapper = MapperConfig.InitializeAutomapper();
+            var cateExerciseModel = mapper.Map<BusinessObject.Models.ExerciseCategory>(cate);*//*
             await _categoryExerciseRepository.UpdateCategoryExercisesAsync(cate);
             return Ok();
         } 
@@ -64,3 +64,4 @@ namespace HealthTrackingManageAPI.Controllers
         }
     }
 }
+*/

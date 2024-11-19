@@ -20,6 +20,6 @@ namespace Repository.IRepo
         
         Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise); 
         Task<bool> DeleteExerciseAsync(int id);*/
-        
+        Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync();
     }
 }

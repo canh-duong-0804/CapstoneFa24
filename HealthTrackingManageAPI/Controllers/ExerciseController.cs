@@ -1,11 +1,13 @@
-﻿/*using BusinessObject;
+﻿using BusinessObject;
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
+using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -18,15 +20,42 @@ namespace HealthTrackingManageAPI.Controllers
         {
             _exerciseRepository = exerciseRepository;
         }
-        [HttpGet("Get-all-exercises")]
+
+        [HttpGet("Get-all-exercises-for-member")]
+        [Authorize]
+        public async Task<IActionResult> GetAllExercises()
+        {
+           /* var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }*/
+            var exercises = await _exerciseRepository.GetAllExercisesForMemberAsync();
+            return Ok(exercises);
+        }
+
+
+
+
+
+
+
+
+
+        /*[HttpGet("Get-all-exercises")]
         public async Task<IActionResult> GetAllExercises()
         {
             var exercises = await _exerciseRepository.GetAllExercisesAsync();
             return Ok(exercises);
         }
-      
 
-      
+
+
         [HttpGet("Get-exercise-by-id/{id}")]
         public async Task<IActionResult> GetExerciseById(int id)
         {
@@ -38,7 +67,7 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(exercise);
         }
 
-     
+
         [HttpPost("Create-exercise")]
         public async Task<IActionResult> CreateExercise([FromBody] CreateExerciseRequestDTO exercise)
         {
@@ -59,7 +88,7 @@ namespace HealthTrackingManageAPI.Controllers
         [HttpPut("Update-exercise")]
         public async Task<IActionResult> UpdateExercise([FromBody] UpdateExerciseRequestDTO exercise)
         {
-            
+
 
             var updatedExercise = await _exerciseRepository.UpdateExerciseAsync(exercise);
             if (updatedExercise == null)
@@ -84,7 +113,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPost("search-and-filter")]
-        public async Task<IActionResult> SearchAndFilterExercise([FromBody]SearchFilterObjectDTO search)
+        public async Task<IActionResult> SearchAndFilterExercise([FromBody] SearchFilterObjectDTO search)
         {
             try
             {
@@ -100,8 +129,8 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-        }
+        }*/
 
 
     }
-}*/
+}

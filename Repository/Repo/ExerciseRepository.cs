@@ -14,28 +14,29 @@ namespace Repository.Repo
 {
     public class ExerciseRepository : IExerciseRepository
     {
-      /* public Task<Exercise> CreateExerciseAsync(Exercise exercise) => ExerciseDAO.Instance.CreateExerciseAsync(exercise);
-
-      
-        //
-        //public Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exerciseCategory) => ExerciseDAO.Instance.CreateExerciseCategoryAsync(exerciseCategory);
-
-       
-
-        public Task<bool> DeleteExerciseAsync(int id) => ExerciseDAO.Instance.DeleteExerciseAsync(id);
-        //
-       // public Task<GetAllCategoryExeriseResponseDTO> GetAllCategoryExercisesAsync() => ExerciseDAO.Instance.GetAllCategoryExercisesAsync();
+        /* public Task<Exercise> CreateExerciseAsync(Exercise exercise) => ExerciseDAO.Instance.CreateExerciseAsync(exercise);
 
 
-        public Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync() => ExerciseDAO.Instance.GetAllExercisesAsync();
+          //
+          //public Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exerciseCategory) => ExerciseDAO.Instance.CreateExerciseCategoryAsync(exerciseCategory);
 
-        public Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id) => ExerciseDAO.Instance.GetExerciseByIdAsync(id);
 
 
-        public Task<IEnumerable<AllExerciseResponseDTO >> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO searchName) => ExerciseDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName);
-       
+          public Task<bool> DeleteExerciseAsync(int id) => ExerciseDAO.Instance.DeleteExerciseAsync(id);
+          //
+         // public Task<GetAllCategoryExeriseResponseDTO> GetAllCategoryExercisesAsync() => ExerciseDAO.Instance.GetAllCategoryExercisesAsync();
 
-        public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);*/
+
+          public Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync() => ExerciseDAO.Instance.GetAllExercisesAsync();
+
+          public Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id) => ExerciseDAO.Instance.GetExerciseByIdAsync(id);
+
+
+          public Task<IEnumerable<AllExerciseResponseDTO >> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO searchName) => ExerciseDAO.Instance.SearchAndFilterExerciseByIdAsync(searchName);
+
+
+          public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);*/
+        public Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync() => ExerciseDAO.Instance.GetAllExercisesForMemberAsync();
         
     }
 }
