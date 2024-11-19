@@ -18,5 +18,13 @@ namespace Repository.IRepo
 		Task UpdateExerciseDiaryDetailAsync(ExerciseDiaryDetail detail);
 		Task<ExerciseDiaryDetail?> GetExerciseDiaryDetailById(int exerciseDiaryDetailId);
 
+		Task DeleteDiaryDetailAsync(int diaryDetailId);
+
+        Task<ExerciseDiaryDetail?> GetDiaryDetailByIdAsync(int diaryDetailId);
+
+        Task UpdateDiaryDetailAsync(ExerciseDiaryDetail diaryDetail);
+
+		Task AssignExercisePlanToUserAsync(int memberId, int planId, DateTime startDate);
+
     }
 }

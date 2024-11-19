@@ -18,7 +18,12 @@ namespace Repository.Repo
 		public Task<Exercise?> GetExerciseAsync(int exerciseId) => ExecriseDiaryDetailDAO.Instance.GetExerciseAsync(exerciseId);
        public Task UpdateExerciseDiaryDetailAsync(ExerciseDiaryDetail detail) => ExecriseDiaryDetailDAO.Instance.UpdateExerciseDiaryDetailAsync(detail);
        public Task<ExerciseDiaryDetail?> GetExerciseDiaryDetailById(int exerciseDiaryDetailId) => ExecriseDiaryDetailDAO.Instance.GetExerciseDiaryDetailById(exerciseDiaryDetailId);
+		public Task DeleteDiaryDetailAsync(int diaryDetailId) => ExecriseDiaryDetailDAO.Instance.DeleteDiaryDetailAsync(diaryDetailId);
 
+        public Task<ExerciseDiaryDetail?> GetDiaryDetailByIdAsync(int diaryDetailId) => ExecriseDiaryDetailDAO.Instance.GetDiaryDetailByIdAsync(diaryDetailId);
+		public Task UpdateDiaryDetailAsync(ExerciseDiaryDetail diaryDetail) => ExecriseDiaryDetailDAO.Instance.UpdateDiaryDetailAsync(diaryDetail);
+		
+		public Task AssignExercisePlanToUserAsync(int memberId, int planId, DateTime startDate) => ExecriseDiaryDetailDAO.Instance.AssignExercisePlanToUserAsync(memberId, planId, startDate);
     }
 	
 
