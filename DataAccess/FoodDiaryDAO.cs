@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
 using BusinessObject.Dto.MainDashBoardMobile;
@@ -131,7 +132,7 @@ namespace DataAccess
                         FoodId = foodDetails.FoodId,
                         Quantity = foodDetails.Quantity,
                         MealType = foodDetails.MealType,
-                        
+
                     };
                     await context.FoodDiaryDetails.AddAsync(foodDiaryDetail);
                     await context.SaveChangesAsync();
@@ -281,8 +282,8 @@ namespace DataAccess
                                 Fat = e.Food.Fat,
                                 Quantity = e.Quantity,
                                 MealType = e.MealType,
-                                Portion=e.Food.Portion,
-                                
+                                Portion = e.Food.Portion,
+
                             })
                             .ToListAsync();
                     }
@@ -382,7 +383,7 @@ namespace DataAccess
 
 
                 var latestMeasurement = await context.BodyMeasureChanges
-                    .Where(b => b.MemberId == memberId)
+                    .Where(b => b.MemberId == memberId && b.DateChange <= date)
                     .OrderByDescending(b => b.DateChange)
                     .FirstOrDefaultAsync();
 
@@ -427,5 +428,120 @@ namespace DataAccess
 
             }
         }
+
+        public async Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodHistoryAsync(int memberId)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+                const int maxAttempts = 3;
+                int attempts = 0;
+                var foodDetails = new List<AllFoodForMemberResponseDTO>();
+                var lastDate = DateTime.Now;
+
+                do
+                {
+                    attempts++;
+
+
+                    var foodDiary = await context.FoodDiaries
+                        .OrderByDescending(fd => fd.Date)
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date < lastDate);
+
+
+                    if (foodDiary == null)
+                    {
+                        break;
+                    }
+
+                    lastDate = foodDiary.Date;
+
+
+                    var foodIds = await context.FoodDiaryDetails
+                        .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                        .Select(fdd => fdd.FoodId)
+                        .Distinct()
+                        .ToListAsync();
+
+
+                    var currentFoodDetails = await context.Foods
+                        .Where(f => foodIds.Contains(f.FoodId))
+                        .Include(f => f.Diet)
+                        .Select(f => new AllFoodForMemberResponseDTO
+                        {
+                            FoodId = f.FoodId,
+                            FoodName = f.FoodName,
+                            FoodImage = f.FoodImage,
+                            Calories = f.Calories,
+                            Protein = f.Protein,
+                            Carbs = f.Carbs,
+                            Fat = f.Fat,
+                            DietName = f.Diet.DietName
+                        })
+                        .ToListAsync();
+
+                    foodDetails.AddRange(currentFoodDetails);
+
+
+                    if (foodDetails.Count >= 3 || attempts >= maxAttempts)
+                    {
+                        break;
+                    }
+                }
+                while (true);
+
+                return foodDetails;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error fetching food history: {ex.Message}");
+            }
+        }
+
+        public async Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestAsync(int memberId)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+               
+                var member = await context.Members
+                    .Include(m => m.Diet) 
+                    .FirstOrDefaultAsync(m => m.MemberId == memberId);
+
+                
+                if (member == null)
+                {
+                    throw new Exception("Member not found");
+                }
+
+               
+                var dietId = member.DietId;
+
+                
+                var foodSuggest = await context.Foods
+                    .Where(f => f.DietId == dietId) 
+                    .Select(f => new AllFoodForMemberResponseDTO
+                    {
+                        FoodId = f.FoodId,
+                        FoodName = f.FoodName,
+                        FoodImage = f.FoodImage,
+                        Calories = f.Calories,
+                        Protein = f.Protein,
+                        Carbs = f.Carbs,
+                        Fat = f.Fat,
+                        DietName = f.Diet.DietName
+                    })
+                    .Take(3).ToListAsync();
+
+                return foodSuggest;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error fetching food suggestions: {ex.Message}");
+            }
+        }
+
     }
 }

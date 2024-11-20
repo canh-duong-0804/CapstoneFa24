@@ -221,5 +221,70 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok();
 
         }
+        [Authorize]
+        [HttpGet("Copy-previous-meal")]
+        public async Task<IActionResult> CopyPreviousMeal(int dirayId, int Mealtype)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var getMealCopy = await _mealPlanMemberRepository.CopyPreviousMeal(dirayId, Mealtype);
+
+            if (getMealCopy == null) return NotFound();
+
+            return Ok(getMealCopy);
+        }
+        
+        [Authorize]
+        [HttpGet("get-meal-before-by-meal-type")]
+        public async Task<IActionResult> GetMealBeforeByMealType(int Mealtype)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var getMealCopy = await _mealPlanMemberRepository.GetMealBeforeByMealType(memberId, Mealtype);
+
+            if (getMealCopy == null) return NotFound();
+
+            return Ok(getMealCopy);
+        }
+
+
+
+
+        [Authorize]
+        [HttpPost("Insert-copy-previous-meal")]
+        public async Task<IActionResult> InsertCopyPreviousMeal(int dirayId, int Mealtype)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var getMealCopy = await _mealPlanMemberRepository.InsertCopyPreviousMeal(dirayId, Mealtype);
+
+            if (getMealCopy == null) return NotFound();
+
+            return Ok(getMealCopy);
+        }
     }
 }

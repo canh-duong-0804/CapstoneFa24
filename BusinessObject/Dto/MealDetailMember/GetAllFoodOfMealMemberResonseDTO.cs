@@ -18,6 +18,6 @@ namespace BusinessObject.Dto.MealDetailMember
         public double Carbs { get; set; }
         public double Fat { get; set; }
         public string DietName { get; set; }
-        public int? Quantity { get; set; }
+        public double? Quantity { get; set; }
     }
 }
