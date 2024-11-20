@@ -174,13 +174,7 @@ namespace HealthTrackingManageAPI.Controllers
                     return NotFound("Exercise detail not found.");
                 }
 
-                // Check if the exercise detail belongs to the diary of the logged-in user
-                var diary = await _exerciseDiaryRepo.GetExerciseDiaryById(exerciseDetail.ExerciseDiaryId.Value);
-
-                if (diary == null || diary.MemberId != memberId)
-                {
-                    return NotFound("Diary not found or does not belong to the logged-in user.");
-                }
+               
 
                 // Update the IsPractice field
                 exerciseDetail.IsPractice = request.IsPractice;
