@@ -525,6 +525,10 @@ namespace BusinessObject.Models
                     .HasMaxLength(100)
                     .HasColumnName("name");
 
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.TotalCaloriesBurned).HasColumnName("total_calories_burned");
 
                 entity.HasOne(d => d.CreateByNavigation)
