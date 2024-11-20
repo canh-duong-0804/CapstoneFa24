@@ -75,20 +75,23 @@ namespace DataAccess
                             CurrentWeight = getCurrentWeight?.Weight ?? 0 
                         };
                     }
-                 
+
 
 
                     var response = new GoalResponseDTO()
                     {
                         GoalId = result.GoalId,
                         WeightGoal = result.TargetValue,
-                        ExerciseLevel =result.Member.ExerciseLevel,
+                        ExerciseLevel = result.Member.ExerciseLevel,
 
-                        DateInitial = result.Member.BodyMeasureChanges.FirstOrDefault()?.DateChange,
+                        // Chuyển đổi DateInitial sang định dạng dd-MM-yyyy
+                        DateInitial = result.Member.BodyMeasureChanges.FirstOrDefault()?.DateChange?.ToString("dd-MM-yyyy"),
+
                         GoalType = float.Parse(result.GoalType),
-                        TargetDate = result.TargetDate,
+                        TargetDate = result.TargetDate.ToString("dd-MM-yyyy"),
                         startWeight = result.Member.BodyMeasureChanges.FirstOrDefault()?.Weight,
                     };
+
                     response.CurrentWeight = getCurrentWeight.Weight;
 
                     return response;

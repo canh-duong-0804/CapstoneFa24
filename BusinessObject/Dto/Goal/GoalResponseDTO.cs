@@ -15,9 +15,9 @@ namespace BusinessObject.Dto.Goal
         public double WeightGoal { get; set; }
 
 
-        public DateTime TargetDate { get; set; }
+        public string TargetDate { get; set; }
         public double? CurrentWeight { get; set; }
         public double? startWeight { get; set; }
-          public DateTime? DateInitial { get; set; }
+          public string? DateInitial { get; set; }
     }
 }

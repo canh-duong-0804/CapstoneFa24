@@ -24,7 +24,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [Authorize]
         [HttpGet("Get-main-dashboard-for-member-by-id")]
-        public async Task<IActionResult> GetMainDashBoardForMemberById()
+        public async Task<IActionResult> GetMainDashBoardForMemberById(DateTime date)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -36,7 +36,7 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return BadRequest("Invalid member ID.");
             }
-            DateTime date = DateTime.Now.Date;
+            
 
             var mainDashBoardInfo = await _mainDashBoardRepository.GetMainDashBoardForMemberById(memberId, date);
             if (mainDashBoardInfo == null)
@@ -61,6 +61,7 @@ namespace HealthTrackingManageAPI.Controllers
                 FullName = mainDashBoardInfo.UserName,
 
                 // Dữ liệu từ infoCalorinesMember
+                SelectDate =mainDashBoardInfo.DateMainDashBoard,
                 CaloriesIntake = infoCalorinesMember.Calories,
                 AmountWater = infoCalorinesMember.AmountWater,
                 ProteinIntake = infoCalorinesMember.Protein,

@@ -154,6 +154,8 @@ namespace DataAccess
 
                     return new MainDashBoardMobileForMemberResponseDTO
                     {
+                        
+                        DateMainDashBoard= date.ToString("dd-MM-yyyy"),
                         DailyCalories = Math.Round(dailyCalories, 0),
                         ProteinInGrams = Math.Round((dailyCalories * 0.3) / 4, 1),  // 30% protein
                         CarbsInGrams = Math.Round((dailyCalories * 0.45) / 4, 1),   // 45% carbs
