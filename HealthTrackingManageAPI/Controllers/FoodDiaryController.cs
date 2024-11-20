@@ -25,35 +25,35 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-/*
-        [HttpGet("getOrCreateDailyFoodDiary")]
-        public async Task<IActionResult> GetOrCreateDailyFoodDiary(int memberId)
-        {
-            DateTime date = DateTime.Now.Date;
-            var foodDiary = await _foodDiaryRepository.GetOrCreateFoodDiaryByDate(memberId, date);
+        /*
+                [HttpGet("getOrCreateDailyFoodDiary")]
+                public async Task<IActionResult> GetOrCreateDailyFoodDiary(int memberId)
+                {
+                    DateTime date = DateTime.Now.Date;
+                    var foodDiary = await _foodDiaryRepository.GetOrCreateFoodDiaryByDate(memberId, date);
 
-            var mapper = MapperConfig.InitializeAutomapper();
-            var foodDiaryModel = mapper.Map<FoodDiaryResponseDTO>(foodDiary);
-            return Ok(foodDiaryModel);
-        }*/
+                    var mapper = MapperConfig.InitializeAutomapper();
+                    var foodDiaryModel = mapper.Map<FoodDiaryResponseDTO>(foodDiary);
+                    return Ok(foodDiaryModel);
+                }*/
 
-       /* [HttpPut("updateDailyFoodDiary")]
-        public async Task<IActionResult> UpdateDailyFoodDiary([FromBody] UpdateFoodDiaryRequestDTO updatedFoodDiary)
-        {
-            DateTime date = DateTime.Now.Date;
+        /* [HttpPut("updateDailyFoodDiary")]
+         public async Task<IActionResult> UpdateDailyFoodDiary([FromBody] UpdateFoodDiaryRequestDTO updatedFoodDiary)
+         {
+             DateTime date = DateTime.Now.Date;
 
-            var result = await _foodDiaryRepository.UpdateFoodDiary(updatedFoodDiary);
-            if (result!=null)
-            {
-                return Ok();
-            }
-            return NotFound();
-        }*/
+             var result = await _foodDiaryRepository.UpdateFoodDiary(updatedFoodDiary);
+             if (result!=null)
+             {
+                 return Ok();
+             }
+             return NotFound();
+         }*/
 
         [HttpPost("addFoodListToDiary")]
         public async Task<IActionResult> AddFoodListToDiary([FromBody] FoodDiaryDetailRequestDTO request)
         {
-            if (request == null )
+            if (request == null)
             {
                 return BadRequest("Invalid request: No food details provided.");
             }
@@ -71,10 +71,10 @@ namespace HealthTrackingManageAPI.Controllers
         [HttpDelete("deleteFoodListFromDiary/{id}")]
         public async Task<IActionResult> DeleteFoodListFromDiary(int id)
         {
-            
-          
 
-            
+
+
+
             var result = await _foodDiaryRepository.DeleteFoodListToDiaryAsync(id);
 
             if (!result)
@@ -89,7 +89,7 @@ namespace HealthTrackingManageAPI.Controllers
         [HttpGet("Get-Food-dairy-detail")]
         public async Task<IActionResult> GetFoodDairyDetailById(DateTime date)
         {
-            
+
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
             {
@@ -108,11 +108,11 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(mainDashBoardInfo);
         }
 
-
-       /* [Authorize]
-        [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
-        public async Task<IActionResult> GetFoodDairyByDate(DateTime date)
+        [Authorize]
+        [HttpGet("getFoodHistory")]
+        public async Task<IActionResult> GetFoodHistory()
         {
+
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
             {
@@ -123,14 +123,66 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return BadRequest("Invalid member ID.");
             }
-            var mainDashBoardInfo = await _foodDiaryRepository.GetFoodDairyByDate(memberId, date);
-            if (mainDashBoardInfo == null)
-            {
-                return NotFound(" not found.");
-            }
-            return Ok(mainDashBoardInfo);
-        }*/
+            var foodHistory = await _foodDiaryRepository.GetFoodHistoryAsync(memberId);
 
-       
-    } 
+            if (foodHistory == null || !foodHistory.Any())
+            {
+                return NotFound("No food history found.");
+            }
+
+            return Ok(foodHistory);
+
+        }
+        [Authorize]
+        [HttpGet("get-food-suggestion")]
+        public async Task<IActionResult> GetFoodSuggestion()
+        {
+
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var foodHistory = await _foodDiaryRepository.GetFoodSuggestionAsync(memberId);
+
+            if (foodHistory == null || !foodHistory.Any())
+            {
+                return NotFound("No food history found.");
+            }
+
+            return Ok(foodHistory);
+
+        }
+
+
+        /* [Authorize]
+         [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
+         public async Task<IActionResult> GetFoodDairyByDate(DateTime date)
+         {
+             var memberIdClaim = User.FindFirstValue("Id");
+             if (memberIdClaim == null)
+             {
+                 return Unauthorized("Member ID not found in claims.");
+             }
+
+             if (!int.TryParse(memberIdClaim, out int memberId))
+             {
+                 return BadRequest("Invalid member ID.");
+             }
+             var mainDashBoardInfo = await _foodDiaryRepository.GetFoodDairyByDate(memberId, date);
+             if (mainDashBoardInfo == null)
+             {
+                 return NotFound(" not found.");
+             }
+             return Ok(mainDashBoardInfo);
+         }*/
+
+        
+    }
+
 }

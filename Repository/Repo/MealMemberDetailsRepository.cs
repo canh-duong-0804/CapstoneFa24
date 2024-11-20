@@ -1,4 +1,6 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.MealDetailMember;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -11,8 +13,8 @@ namespace Repository.Repo
 {
     public class MealMemberDetailsRepository : IMealMemberDetailsRepository
     {
-        public Task CreateMealPlanDetailsOfMemberAsync(MealsMemberDetail mealMemberModel, int memberId,DateTime date) => MealPlanMemberDetailsDAO.Instance.CreateMealPlanDetailsOfMemberAsync(mealMemberModel,memberId,date);
-
-
+        //public Task CreateMealPlanDetailsOfMemberAsync(MealsMemberDetail mealMemberModel, int memberId,DateTime date) => MealPlanMemberDetailsDAO.Instance.CreateMealPlanDetailsOfMemberAsync(mealMemberModel,memberId,date);
+       // public Task<MealMemberDetailResonseDTO> CreateMealPlanDetailsOfMemberAsync(MealsMemberDetail mealMemberModel, int memberid, DateTime date) => MealPlanMemberDetailsDAO.Instance.CreateMealPlanDetailsOfMemberAsync(mealMemberModel, memberid, date);
+        
     }
 }

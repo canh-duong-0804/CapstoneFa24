@@ -14,6 +14,7 @@ using BusinessObject.Dto.Ingredient;
 using BusinessObject.Dto.Login;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
+using BusinessObject.Dto.MealPlan;
 using BusinessObject.Dto.MealPlanDetailMember;
 using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Recipe.CreateDTO;
@@ -164,12 +165,14 @@ namespace BusinessObject
 	.ReverseMap(); // Optional, if you want to map back
 
 
-				cfg.CreateMap<CreateExerciseRequestDTO, Exercise>().ReverseMap();
+				
                 cfg.CreateMap<GetAllExerciseResponseDTO, Exercise>().ReverseMap();
                 cfg.CreateMap<RegisterationMobileRequestDTO, Member>().ReverseMap();
                 cfg.CreateMap<DietResponseDTO, Diet>().ReverseMap();
                 cfg.CreateMap<AllStaffsResponseDTO, staff>().ReverseMap();
                 cfg.CreateMap<GetStaffByIdResponseDTO, staff>().ReverseMap();
+                cfg.CreateMap<CreateMealPlanRequestDTO, MealPlan>().ReverseMap();
+                cfg.CreateMap<UpdateMealPlanRequestDTO, MealPlan>().ReverseMap();
 
 
                 cfg.CreateMap<CreateRecipeRequestDTO, Recipe>().ReverseMap();

@@ -82,7 +82,7 @@ namespace DataAccess
                     {
                         GoalId = result.GoalId,
                         WeightGoal = result.TargetValue,
-                        ExerciseLevel = MapExerciseLevel(result.Member.ExerciseLevel),
+                        ExerciseLevel =result.Member.ExerciseLevel,
 
                         DateInitial = result.Member.BodyMeasureChanges.FirstOrDefault()?.DateChange,
                         GoalType = float.Parse(result.GoalType),
@@ -101,18 +101,7 @@ namespace DataAccess
             }
         }
 
-        private string MapExerciseLevel(int? exerciseLevel)
-        {
-
-            return exerciseLevel switch
-            {
-                1 => "Nhe",
-                2 => "Trung binh",
-                3 => "cao",
-                _ => "Khong ro"
-            };
-
-        }
+        
 
         public async Task<bool> updateGoal(int memberId, GoalRequestDTO updatedGoal)
         {

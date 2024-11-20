@@ -51,7 +51,7 @@ namespace DataAccess
 
 
                     var latestMeasurement = await context.BodyMeasureChanges
-                        .Where(b => b.MemberId == memberId)
+                        .Where(b => b.MemberId == memberId && b.DateChange<=date)
                         .OrderByDescending(b => b.DateChange)
                         .FirstOrDefaultAsync();
 

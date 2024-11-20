@@ -1,4 +1,4 @@
-﻿/*using BusinessObject.Dto.CategoryExerice;
+﻿using BusinessObject.Dto.CategoryExerice;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
@@ -32,51 +32,34 @@ namespace DataAccess
             }
         }
 
-       public async Task<Exercise> CreateExerciseAsync(Exercise exercise)
+        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, bool? isCardioFilter)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-
-                    context.Exercises.Add(exercise);
-
-
-                    await context.SaveChangesAsync();
+                    var query = context.Exercises.AsQueryable();
 
 
-                    return exercise;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception($"Error creating exercise: {ex.Message}", ex);
-            }
-        }
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        query = query.Where((e => EF.Functions.Collate(e.ExerciseName.ToLower(), "Vietnamese_CI_AI").Contains(search.ToLower())));
+                    }
 
 
-        public async Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync()
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
+                    if (isCardioFilter.HasValue)
+                    {
+                        query = query.Where(e => e.IsCardio == isCardioFilter.Value);
+                    }
 
-                    var exercises = await context.Exercises
-                        .Include(e => e.ExerciseCategory)
-                        .Include(e => e.CreateByNavigation)
-                        .Select(e => new AllExerciseResponseDTO
+                    var exercises = await query
+                        .Select(e => new GetAllExerciseForMember
                         {
-                            ExerciseCategoryId = e.ExerciseCategoryId,
-                            ExerciseCategoryName = e.ExerciseCategory.ExerciseCategoryName,
-                            CreateBy = e.CreateByNavigation.FullName,
-                            ExerciseLevel = e.ExerciseLevel,
+                            ExerciseId = e.ExerciseId,
+
                             ExerciseImage = e.ExerciseImage,
                             ExerciseName = e.ExerciseName,
-                            Description = e.Description,
-                            CaloriesPerHour = e.CaloriesPerHour,
-
+                            CategoryExercise = e.IsCardio == true ? "Cardio" : "Kháng lực"
                         })
                         .ToListAsync();
 
@@ -85,190 +68,117 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-
-                throw new Exception($"Error retrieving exercises: {ex.Message}", ex);
+                throw new Exception(ex.Message);
             }
+
+
         }
 
-        public async Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id)
+        public async Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId)
+        {
+
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var exercise = await context.Exercises
+                    .Where(e => e.ExerciseId == exerciseId)
+                    .FirstOrDefaultAsync();
+
+                    if (exercise == null || exercise.IsCardio == false) return null;
+
+
+
+                    var result = new GetExerciseDetailOfCardiorResponseDTO
+                    {
+                        ExerciseId = exercise.ExerciseId,
+                        IsCardio = exercise.IsCardio,
+                        CategoryExercise = exercise.IsCardio == true ? "Cardio" : "Kháng lực",
+                        ExerciseImage = exercise.ExerciseImage,
+                        ExerciseName = exercise.ExerciseName,
+                        Description = exercise.Description
+                    };
+
+
+                   
+                        var cardio = await context.ExerciseCardios
+                            .Where(c => c.ExerciseId == exerciseId)
+                            .FirstOrDefaultAsync();
+
+                        if (cardio != null)
+                        {
+                            result.Minutes1 = cardio.Minutes1 ?? 0;
+                            result.Minutes2 = cardio.Minutes2 ?? 0;
+                            result.Minutes3 = cardio.Minutes3 ?? 0;
+                            result.Calories1 = cardio.Calories1 ?? 0;
+                            result.Calories2 = cardio.Calories2 ?? 0;
+                            result.Calories3 = cardio.Calories3 ?? 0;
+                            result.MetValue = cardio.MetValue ?? 0;
+                        }
+                    
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception("An unexpected error occurred while fetching exercise details.", ex);
+            }
+
+
+        }
+
+        public async Task<GetExerciseDetailOfResitanceResponseDTO> GetExercisesResistanceDetailForMemberAsync(int exerciseId)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
                     var exercise = await context.Exercises
-                        .Include(e => e.ExerciseCategory)
-                        .Include(e => e.CreateByNavigation)
-                        .Where(e => e.ExerciseId == id && e.Status == true)
-                        .Select(e => new ExerciseDetailDTO
+                .Where(e => e.ExerciseId == exerciseId)
+                .FirstOrDefaultAsync();
+
+                    if (exercise == null || exercise.IsCardio == true) return null;
+
+
+                    var result = new GetExerciseDetailOfResitanceResponseDTO
+                    {
+                        ExerciseId = exercise.ExerciseId,
+                        IsCardio = exercise.IsCardio,
+                        CategoryExercise = exercise.IsCardio == false ? "Kháng lực" : "Cardio",
+                        ExerciseImage = exercise.ExerciseImage,
+                        ExerciseName = exercise.ExerciseName,
+                        Description = exercise.Description
+                    };
+
+
+                   
+                        var resistance = await context.ExerciseResistances
+                            .Where(r => r.ExerciseId == exerciseId)
+                            .FirstOrDefaultAsync();
+
+                        if (resistance != null)
                         {
-                            ExerciseCategoryId = e.ExerciseCategoryId,
-                            ExerciseCategoryName = e.ExerciseCategory.ExerciseCategoryName,
-                            CreateBy = e.CreateByNavigation.FullName,
-                            ExerciseLevel = e.ExerciseLevel,
-                            ExerciseImage = e.ExerciseImage,
-                            ExerciseName = e.ExerciseName,
-                            Reps = e.Reps,
-                            Minutes = e.Minutes,
-                            Sets = e.Sets,
-                            Description = e.Description,
-                            CaloriesPerHour = e.CaloriesPerHour,
-                        })
-                        .FirstOrDefaultAsync();
-
-                    if (exercise == null)
-                    {
-                        throw new Exception("Exercise not found.");
-                    }
-
-                    return exercise;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error retrieving exercise by ID: {ex.Message}", ex);
-            }
-        }
-
-        public async Task<ExerciseCategory> CreateExerciseCategoryAsync(ExerciseCategory exerciseCategory)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    await context.ExerciseCategories.AddAsync(exerciseCategory);
-                    await context.SaveChangesAsync();
-                    return exerciseCategory;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error creating exercise category: {ex.Message}", ex);
-            }
-        }
-
-        public async Task<IEnumerable<AllExerciseResponseDTO>> SearchAndFilterExerciseByIdAsync(SearchFilterObjectDTO search)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                   
-                    var query = context.Exercises
-                        .Include(e => e.ExerciseCategory)
-                        .Where(e => e.Status == true); 
-
-               
-                    if (!string.IsNullOrEmpty(search.SearchName) && !string.IsNullOrEmpty(search.FilterName))
-                    {
-                        query = query.Where(e => e.ExerciseName.Contains(search.SearchName) &&
-                                                 e.ExerciseCategory.ExerciseCategoryName == search.FilterName);
-                    }
-                 
-                    else if (!string.IsNullOrEmpty(search.SearchName))
-                    {
-                        query = query.Where(e => e.ExerciseName.ToLower().Contains(search.SearchName.ToLower()));
-                    }
-                   
-                    else if (!string.IsNullOrEmpty(search.FilterName))
-                    {
-                        query = query.Where(e => e.ExerciseCategory.ExerciseCategoryName.ToLower() == search.FilterName.ToLower());
-                    }
-
+                            result.Reps1 = resistance.Reps1 ?? 0;
+                            result.Reps2 = resistance.Reps2 ?? 0;
+                            result.Reps3 = resistance.Reps3 ?? 0;
+                            result.Sets1 = resistance.Sets1 ?? 0;
+                            result.Sets2 = resistance.Sets2 ?? 0;
+                            result.Sets3 = resistance.Sets3 ?? 0;
+                            result.Minutes1 = resistance.Minutes1 ?? 0;
+                            result.Minutes2 = resistance.Minutes2 ?? 0;
+                            result.Minutes3 = resistance.Minutes3 ?? 0;
+                        }
                     
-                   
 
-                    var exercises = await query
-                        .Select(e => new AllExerciseResponseDTO
-                        {
-                            ExerciseCategoryId = e.ExerciseCategoryId,
-                            ExerciseCategoryName = e.ExerciseCategory.ExerciseCategoryName,
-                            CreateBy = e.CreateByNavigation.FullName,
-                            ExerciseLevel = e.ExerciseLevel,
-                            ExerciseImage = e.ExerciseImage,
-                            ExerciseName = e.ExerciseName,
-                            Description = e.Description,
-                            CaloriesPerHour = e.CaloriesPerHour,
-
-                        })
-                        .ToListAsync();
-
-
-                    return exercises;
+                    return result;
                 }
             }
+
             catch (Exception ex)
             {
-                throw new Exception($"Error searching exercises: {ex.Message}", ex);
+                throw new Exception("An unexpected error occurred while fetching exercise details.", ex);
             }
         }
-
-        public async Task<bool> DeleteExerciseAsync(int id)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    var exercise = await context.Exercises.FindAsync(id);
-                    if (exercise == null)
-                    {
-                        return false; 
-                    }
-
-
-                    exercise.Status = false; 
-                    context.Exercises.Update(exercise);
-                    await context.SaveChangesAsync(); 
-                    return true; 
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating status of exercise: {ex.Message}", ex);
-            }
-        }
-
-        public async Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exerciseDto)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                   
-                    var existingExercise = await context.Exercises.FindAsync(exerciseDto.ExerciseId);
-
-                   
-                    if (existingExercise == null)
-                    {
-                        return null;
-                    }
-
-                   
-                    existingExercise.ExerciseName = exerciseDto.ExerciseName;
-                    existingExercise.ExerciseCategoryId = exerciseDto.ExerciseCategoryId;
-                    existingExercise.Description = exerciseDto.Description;
-                    existingExercise.Minutes = exerciseDto.Minutes;
-                    existingExercise.Reps = exerciseDto.Reps;
-                    existingExercise.Sets = exerciseDto.Sets;
-                    existingExercise.ChangeBy = exerciseDto.ChangeBy;
-                    existingExercise.ChangeDate = exerciseDto.ChangeDate;
-                    existingExercise.CaloriesPerHour = exerciseDto.CaloriesPerHour;
-                    existingExercise.ExerciseLevel = exerciseDto.ExerciseLevel; 
-                    existingExercise.ExerciseImage = exerciseDto.ExerciseImage; 
-                   
-
-                    await context.SaveChangesAsync();
-
-                    return exerciseDto;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating exercise: {ex.Message}", ex);
-            }
-        }
-
-       
     }
 }
-*/

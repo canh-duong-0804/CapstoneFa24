@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
 using BusinessObject.Dto.MainDashBoardMobile;
@@ -33,5 +34,9 @@ namespace Repository.Repo
 
         public Task<FoodDiaryForMemberMobileResponse> GetFoodDairyByDate(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetFoodDairyByDate(memberId, date);
 
+        public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodHistoryAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodHistoryAsync(memberId);
+
+        public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestionAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodSuggestAsync(memberId);
+        
     }
 }

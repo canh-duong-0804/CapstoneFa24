@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.MealDetailMember;
+using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Repository.IRepo
 {
     public interface IMealMemberDetailsRepository
     {
-        Task CreateMealPlanDetailsOfMemberAsync(MealsMemberDetail mealMemberModel,int memberid,DateTime date);
+       // Task<MealMemberDetailResonseDTO> CreateMealPlanDetailsOfMemberAsync(MealsMemberDetail mealMemberModel,int memberid,DateTime date);
     }
 }

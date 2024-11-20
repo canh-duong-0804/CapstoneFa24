@@ -139,17 +139,28 @@ namespace DataAccess
                         Weight = member.Weight,
                         DateChange = DateTime.UtcNow  
                     };
+                    double currentWeight = member.Weight; 
+                    double targetWeight = member.TargetWeight.Value; 
+                    double weeklyGoal = Convert.ToDouble(member.weightPerWeek); 
+                    //double weeklyGoal = Convert.ToDouble(member.weightPerWeek); 
 
+                    
+                    int weeksNeeded = (int)Math.Ceiling(Math.Abs((targetWeight - currentWeight) / weeklyGoal));
+
+                   
                     var goal = new Goal
                     {
                         MemberId = savedMember.MemberId,
                         TargetValue = (member.TargetWeight.HasValue ? member.TargetWeight : member.Weight) ?? 0.0,
+                        
 
+                      //  TargetDate = DateTime.Now.AddMonths(1),
+                      TargetDate = DateTime.Now.AddDays(weeksNeeded * 7),
 
-                        TargetDate = DateTime.Now.AddMonths(1),
                         ExerciseLevel = member.ExerciseLevel,
                         // dang goal type 1 2 3 
-                        GoalType=member.Goal,
+                        GoalType=member.weightPerWeek.ToString(),
+                      //  GoalType=member.weightPerWeek.ToString(),
                     };
 
                     await context.Goals.AddAsync(goal);

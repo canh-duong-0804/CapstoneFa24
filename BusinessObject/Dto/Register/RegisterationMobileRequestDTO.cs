@@ -26,7 +26,7 @@ namespace BusinessObject.Dto.Register
 
 
         public int ExerciseLevel { get; set; }
-        public string? Goal { get; set; }
+        
         public string PhoneNumber { get; set; }
 
         

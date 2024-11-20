@@ -12,6 +12,7 @@ namespace Repository.IRepo
     public interface IMealMemberRepository
     {
         Task<bool> AddMealMemberToDiaryDetailAsync(AddMealMemberToFoodDiaryDetailRequestDTO addMealMemberTOFoodDiary,int memberId);
+        Task<CopyPreviousMealRequestDTO> CopyPreviousMeal(int foodDiaryId, int mealtype);
         Task<int> CreateMealMemberAsync(MealMember mealMember);
         Task CreateMealMemberDetailsAsync(List<MealMemberDetail> mealMemberDetails);
         Task<bool> CreateMealPlanForMember(MealMember mealMember);
@@ -19,7 +20,9 @@ namespace Repository.IRepo
         Task DeleteMealMemberDetailAsync(int detailId);
         Task DeleteMealMemberDetailsByMealMemberIdAsync(int mealMemberId);
         Task<IEnumerable<MealMember>> GetAllMealMembersAsync(int memberId);
+        Task<int> GetMealBeforeByMealType(int foodDiaryId, int mealtype);
         Task<MealMemberDetailResonseDTO> GetMealMemberDetailAsync(int mealMemberId);
+        Task<bool> InsertCopyPreviousMeal(int dirayId, int mealtype);
         Task UpdateMealMemberTotalCaloriesAsync(int mealMemberId);
 
         //Task<bool> CreateMealPlanForMember(MealMember mealMemberModel);
