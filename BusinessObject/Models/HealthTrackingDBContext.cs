@@ -65,7 +65,6 @@ namespace BusinessObject.Models
             IConfigurationRoot configuration = builder.Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DbConnection"));
         }
-    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -855,6 +854,11 @@ namespace BusinessObject.Models
                 entity.ToTable("GOAL");
 
                 entity.Property(e => e.GoalId).HasColumnName("goal_id");
+
+                entity.Property(e => e.ChangeDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("change_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ExerciseLevel).HasColumnName("exercise_level");
 

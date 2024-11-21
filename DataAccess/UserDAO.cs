@@ -154,7 +154,7 @@ namespace DataAccess
                         MemberId = savedMember.MemberId,
                         TargetValue = (member.TargetWeight.HasValue ? member.TargetWeight : member.Weight) ?? 0.0,
 
-
+                        ChangeDate = DateTime.UtcNow,   
                         //  TargetDate = DateTime.Now.AddMonths(1),
                         TargetDate = DateTime.Now.AddDays(weeksNeeded * 7),
 

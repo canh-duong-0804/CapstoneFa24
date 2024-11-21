@@ -139,8 +139,6 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return BadRequest("Error while registering the user");
             }
-
-    
             return Ok();
         }
         
