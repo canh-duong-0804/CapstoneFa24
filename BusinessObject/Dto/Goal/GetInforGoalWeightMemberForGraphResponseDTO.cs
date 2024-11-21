@@ -10,8 +10,8 @@ namespace BusinessObject.Dto.Goal
 {
     public class GetInforGoalWeightMemberForGraphResponseDTO
     {
-        public List<CurrentWeightMemberResponseDTO> currentWeight { get; set; } = new List<CurrentWeightMemberResponseDTO>();
+        public List<WeightDTO> currentWeight { get; set; } = new List<WeightDTO>();
 
-        public List<GoalWeightMemberResponseDTO> goalWeight { get; set; } = new List<GoalWeightMemberResponseDTO>();
+        public List<WeightDTO> goalWeight { get; set; } = new List<WeightDTO>();
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Dto.Goal
 {
-    public class GoalWeightMemberResponseDTO
+    public class WeightDTO
     {
-        public double? TargetWeight { get; set; }
-        public string DateChangeTarget { get; set; }
+        public string Date { get; set; }
+        public double? Weight { get; set; }
+        
     }
 }
