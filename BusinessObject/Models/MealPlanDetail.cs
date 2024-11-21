@@ -13,6 +13,7 @@ namespace BusinessObject.Models
         public string? Description { get; set; }
         public int FoodId { get; set; }
         public int Quantity { get; set; }
+        public bool? Status { get; set; }
 
         public virtual Food Food { get; set; } = null!;
         public virtual MealPlan MealPlan { get; set; } = null!;

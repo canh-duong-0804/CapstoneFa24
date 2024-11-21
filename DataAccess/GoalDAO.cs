@@ -46,7 +46,18 @@ namespace DataAccess
                         BodyFat = 0,
                         Muscles = 0,
                     };
+                    var latestBodyMeasure = await context.BodyMeasureChanges
+                        .Where(b => b.MemberId == goal.MemberId)
+                        .OrderByDescending(b => b.DateChange)
+                        .FirstOrDefaultAsync();
 
+                    double? currentWeight = latestBodyMeasure.Weight;
+                    double targetWeight = goal.TargetValue;
+                    double weeklyGoal = Convert.ToDouble(goal.GoalType);
+
+                    int weeksNeeded = (int)Math.Ceiling(Math.Abs((double)((targetWeight - currentWeight) / weeklyGoal)));
+
+                    goal.TargetDate = DateTime.Now.AddDays(weeksNeeded * 7);
                     context.BodyMeasureChanges.Add(addNewWeightCurrent);
                     context.SaveChanges();
                     await context.Goals.AddAsync(goal);
@@ -256,11 +267,11 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
-                    var startOfWeek = date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Monday); 
+
+                    var startOfWeek = date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Monday);
                     var endOfWeek = startOfWeek.AddDays(6);
 
-                   
+
                     var allRecords = await context.BodyMeasureChanges
                         .Where(b => b.MemberId == memberId && b.DateChange >= startOfWeek && b.DateChange <= endOfWeek)
                         .ToListAsync();
@@ -275,7 +286,7 @@ namespace DataAccess
                         })
                         .ToList();
 
-                    
+
                     var allGoals = await context.Goals
                         .Where(g => g.MemberId == memberId && g.TargetDate >= startOfWeek && g.TargetDate <= endOfWeek)
                         .ToListAsync();
@@ -289,22 +300,22 @@ namespace DataAccess
                     var goalWeight = new List<GoalWeightMemberResponseDTO>();
                     double? lastTargetWeight = null;
 
-                 
+
                     for (var day = startOfWeek; day <= endOfWeek; day = day.AddDays(1))
                     {
-                     
+
                         var applicableGoal = rawGoals
                             .Where(g => g.TargetDate.Date == day.Date)
                             .OrderByDescending(g => g.TargetDate)
                             .FirstOrDefault();
 
-                       
+
                         var nextGoal = rawGoals
                             .Where(g => g.TargetDate.Date > day.Date)
                             .OrderBy(g => g.TargetDate)
                             .FirstOrDefault();
 
-                        
+
                         if (applicableGoal != null)
                         {
                             lastTargetWeight = applicableGoal.TargetValue;
@@ -318,7 +329,7 @@ namespace DataAccess
                             lastTargetWeight = null;
                         }
 
-                       
+
                         goalWeight.Add(new GoalWeightMemberResponseDTO
                         {
                             TargetWeight = lastTargetWeight,
@@ -326,7 +337,7 @@ namespace DataAccess
                         });
                     }
 
-                   
+
                     var response = new GetInforGoalWeightMemberForGraphResponseDTO
                     {
                         currentWeight = currentWeight,
@@ -350,11 +361,11 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     var startOfMonth = new DateTime(date.Year, date.Month, 1);
                     var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
 
-                    
+
                     var allRecords = await context.BodyMeasureChanges
                         .Where(b => b.MemberId == memberId && b.DateChange >= startOfMonth && b.DateChange <= endOfMonth)
                         .ToListAsync();
@@ -369,7 +380,7 @@ namespace DataAccess
                         })
                         .ToList();
 
-                    
+
                     var allGoals = await context.Goals
                         .Where(g => g.MemberId == memberId && g.TargetDate >= startOfMonth && g.TargetDate <= endOfMonth)
                         .ToListAsync();
@@ -383,22 +394,22 @@ namespace DataAccess
                     var goalWeight = new List<GoalWeightMemberResponseDTO>();
                     double? lastTargetWeight = null;
 
-                   
+
                     for (var day = startOfMonth; day <= endOfMonth; day = day.AddDays(1))
                     {
-                       
+
                         var applicableGoal = rawGoals
                             .Where(g => g.TargetDate.Date == day.Date)
                             .OrderBy(g => g.TargetDate)
                             .FirstOrDefault();
 
-                       
+
                         var nextGoal = rawGoals
                             .Where(g => g.TargetDate.Date > day.Date)
                             .OrderBy(g => g.TargetDate)
                             .FirstOrDefault();
 
-                      
+
                         if (applicableGoal == null && nextGoal != null)
                         {
                             lastTargetWeight = nextGoal.TargetValue;
@@ -412,7 +423,7 @@ namespace DataAccess
                             lastTargetWeight = null;
                         }
 
-                        
+
                         goalWeight.Add(new GoalWeightMemberResponseDTO
                         {
                             TargetWeight = lastTargetWeight,
@@ -420,7 +431,7 @@ namespace DataAccess
                         });
                     }
 
-                  
+
                     var response = new GetInforGoalWeightMemberForGraphResponseDTO
                     {
                         currentWeight = currentWeight,
@@ -435,9 +446,5 @@ namespace DataAccess
                 throw new Exception("An error occurred while retrieving the goal.", ex);
             }
         }
-
-
-
-
     }
 }

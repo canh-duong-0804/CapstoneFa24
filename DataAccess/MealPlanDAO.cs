@@ -453,7 +453,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<bool> CreateMealPlanTrainerAsync(MealPlan mealPlanModel)
+      /*  public async Task<bool> CreateMealPlanTrainerAsync(MealPlan mealPlanModel)
         {
             try
             {
@@ -602,7 +602,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    /*var mealPlans = await context.MealPlans
+                    *//*var mealPlans = await context.MealPlans
                          .Where(s => s.MealPlanId == mealPlanId)
                          .Select(s => new GetMealPlanResponseDTO
                          {
@@ -613,7 +613,7 @@ namespace DataAccess
                              TotalCalories = s.TotalCalories,
 
                          })
-                         .FirstOrDefault();*/
+                         .FirstOrDefault();*//*
                     var mealPlans = await context.MealPlans
                          .Where(s => s.MealPlanId == mealPlanId)
                          .Select(s => new GetMealPlanResponseDTO
@@ -636,7 +636,7 @@ namespace DataAccess
                 throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
 
             }
-        }
+        }*/
     }
 
 }
