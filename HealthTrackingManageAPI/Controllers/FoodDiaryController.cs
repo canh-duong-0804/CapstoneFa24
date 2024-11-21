@@ -158,7 +158,28 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(foodHistory);
 
         }
+        [Authorize]
+        [HttpGet("Get-Food-dairy-date")]
+        public async Task<IActionResult> GetFoodDairyDate()
+        {
 
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var mainDashBoardInfo = await _foodDiaryRepository.GetFoodDairyDateAsync(memberId);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound(" not found.");
+            }
+            return Ok(mainDashBoardInfo);
+        }
 
         /* [Authorize]
          [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
@@ -182,7 +203,7 @@ namespace HealthTrackingManageAPI.Controllers
              return Ok(mainDashBoardInfo);
          }*/
 
-        
+
     }
 
 }

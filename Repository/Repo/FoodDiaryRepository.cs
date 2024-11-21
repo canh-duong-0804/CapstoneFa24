@@ -37,6 +37,8 @@ namespace Repository.Repo
         public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodHistoryAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodHistoryAsync(memberId);
 
         public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestionAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodSuggestAsync(memberId);
-        
+
+        public Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodDairyDateAsync(memberId);
+
     }
 }

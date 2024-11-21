@@ -24,6 +24,6 @@ namespace Repository.IRepo
         Task<FoodDiaryForMemberMobileResponse> GetFoodDairyByDate(int memberId, DateTime date);
         Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodHistoryAsync(int memberId);
         Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestionAsync(int memberId);
-        
+        Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId);
     }
 }

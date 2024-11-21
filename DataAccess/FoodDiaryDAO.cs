@@ -383,9 +383,10 @@ namespace DataAccess
 
 
                 var latestMeasurement = await context.BodyMeasureChanges
-                    .Where(b => b.MemberId == memberId && b.DateChange <= date)
-                    .OrderByDescending(b => b.DateChange)
-                    .FirstOrDefaultAsync();
+                        .Where(b => b.MemberId == memberId)
+                        .OrderByDescending(b => b.DateChange.Value.Date)
+                        .ThenBy(b => b.DateChange.Value.TimeOfDay)
+                        .FirstOrDefaultAsync();
 
                 double currentWeight = latestMeasurement.Weight ?? 0;
 
@@ -540,6 +541,37 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"Unexpected error fetching food suggestions: {ex.Message}");
+            }
+        }
+
+        public async Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                 
+                    var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    var today = DateTime.Now.Date;
+
+                 
+                    var diaries = await context.FoodDiaries
+                        .Where(fd => fd.MemberId == memberId && fd.Date >= startOfMonth && fd.Date <= today)
+                        .OrderByDescending(fd => fd.Date) 
+                        .Select(getDiary => new GetFoodDiaryDateResponseDTO
+                        {
+                            DiaryId = getDiary.DiaryId,
+                            Date = getDiary.Date,
+                           
+                        })
+                        .ToListAsync();
+
+                    return diaries;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching food diaries: {ex.Message}");
             }
         }
 
