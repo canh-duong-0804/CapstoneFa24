@@ -50,6 +50,7 @@ builder.Services.AddScoped<IMealMemberDetailsRepository, MealMemberDetailsReposi
 builder.Services.AddScoped<IFoodMemberRepository, FoodMemberRepository>();
 builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
 builder.Services.AddScoped<IWaterLogRepository, WaterLogRepository>();
+builder.Services.AddScoped<IExecrisePlanRepository, ExecrisePlanRepository>();
 
 
 builder.Services.AddScoped<SpeedSMSService>();
