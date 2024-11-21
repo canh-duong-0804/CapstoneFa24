@@ -70,10 +70,10 @@ namespace DataAccess
                     var getCurrentWeight = await context.BodyMeasureChanges.OrderByDescending(g => g.BodyMeasureId).FirstOrDefaultAsync(g => g.MemberId == id);
                     if (result == null)
                     {
-                       
+
                         return new GoalResponseDTO
                         {
-                            CurrentWeight = getCurrentWeight?.Weight ?? 0 
+                            CurrentWeight = getCurrentWeight?.Weight ?? 0
                         };
                     }
 
@@ -85,8 +85,8 @@ namespace DataAccess
                         WeightGoal = result.TargetValue,
                         ExerciseLevel = result.Member.ExerciseLevel,
 
-                        
-                        
+
+
                         DateInitial = result.Member.BodyMeasureChanges.FirstOrDefault()?.DateChange?.ToString("dd/MM/yyyy"),
 
                         GoalType = float.Parse(result.GoalType),
@@ -106,7 +106,7 @@ namespace DataAccess
             }
         }
 
-        
+
 
         public async Task<bool> updateGoal(int memberId, GoalRequestDTO updatedGoal)
         {
@@ -118,7 +118,7 @@ namespace DataAccess
                     var getGoal = await context.Goals.FindAsync(memberId);
                     getGoal.TargetValue = updatedGoal.TargetWeight;
                     //getGoal.TargetDate = updatedGoal.TargetDate;
-                   // getGoal.GoalType = updatedGoal.GoalType;
+                    // getGoal.GoalType = updatedGoal.GoalType;
                     context.SaveChanges();
                     return true;
                     /* context.Goals.Update(updatedGoal);
@@ -127,7 +127,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                
+
                 //throw new Exception("An error occurred while updating the goal.", ex);
             }
             return false;
@@ -144,11 +144,11 @@ namespace DataAccess
                         MemberId = memberId,
                         Weight = weightCurrent,
                         DateChange = DateTime.Now,
-                        BodyFat=0,
-                        Muscles=0,
+                        BodyFat = 0,
+                        Muscles = 0,
                     };
 
-                        context.BodyMeasureChanges.Add(addNewWeightCurrent);
+                    context.BodyMeasureChanges.Add(addNewWeightCurrent);
                     context.SaveChanges();
                 }
             }
@@ -166,15 +166,15 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var getGoal = await context.Goals.OrderByDescending(b=>b.GoalId).Where(b=>b.MemberId==memberId).FirstOrDefaultAsync();
+                    var getGoal = await context.Goals.OrderByDescending(b => b.GoalId).Where(b => b.MemberId == memberId).FirstOrDefaultAsync();
 
 
                     var addNewWeightCurrent = new Goal
                     {
                         MemberId = memberId,
                         GoalType = goalWeekDaily,
-                        TargetDate =getGoal.TargetDate,
-                        TargetValue=getGoal.TargetValue,
+                        TargetDate = getGoal.TargetDate,
+                        TargetValue = getGoal.TargetValue,
 
                     };
 
@@ -256,66 +256,77 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var startOfWeek = date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Monday); // Thứ Hai đầu tuần
-                    var endOfWeek = startOfWeek.AddDays(6); // Chủ nhật cuối tuần
+                   
+                    var startOfWeek = date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Monday); 
+                    var endOfWeek = startOfWeek.AddDays(6);
 
-                    // Lấy thông tin cân nặng trong tuần
-                    var currentWeight = await context.BodyMeasureChanges
+                   
+                    var allRecords = await context.BodyMeasureChanges
                         .Where(b => b.MemberId == memberId && b.DateChange >= startOfWeek && b.DateChange <= endOfWeek)
-                        .OrderBy(b => b.DateChange)
+                        .ToListAsync();
+
+                    var currentWeight = allRecords
+                        .GroupBy(b => b.DateChange.Value.Date)
+                        .Select(g => g.OrderByDescending(b => b.DateChange).First())
                         .Select(b => new CurrentWeightMemberResponseDTO
                         {
-                            DateChange = b.DateChange,
+                            DateChange = b.DateChange?.ToString("dd-MM-yyyy"),
                             Weight = b.Weight
                         })
+                        .ToList();
+
+                    
+                    var allGoals = await context.Goals
+                        .Where(g => g.MemberId == memberId && g.TargetDate >= startOfWeek && g.TargetDate <= endOfWeek)
                         .ToListAsync();
 
-                    // Lấy thông tin mục tiêu cân nặng trong tuần
-                    var rawGoals = await context.Goals
-                        .Where(g => g.MemberId == memberId && g.TargetDate >= startOfWeek && g.TargetDate <= endOfWeek)
+                    var rawGoals = allGoals
+                        .GroupBy(g => g.TargetDate.Date)
+                        .Select(g => g.OrderByDescending(x => x.GoalId).First())
                         .OrderBy(g => g.TargetDate)
-                        .ToListAsync();
+                        .ToList();
 
                     var goalWeight = new List<GoalWeightMemberResponseDTO>();
                     double? lastTargetWeight = null;
 
+                 
                     for (var day = startOfWeek; day <= endOfWeek; day = day.AddDays(1))
                     {
-                        // Tìm mục tiêu gần nhất trước hoặc đúng ngày hiện tại
+                     
                         var applicableGoal = rawGoals
                             .Where(g => g.TargetDate.Date == day.Date)
-                            .OrderBy(g => g.TargetDate)
+                            .OrderByDescending(g => g.TargetDate)
                             .FirstOrDefault();
 
-                        // Tìm mục tiêu tiếp theo sau ngày hiện tại
+                       
                         var nextGoal = rawGoals
                             .Where(g => g.TargetDate.Date > day.Date)
                             .OrderBy(g => g.TargetDate)
                             .FirstOrDefault();
 
-                        // Sử dụng mục tiêu tiếp theo nếu không có mục tiêu trước đó
-                        if (applicableGoal == null && nextGoal != null)
-                        {
-                            lastTargetWeight = nextGoal.TargetValue;
-                        }
-                        else if (applicableGoal != null && nextGoal != null)
+                        
+                        if (applicableGoal != null)
                         {
                             lastTargetWeight = applicableGoal.TargetValue;
                         }
-                        else if (nextGoal == null && applicableGoal == null)
+                        else if (nextGoal != null)
+                        {
+                            lastTargetWeight = nextGoal.TargetValue;
+                        }
+                        else
                         {
                             lastTargetWeight = null;
                         }
 
-                            // Thêm mục tiêu cho từng ngày
-                            goalWeight.Add(new GoalWeightMemberResponseDTO
+                       
+                        goalWeight.Add(new GoalWeightMemberResponseDTO
                         {
                             TargetWeight = lastTargetWeight,
-                            TargetDate = day
+                            TargetDate = day.ToString("dd-MM-yyyy")
                         });
                     }
 
-                    // Tạo phản hồi
+                   
                     var response = new GetInforGoalWeightMemberForGraphResponseDTO
                     {
                         currentWeight = currentWeight,
@@ -330,6 +341,8 @@ namespace DataAccess
                 throw new Exception("An error occurred while retrieving the goal.", ex);
             }
         }
+
+
 
         public async Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date)
         {
@@ -337,65 +350,77 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    // Xác định ngày đầu tháng và cuối tháng
+                    
                     var startOfMonth = new DateTime(date.Year, date.Month, 1);
                     var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
 
-                    // Lấy thông tin cân nặng trong tháng
-                    var currentWeight = await context.BodyMeasureChanges
+                    
+                    var allRecords = await context.BodyMeasureChanges
                         .Where(b => b.MemberId == memberId && b.DateChange >= startOfMonth && b.DateChange <= endOfMonth)
-                        .OrderBy(b => b.DateChange)
-                        .Select(b => new CurrentWeightMemberResponseDTO
-                        {
-                            DateChange = b.DateChange,
-                            Weight = b.Weight
-                        })
                         .ToListAsync();
 
-                    // Lấy thông tin mục tiêu cân nặng trong tháng
-                    var rawGoals = await context.Goals
+                    var currentWeight = allRecords
+                        .GroupBy(b => b.DateChange.Value.Date)
+                        .Select(g => g.OrderByDescending(b => b.DateChange).First())
+                        .Select(b => new CurrentWeightMemberResponseDTO
+                        {
+                            DateChange = b.DateChange?.ToString("dd-MM-yyyy"),
+                            Weight = b.Weight
+                        })
+                        .ToList();
+
+                    
+                    var allGoals = await context.Goals
                         .Where(g => g.MemberId == memberId && g.TargetDate >= startOfMonth && g.TargetDate <= endOfMonth)
-                        .OrderBy(g => g.TargetDate)
                         .ToListAsync();
+
+                    var rawGoals = allGoals
+                        .GroupBy(g => g.TargetDate.Date)
+                        .Select(g => g.OrderByDescending(x => x.GoalId).First())
+                        .OrderBy(g => g.TargetDate)
+                        .ToList();
 
                     var goalWeight = new List<GoalWeightMemberResponseDTO>();
                     double? lastTargetWeight = null;
 
+                   
                     for (var day = startOfMonth; day <= endOfMonth; day = day.AddDays(1))
                     {
-                        // Tìm mục tiêu gần nhất trước hoặc đúng ngày hiện tại
+                       
                         var applicableGoal = rawGoals
                             .Where(g => g.TargetDate.Date == day.Date)
                             .OrderBy(g => g.TargetDate)
                             .FirstOrDefault();
 
-                        // Tìm mục tiêu tiếp theo sau ngày hiện tại
+                       
                         var nextGoal = rawGoals
                             .Where(g => g.TargetDate.Date > day.Date)
                             .OrderBy(g => g.TargetDate)
                             .FirstOrDefault();
 
-                        // Sử dụng mục tiêu tiếp theo nếu không có mục tiêu trước đó
+                      
                         if (applicableGoal == null && nextGoal != null)
                         {
                             lastTargetWeight = nextGoal.TargetValue;
                         }
-                        else if (applicableGoal != null && nextGoal != null)
+                        else if (applicableGoal != null)
                         {
                             lastTargetWeight = applicableGoal.TargetValue;
                         }
-                        else if (nextGoal == null && applicableGoal == null)
+                        else
                         {
                             lastTargetWeight = null;
                         }
 
-                        // Thêm mục tiêu cho từng ngày
+                        
                         goalWeight.Add(new GoalWeightMemberResponseDTO
                         {
                             TargetWeight = lastTargetWeight,
-                            TargetDate = day
+                            TargetDate = day.ToString("dd-MM-yyyy")
                         });
-                    }                    // Tạo phản hồi
+                    }
+
+                  
                     var response = new GetInforGoalWeightMemberForGraphResponseDTO
                     {
                         currentWeight = currentWeight,
@@ -410,6 +435,7 @@ namespace DataAccess
                 throw new Exception("An error occurred while retrieving the goal.", ex);
             }
         }
+
 
 
 

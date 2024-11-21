@@ -9,6 +9,6 @@ namespace BusinessObject.Dto.Goal
     public class GoalWeightMemberResponseDTO
     {
         public double? TargetWeight { get; set; }
-        public DateTime TargetDate { get; set; }
+        public string TargetDate { get; set; }
     }
 }

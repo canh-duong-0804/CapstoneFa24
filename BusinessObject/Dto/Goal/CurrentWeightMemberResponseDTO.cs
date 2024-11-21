@@ -8,7 +8,7 @@ namespace BusinessObject.Dto.Goal
 {
     public class CurrentWeightMemberResponseDTO
     {
-        public DateTime? DateChange { get; set; }
+        public string? DateChange { get; set; }
         public double? Weight { get; set; }
     }
 }
