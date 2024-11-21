@@ -76,6 +76,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     var mealPlans = await context.MealPlans
+                        .Include(s=>s.Diet)
                          .Where(s => s.Status == true)
                          .OrderBy(s => s.MealPlanId)
                          .Skip((page - 1) * pageSize)
@@ -87,6 +88,7 @@ namespace DataAccess
                              ShortDescription = s.ShortDescription,
                              Name = s.Name,
                              TotalCalories = s.TotalCalories,
+                             DietName=s.Diet.DietName
 
                          })
                          .ToListAsync();
@@ -232,13 +234,14 @@ namespace DataAccess
                             Description = request.Description,
                             FoodId = foodDetail.FoodId, 
                             Quantity = foodDetail.Quantity, 
-                            Status = true 
+                          
                         };
 
                         context.MealPlanDetails.Add(mealPlanDetail);
+                        await context.SaveChangesAsync();
                     }
 
-                    await context.SaveChangesAsync();
+                    
                     return true;
                 }
             }

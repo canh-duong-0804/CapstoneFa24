@@ -5,6 +5,7 @@ using BusinessObject.Dto.Login;
 using BusinessObject.Dto.Member;
 using BusinessObject.Dto.Message;
 using BusinessObject.Dto.Register;
+using BusinessObject.Dto.ResetPassword;
 using BusinessObject.Models;
 using HealthTrackingManageAPI.NewFolder;
 using Microsoft.AspNetCore.Authorization;
@@ -116,6 +117,59 @@ namespace HealthTrackingManageAPI.Controllers
     
             return Ok();
         }
+         
+        
+        [HttpPut("reset-password")]
+        [Authorize]
+        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestDTO request)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+            var user = await _userRepo.ResetPasswordAsync(request,memberId);
+            if (user == null)
+            {
+                return BadRequest("Error while registering the user");
+            }
+
+    
+            return Ok();
+        }
+        
+        [HttpPut("reset-password-otp")]
+        [Authorize]
+        public async Task<IActionResult> ResetPasswordOtp([FromBody] ChangePasswordRequestDTO request)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+            var user = await _userRepo.ResetPasswordOtpAsync(request,memberId);
+            if (user == null)
+            {
+                return BadRequest("Error while registering the user");
+            }
+
+    
+            return Ok();
+        }
+
+
 
 
 

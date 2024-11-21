@@ -2,6 +2,7 @@
 using BusinessObject.Dto.MealPlan;
 using BusinessObject.Dto.MealPlanDetail;
 using BusinessObject.Models;
+using HealthTrackingManageAPI.Authorize;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPost("create-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> CreateMealPlanTrainer([FromBody] CreateMealPlanRequestDTO request)
         {
 
@@ -57,7 +58,7 @@ namespace HealthTrackingManageAPI.Controllers
         
         
         [HttpPut("update-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> UpdateMealPlanTrainer([FromBody] UpdateMealPlanRequestDTO request)
         {
 
@@ -90,7 +91,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpDelete("delete-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> DeleteMealPlan(int mealPlanId)
         {
 
@@ -119,7 +120,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         [HttpGet("get-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetMealPlan(int mealPlanId)
         {
 
@@ -147,7 +148,7 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(success);
         }
         [HttpGet("Get-all-meal-plan-for-staff")]
-        [Authorize(Roles = "1")]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetAllMealPlanForStaff([FromQuery] int? page)
         {
 
@@ -204,7 +205,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPost("create-meal-plan-detail")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> CreateMealPlanDetail([FromBody] CreateMealPlanDetailRequestDTO request)
         {
             
@@ -242,7 +243,7 @@ namespace HealthTrackingManageAPI.Controllers
            
         }
         [HttpGet("get-meal-plan-detail")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetMealPlanDetail(int MealPlanId ,int MealType ,int Day )
         {
             try
@@ -275,7 +276,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPut("update-meal-plan-detail")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> UpdateMealPlanDetail([FromBody] CreateMealPlanDetailRequestDTO request)
         {
             try

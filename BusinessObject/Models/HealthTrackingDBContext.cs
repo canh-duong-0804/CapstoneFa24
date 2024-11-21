@@ -65,6 +65,7 @@ namespace BusinessObject.Models
             IConfigurationRoot configuration = builder.Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DbConnection"));
         }
+    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -1024,10 +1025,6 @@ namespace BusinessObject.Models
 
                 entity.Property(e => e.Quantity)
                     .HasColumnName("quantity")
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
                     .HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Food)
