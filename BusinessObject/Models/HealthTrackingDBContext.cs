@@ -526,7 +526,6 @@ namespace BusinessObject.Models
                     .HasColumnName("name");
 
                 entity.Property(e => e.Status)
-                    .IsRequired()
                     .HasColumnName("status")
                     .HasDefaultValueSql("((1))");
 
@@ -553,7 +552,9 @@ namespace BusinessObject.Models
 
                 entity.Property(e => e.ExercisePlanId).HasColumnName("exercise_plan_id");
 
-                
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Exercise)
                     .WithMany(p => p.ExercisePlanDetails)
@@ -853,6 +854,11 @@ namespace BusinessObject.Models
                 entity.ToTable("GOAL");
 
                 entity.Property(e => e.GoalId).HasColumnName("goal_id");
+
+                entity.Property(e => e.ChangeDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("change_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ExerciseLevel).HasColumnName("exercise_level");
 

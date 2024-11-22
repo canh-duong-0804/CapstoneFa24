@@ -11,6 +11,7 @@ namespace BusinessObject.Models
         public int? ExerciseLevel { get; set; }
         public double TargetValue { get; set; }
         public DateTime TargetDate { get; set; }
+        public DateTime ChangeDate { get; set; }
 
         public virtual Member Member { get; set; } = null!;
     }

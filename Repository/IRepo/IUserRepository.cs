@@ -1,5 +1,6 @@
 ﻿
 using BusinessObject.Dto.Register;
+using BusinessObject.Dto.ResetPassword;
 using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Repository.IRepo
         Task<Member> Login(Member loginRequestDTO, string password);
         Task<Member> GetMemberByIdAsync(int userId);
         Task UpdateMemberProfileAsync(Member user);
-        
+        Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request,int memberId);
+        Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request, int memberId);
     }
 }

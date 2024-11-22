@@ -3,6 +3,7 @@ using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
 using BusinessObject.Dto.MainDashBoardMobile;
+using BusinessObject.Dto.Streak;
 using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
@@ -37,6 +38,10 @@ namespace Repository.Repo
         public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodHistoryAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodHistoryAsync(memberId);
 
         public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestionAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodSuggestAsync(memberId);
-        
+
+        public Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodDairyDateAsync(memberId);
+
+        public Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId,date);
+
     }
 }

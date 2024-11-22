@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Dto.Register;
+using BusinessObject.Dto.ResetPassword;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,7 +15,7 @@ namespace DataAccess
     {
         private static UserDAO instance = null;
         private static readonly object instanceLock = new object();
-   
+
         public static UserDAO Instance
         {
             get
@@ -96,13 +97,13 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                  
+
                     var user = await context.Members.FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email);
 
                     if (user == null)
                         return null;
 
-                  
+
                     if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                         return null;
 
@@ -121,46 +122,46 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     CreatePasswordHash(member.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                   
+
                     registerationRequestDTO.PasswordHash = passwordHash;
                     registerationRequestDTO.PasswordSalt = passwordSalt;
 
-                   
+
                     context.Members.Add(registerationRequestDTO);
                     await context.SaveChangesAsync();
                     var savedMember = await context.Members
                     .FirstOrDefaultAsync(m => m.Email == registerationRequestDTO.Email);
                     var bodyMeasureChange = new BodyMeasureChange
                     {
-                        MemberId = savedMember.MemberId,  
+                        MemberId = savedMember.MemberId,
                         Weight = member.Weight,
-                        DateChange = DateTime.UtcNow  
+                        DateChange = DateTime.UtcNow
                     };
-                    double currentWeight = member.Weight; 
-                    double targetWeight = member.TargetWeight.Value; 
-                    double weeklyGoal = Convert.ToDouble(member.weightPerWeek); 
+                    double currentWeight = member.Weight;
+                    double targetWeight = member.TargetWeight.Value;
+                    double weeklyGoal = Convert.ToDouble(member.weightPerWeek);
                     //double weeklyGoal = Convert.ToDouble(member.weightPerWeek); 
 
-                    
+
                     int weeksNeeded = (int)Math.Ceiling(Math.Abs((targetWeight - currentWeight) / weeklyGoal));
 
-                   
+
                     var goal = new Goal
                     {
                         MemberId = savedMember.MemberId,
                         TargetValue = (member.TargetWeight.HasValue ? member.TargetWeight : member.Weight) ?? 0.0,
-                        
 
-                      //  TargetDate = DateTime.Now.AddMonths(1),
-                      TargetDate = DateTime.Now.AddDays(weeksNeeded * 7),
+                        ChangeDate = DateTime.UtcNow,   
+                        //  TargetDate = DateTime.Now.AddMonths(1),
+                        TargetDate = DateTime.Now.AddDays(weeksNeeded * 7),
 
                         ExerciseLevel = member.ExerciseLevel,
                         // dang goal type 1 2 3 
-                        GoalType=member.weightPerWeek.ToString(),
-                      //  GoalType=member.weightPerWeek.ToString(),
+                        GoalType = member.weightPerWeek.ToString(),
+                        //  GoalType=member.weightPerWeek.ToString(),
                     };
 
                     await context.Goals.AddAsync(goal);
@@ -199,7 +200,7 @@ namespace DataAccess
         {
             using (var context = new HealthTrackingDBContext())
             {
-                return await context.Members.Include(x=>x.BodyMeasureChanges).FirstOrDefaultAsync(x => x.MemberId == userId);
+                return await context.Members.Include(x => x.BodyMeasureChanges).FirstOrDefaultAsync(x => x.MemberId == userId);
             }
         }
 
@@ -209,6 +210,72 @@ namespace DataAccess
             {
                 context.Members.Update(user);
                 await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request, int memberId)
+        {
+
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var user = await context.Members.FirstOrDefaultAsync(u => u.MemberId == memberId);
+                    if (user == null)
+                    {
+                        throw new Exception("User not found.");
+                    }
+                    /*if (!VerifyPasswordHash(request.OldPassword, user.PasswordHash, user.PasswordSalt))
+                        return false;*/
+
+                    CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+
+                    user.PasswordHash = passwordHash;
+                    user.PasswordSalt = passwordSalt;
+
+
+                    context.Members.Update(user);
+                    await context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while resetting the password: {ex.Message}");
+            }
+
+
+        }
+
+        public async Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var user = await context.Members.FirstOrDefaultAsync(u => u.MemberId == memberId);
+                   
+
+                    CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+
+                    user.PasswordHash = passwordHash;
+                    user.PasswordSalt = passwordSalt;
+
+
+                    context.Members.Update(user);
+                    await context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while resetting the password: {ex.Message}");
             }
         }
     }

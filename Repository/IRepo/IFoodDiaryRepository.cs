@@ -3,6 +3,7 @@ using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
 using BusinessObject.Dto.MainDashBoardMobile;
 using BusinessObject.Dto.MealDetailMember;
+using BusinessObject.Dto.Streak;
 using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace Repository.IRepo
         Task<FoodDiaryForMemberMobileResponse> GetFoodDairyByDate(int memberId, DateTime date);
         Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodHistoryAsync(int memberId);
         Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestionAsync(int memberId);
-        
+        Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId);
+        Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date);
     }
 }

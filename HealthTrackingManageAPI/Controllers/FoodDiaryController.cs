@@ -158,8 +158,53 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(foodHistory);
 
         }
+        [Authorize]
+        [HttpGet("Get-Food-dairy-date")]
+        public async Task<IActionResult> GetFoodDairyDate()
+        {
 
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
 
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var mainDashBoardInfo = await _foodDiaryRepository.GetFoodDairyDateAsync(memberId);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound(" not found.");
+            }
+            return Ok(mainDashBoardInfo);
+        }
+
+        [HttpGet("get-streak")]
+        [Authorize]
+        public async Task<IActionResult> GetCalorieStreak(DateTime date)
+        {
+           
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+           
+            var streak = await _foodDiaryRepository.GetCalorieStreakAsync(memberId,date);
+            if (streak == null)
+            {
+                return NotFound("No calorie streak found.");
+            }
+            return Ok(streak);
+        }
         /* [Authorize]
          [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
          public async Task<IActionResult> GetFoodDairyByDate(DateTime date)
@@ -181,8 +226,5 @@ namespace HealthTrackingManageAPI.Controllers
              }
              return Ok(mainDashBoardInfo);
          }*/
-
-        
     }
-
 }

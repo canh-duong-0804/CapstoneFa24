@@ -8,6 +8,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
 {
     public class MainDashBoardMobileForMemberResponseDTO
     {
+        public string DateMainDashBoard {  get; set; }
         public double DailyCalories { get; set; }
         public double BMI { get; set; }
         public double ProteinInGrams { get; set; }

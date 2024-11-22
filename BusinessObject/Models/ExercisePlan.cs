@@ -19,6 +19,7 @@ namespace BusinessObject.Models
         public string? ExercisePlanImage { get; set; }
         public string Name { get; set; } = null!;
         public double TotalCaloriesBurned { get; set; }
+        public string? ExercisePlanImage { get; set; }
         public bool? Status { get; set; }
 
         public virtual staff CreateByNavigation { get; set; } = null!;

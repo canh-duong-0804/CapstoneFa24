@@ -1,6 +1,8 @@
 ﻿using BusinessObject;
 using BusinessObject.Dto.MealPlan;
+using BusinessObject.Dto.MealPlanDetail;
 using BusinessObject.Models;
+using HealthTrackingManageAPI.Authorize;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +15,15 @@ namespace HealthTrackingManageAPI.Controllers
     [ApiController]
     public class MealPlanTrainnerController : ControllerBase
     {
-        private readonly IMealPlanRepository _mealPlanRepository;
+        private readonly IMealPlanTrainnerRepository _mealPlanRepository;
 
-        public MealPlanTrainnerController(IMealPlanRepository mealPlanRepository)
+        public MealPlanTrainnerController(IMealPlanTrainnerRepository mealPlanRepository)
         {
             _mealPlanRepository = mealPlanRepository;
         }
 
         [HttpPost("create-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> CreateMealPlanTrainer([FromBody] CreateMealPlanRequestDTO request)
         {
 
@@ -56,7 +58,7 @@ namespace HealthTrackingManageAPI.Controllers
         
         
         [HttpPut("update-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> UpdateMealPlanTrainer([FromBody] UpdateMealPlanRequestDTO request)
         {
 
@@ -89,7 +91,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpDelete("delete-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> DeleteMealPlan(int mealPlanId)
         {
 
@@ -118,7 +120,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         [HttpGet("get-meal-plan-by-trainner")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetMealPlan(int mealPlanId)
         {
 
@@ -143,13 +145,10 @@ namespace HealthTrackingManageAPI.Controllers
                 return StatusCode(500);
             }*/
 
-            return Ok();
+            return Ok(success);
         }
-
-
-
         [HttpGet("Get-all-meal-plan-for-staff")]
-        [Authorize(Roles = "1")]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetAllMealPlanForStaff([FromQuery] int? page)
         {
 
@@ -205,5 +204,108 @@ namespace HealthTrackingManageAPI.Controllers
             });
         }
 
+        [HttpPost("create-meal-plan-detail")]
+        [RoleLessThanOrEqualTo(1)]
+        public async Task<IActionResult> CreateMealPlanDetail([FromBody] CreateMealPlanDetailRequestDTO request)
+        {
+            
+               
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+
+                
+              /*  var role = User.FindFirstValue(ClaimTypes.Role);
+                if (role != "Trainer" && role != "Admin")
+                {
+                    return Forbid("Only trainers or admins can create meal plan details.");
+                }
+*/
+               
+
+
+
+
+                var success = await _mealPlanRepository.CreateMealPlanDetailAsync(request);
+
+                if (!success)
+                {
+                    return StatusCode(500, "Failed to create meal plan detail.");
+                }
+
+                return Ok(new { Message = "Meal plan detail created successfully." });
+           
+        }
+        [HttpGet("get-meal-plan-detail")]
+        [RoleLessThanOrEqualTo(1)]
+        public async Task<IActionResult> GetMealPlanDetail(int MealPlanId ,int MealType ,int Day )
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID");
+                }
+
+               
+                var mealPlanDetails = await _mealPlanRepository.GetMealPlanDetailAsync(MealPlanId,MealType,Day);
+
+                if (mealPlanDetails == null )
+                {
+                    return NotFound(new { message = "Meal plan details not found." });
+                }
+
+                return Ok(mealPlanDetails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}" });
+            }
+        }
+
+        [HttpPut("update-meal-plan-detail")]
+        [RoleLessThanOrEqualTo(1)]
+        public async Task<IActionResult> UpdateMealPlanDetail([FromBody] CreateMealPlanDetailRequestDTO request)
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID");
+                }
+
+               
+                var success = await _mealPlanRepository.UpdateMealPlanDetailAsync(request);
+
+                if (!success)
+                {
+                    return StatusCode(500, new { message = "Failed to update meal plan detail." });
+                }
+
+                return Ok(new { message = "Meal plan detail updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}" });
+            }
+        }
     }
 }

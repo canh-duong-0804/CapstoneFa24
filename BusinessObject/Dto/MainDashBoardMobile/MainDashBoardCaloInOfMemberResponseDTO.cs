@@ -10,7 +10,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
     {
         public double? Calories { get; set; }
         public double AmountWater { get; set; }
-        
+        public int streakNumber { get; set; }
        
         public double? Protein { get; set; }
         public double? Fat { get; set; }

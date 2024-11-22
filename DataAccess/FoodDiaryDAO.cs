@@ -3,6 +3,7 @@ using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
 using BusinessObject.Dto.MainDashBoardMobile;
+using BusinessObject.Dto.Streak;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -383,9 +384,10 @@ namespace DataAccess
 
 
                 var latestMeasurement = await context.BodyMeasureChanges
-                    .Where(b => b.MemberId == memberId && b.DateChange <= date)
-                    .OrderByDescending(b => b.DateChange)
-                    .FirstOrDefaultAsync();
+                        .Where(b => b.MemberId == memberId)
+                        .OrderByDescending(b => b.DateChange.Value.Date)
+                        .ThenBy(b => b.DateChange.Value.TimeOfDay)
+                        .FirstOrDefaultAsync();
 
                 double currentWeight = latestMeasurement.Weight ?? 0;
 
@@ -505,23 +507,23 @@ namespace DataAccess
             {
                 using var context = new HealthTrackingDBContext();
 
-               
+
                 var member = await context.Members
-                    .Include(m => m.Diet) 
+                    .Include(m => m.Diet)
                     .FirstOrDefaultAsync(m => m.MemberId == memberId);
 
-                
+
                 if (member == null)
                 {
                     throw new Exception("Member not found");
                 }
 
-               
+
                 var dietId = member.DietId;
 
-                
+
                 var foodSuggest = await context.Foods
-                    .Where(f => f.DietId == dietId) 
+                    .Where(f => f.DietId == dietId)
                     .Select(f => new AllFoodForMemberResponseDTO
                     {
                         FoodId = f.FoodId,
@@ -542,6 +544,116 @@ namespace DataAccess
                 throw new Exception($"Unexpected error fetching food suggestions: {ex.Message}");
             }
         }
+
+        public async Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    var today = DateTime.Now.Date;
+
+
+                    var diaries = await context.FoodDiaries
+                        .Where(fd => fd.MemberId == memberId && fd.Date >= startOfMonth && fd.Date <= today)
+                        .OrderByDescending(fd => fd.Date)
+                        .Select(getDiary => new GetFoodDiaryDateResponseDTO
+                        {
+                            DiaryId = getDiary.DiaryId,
+                            Date = getDiary.Date,
+
+                        })
+                        .ToListAsync();
+
+                    return diaries;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching food diaries: {ex.Message}");
+            }
+        }
+
+        public async Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date)
+        {
+            using (var context = new HealthTrackingDBContext())
+            {
+                var today = DateTime.Now.Date;
+                
+                var startOfMonth = new DateTime(date.Year, date.Month, 1);
+
+                
+                var endDate = date > today ? today : date;
+
+                var foodDiaries = await context.FoodDiaries
+                    .Where(fd => fd.MemberId == memberId &&
+                                fd.Date >= startOfMonth &&
+                                fd.Date <= endDate)
+                    .OrderByDescending(fd => fd.Date)
+                    .Select(fd => new { fd.Date, fd.Calories })
+                    .ToListAsync();
+
+                var streakDTO = new CalorieStreakDTO();
+                var currentStreak = 0;
+
+              
+                var hasEntryForDate = foodDiaries.Any() && foodDiaries.First().Date == endDate;
+
+                
+                DateTime startDate = hasEntryForDate ? endDate : endDate.AddDays(-1);
+                DateTime? expectedDate = startDate;
+
+                foreach (var diary in foodDiaries)
+                {
+                    
+                    if (diary.Calories > 0)
+                    {
+                        streakDTO.Dates.Add(diary.Date.Date);
+                    }
+
+                    if (diary.Date.Date == expectedDate)
+                    {
+                        if (diary.Calories > 0)
+                        {
+                            currentStreak++;
+                        }
+                        else
+                        {
+                           
+                            currentStreak = 0;
+                        }
+                        streakDTO.StreakNumber = Math.Max(streakDTO.StreakNumber, currentStreak);
+                        expectedDate = expectedDate.Value.AddDays(-1);
+
+                        
+                        if (expectedDate < startOfMonth)
+                        {
+                            break;
+                        }
+                    }
+                    else if (diary.Date.Date < expectedDate) 
+                    {
+                        
+                        currentStreak = 0;
+                        if (diary.Calories > 0)
+                        {
+                            currentStreak = 1;
+                        }
+                        expectedDate = diary.Date.AddDays(-1);
+                    }
+                }
+
+                streakDTO.Dates = streakDTO.Dates
+                    .Where(d => d >= startOfMonth && d <= endDate)
+                    .OrderByDescending(d => d)
+                    .ToList();
+
+                return streakDTO;
+            }
+        }
+
 
     }
 }

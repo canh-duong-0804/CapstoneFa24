@@ -39,6 +39,7 @@ namespace HealthTrackingManageAPI.Controllers
             var goalModel = mapper.Map<Goal>(goal);
             goalModel.MemberId = memberId;
             goalModel.TargetValue = goal.TargetWeight;
+            goalModel.ChangeDate = DateTime.UtcNow;
             goalModel.GoalType = goal.GoalType.ToString("F1");
             await _goalRepository.AddGoalAsync(goalModel, goal.Weight);
             return Ok(new { message = "Goal inserted successfully" });
@@ -63,6 +64,65 @@ namespace HealthTrackingManageAPI.Controllers
             var goal = await _goalRepository.GetGoalByIdAsync(memberId);
             /*  var body= goal.Member.BodyMeasureChanges.FirstOrDefault();
               var member= goal.Member.ExerciseLevel;*/
+            if (goal == null)
+            {
+                return NotFound("Goal not found or does not belong to the authenticated user.");
+            }
+
+
+
+            return Ok(goal);
+        }
+        
+        
+        
+        [HttpGet("get-info-goal-weight-member-for-graph-in-week")]
+        [Authorize]
+        public async Task<IActionResult> GetInforGoalWeightMemberForGraph(DateTime date)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+            var goal = await _goalRepository.GetInforGoalWeightMemberForGraph(memberId,date);
+           
+        
+            if (goal == null)
+            {
+                return NotFound("Goal not found or does not belong to the authenticated user.");
+            }
+
+
+
+            return Ok(goal);
+        }
+        
+        
+        [HttpGet("get-info-goal-weight-member-for-graph-in-month")]
+        [Authorize]
+        public async Task<IActionResult> GetInforGoalWeightMemberForGraphInMonth(DateTime date)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+            var goal = await _goalRepository.GetInforGoalWeightMemberForGraphInMonth(memberId,date);
+           
+        
             if (goal == null)
             {
                 return NotFound("Goal not found or does not belong to the authenticated user.");

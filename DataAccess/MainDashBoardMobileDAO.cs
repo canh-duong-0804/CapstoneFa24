@@ -51,9 +51,13 @@ namespace DataAccess
 
 
                     var latestMeasurement = await context.BodyMeasureChanges
-                        .Where(b => b.MemberId == memberId && b.DateChange<=date)
-                        .OrderByDescending(b => b.DateChange)
-                        .FirstOrDefaultAsync();
+                        .Where(b => b.MemberId == memberId)
+                        .OrderByDescending(b => b.DateChange.Value.Date) 
+                        .ThenBy(b => b.DateChange.Value.TimeOfDay) 
+                        .FirstOrDefaultAsync(); 
+
+
+                    if (latestMeasurement == null) return null;
 
                     double currentWeight = latestMeasurement.Weight ?? 0;
 
@@ -154,6 +158,8 @@ namespace DataAccess
 
                     return new MainDashBoardMobileForMemberResponseDTO
                     {
+
+                        DateMainDashBoard = date.ToString("dd/MM/yyyy"),
                         DailyCalories = Math.Round(dailyCalories, 0),
                         ProteinInGrams = Math.Round((dailyCalories * 0.3) / 4, 1),  // 30% protein
                         CarbsInGrams = Math.Round((dailyCalories * 0.45) / 4, 1),   // 45% carbs
@@ -163,7 +169,7 @@ namespace DataAccess
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
                         BMI = Math.Round(bmi.Value, 0),
-                        UserName=member.Username
+                        UserName = member.Username
                     };
 
 
@@ -196,9 +202,9 @@ namespace DataAccess
                     }
                     if (exerciseDiary == null)
                     {
-                       /* await ExerciseDiaryDAO.Instance.GetOrCreateExerciseDiaryAsync(memberId, date);
-                        exerciseDiary = await context.ExerciseDiaries
-                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.HasValue && fd.Date.Value.Date == date.Date);*/
+                        /* await ExerciseDiaryDAO.Instance.GetOrCreateExerciseDiaryAsync(memberId, date);
+                         exerciseDiary = await context.ExerciseDiaries
+                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.HasValue && fd.Date.Value.Date == date.Date);*/
 
                     }
 
@@ -239,7 +245,8 @@ namespace DataAccess
                     }
 
 
-
+                    var streakDTO = await FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId, date);
+                   
                     var response = new MainDashBoardCaloInOfMemberResponseDTO
                     {
 
@@ -247,7 +254,8 @@ namespace DataAccess
                         Protein = foodDiary.Protein,
                         Fat = foodDiary.Fat,
                         AmountWater = waterLog.Amount,
-                        Carbs = foodDiary.Carbs
+                        Carbs = foodDiary.Carbs,
+                        streakNumber= streakDTO.StreakNumber
 
                     };
 
