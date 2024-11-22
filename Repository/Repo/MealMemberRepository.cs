@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject.Dto.CopyMeal;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
 using BusinessObject.Models;
@@ -51,7 +52,7 @@ public Task CreateMealMemberDetailsAsync(MealMemberDetail mealMemberDetails) => 
 
         public Task<MealMemberDetailResonseDTO> GetMealMemberDetailAsync(int mealMemberId) => MealMemberDAO.Instance.GetMealMemberDetailAsync(mealMemberId);
 
-        public Task<bool> InsertCopyPreviousMeal(int dirayId, int mealtype) => MealMemberDAO.Instance.InsertCopyPreviousMeal(dirayId,mealtype);
+        public Task<bool> InsertCopyPreviousMeal(InsertCopyMealDTO request, int memberId) => MealMemberDAO.Instance.InsertCopyPreviousMeal(request, memberId);
        
 
         public Task UpdateMealMemberTotalCaloriesAsync(int mealMemberId) => MealMemberDAO.Instance.UpdateMealMemberTotalCaloriesAsync(mealMemberId);

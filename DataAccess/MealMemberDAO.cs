@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject.Dto.CopyMeal;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
@@ -441,22 +442,22 @@ namespace DataAccess
             return result;
         }
 
-        public async Task<bool> InsertCopyPreviousMeal(int diaryId, int mealType)
+        public async Task<bool> InsertCopyPreviousMeal(InsertCopyMealDTO request,int memberId)
         {
             try
             {
                 using var context = new HealthTrackingDBContext();
-
+                var getDiary = await context.FoodDiaries.Where(m => m.Date == request.SelectDateToAdd && m.MemberId== memberId).FirstOrDefaultAsync();
                
                 var foodDetails = await context.FoodDiaryDetails
-                    .Where(m => m.DiaryId == diaryId && m.MealType == mealType)
+                    .Where(m => m.DiaryId == request.DiaryIdPreviouseMeal && m.MealType == request.MealTypePreviousMeal)
                     .Include(d => d.Food)
                     .ThenInclude(f => f.Diet)
                     .Select(d => new FoodDiaryDetail
                     {
-                        DiaryId = diaryId, 
+                        DiaryId = getDiary.DiaryId, 
                         FoodId = d.FoodId,
-                        MealType = mealType, 
+                        MealType = request.MealTypeToAdd, 
                         Quantity = d.Quantity,
                        
                     })

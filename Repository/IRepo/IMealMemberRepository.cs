@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.MealDetailMember;
+﻿using BusinessObject.Dto.CopyMeal;
+using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
 using BusinessObject.Models;
 using System;
@@ -22,7 +23,7 @@ namespace Repository.IRepo
         Task<IEnumerable<MealMember>> GetAllMealMembersAsync(int memberId);
         Task<int> GetMealBeforeByMealType(int foodDiaryId, int mealtype);
         Task<MealMemberDetailResonseDTO> GetMealMemberDetailAsync(int mealMemberId);
-        Task<bool> InsertCopyPreviousMeal(int dirayId, int mealtype);
+        Task<bool> InsertCopyPreviousMeal(InsertCopyMealDTO request,int memberId);
         Task UpdateMealMemberTotalCaloriesAsync(int mealMemberId);
 
         //Task<bool> CreateMealPlanForMember(MealMember mealMemberModel);
