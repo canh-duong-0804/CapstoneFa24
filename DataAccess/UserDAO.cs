@@ -98,7 +98,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var user = await context.Members.FirstOrDefaultAsync(x => x.Email == loginRequestDTO.Email);
+                    var user = await context.Members.FirstOrDefaultAsync(x => x.PhoneNumber == loginRequestDTO.PhoneNumber);
 
                     if (user == null)
                         return null;

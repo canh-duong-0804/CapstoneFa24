@@ -552,10 +552,6 @@ namespace BusinessObject.Models
 
                 entity.Property(e => e.ExercisePlanId).HasColumnName("exercise_plan_id");
 
-                entity.Property(e => e.Status)
-                    .HasColumnName("status")
-                    .HasDefaultValueSql("((1))");
-
                 entity.HasOne(d => d.Exercise)
                     .WithMany(p => p.ExercisePlanDetails)
                     .HasForeignKey(d => d.ExerciseId)

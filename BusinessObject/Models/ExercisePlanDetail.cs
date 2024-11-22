@@ -10,7 +10,6 @@ namespace BusinessObject.Models
         public int ExerciseId { get; set; }
         public byte Day { get; set; }
         public int Duration { get; set; }
-        public bool? Status { get; set; }
 
         public virtual Exercise Exercise { get; set; } = null!;
         public virtual ExercisePlan ExercisePlan { get; set; } = null!;
