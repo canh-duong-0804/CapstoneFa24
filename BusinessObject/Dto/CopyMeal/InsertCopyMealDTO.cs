@@ -12,7 +12,7 @@ namespace BusinessObject.Dto.CopyMeal
         public int DiaryIdPreviouseMeal {  get; set; }
         public int MealTypePreviousMeal { get; set; }
        
-        public int MealTypeToAdd { get; set; }
+        
         public DateTime SelectDateToAdd { get; set; }
 
     }

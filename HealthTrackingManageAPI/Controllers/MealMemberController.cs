@@ -245,7 +245,7 @@ namespace HealthTrackingManageAPI.Controllers
         
         [Authorize]
         [HttpGet("get-meal-before-by-meal-type")]
-        public async Task<IActionResult> GetMealBeforeByMealType(int Mealtype)
+        public async Task<IActionResult> GetMealBeforeByMealType(int MealtypePrevious)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -257,7 +257,7 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return BadRequest("Invalid member ID.");
             }
-            var getMealCopy = await _mealPlanMemberRepository.GetMealBeforeByMealType(memberId, Mealtype);
+            var getMealCopy = await _mealPlanMemberRepository.GetMealBeforeByMealType(memberId, MealtypePrevious);
 
             if (getMealCopy == null) return NotFound();
 

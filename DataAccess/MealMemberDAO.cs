@@ -457,7 +457,7 @@ namespace DataAccess
                     {
                         DiaryId = getDiary.DiaryId, 
                         FoodId = d.FoodId,
-                        MealType = request.MealTypeToAdd, 
+                        MealType = request.MealTypePreviousMeal, 
                         Quantity = d.Quantity,
                        
                     })
