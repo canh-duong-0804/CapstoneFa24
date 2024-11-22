@@ -22,44 +22,6 @@ namespace HealthTrackingManageAPI.Controllers
             _repository = repository;
         }
 
-        [HttpPost("Add")]
-        [Authorize(Roles = "1")]
-        public async Task<IActionResult> AddExercisePlan([FromBody] AddExercisePlanDTO addDto)
-        {
-            try
-            {
-                // Retrieve the user ID from claims
-                var userIdString = User.FindFirstValue("Id");
-
-                if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
-                {
-                    return Unauthorized("Invalid or missing User ID in claims.");
-                }
-
-                // Map DTO to domain model
-                var plan = new ExercisePlan
-                {
-                    Name = addDto.Name,
-                    ExercisePlanImage = addDto.ExercisePlanImage,
-                    CreateBy = userId, // Set CreateBy using the converted user ID
-                    CreateDate = DateTime.Now,
-                    TotalCaloriesBurned = addDto.TotalCaloriesBurned,
-                    ExercisePlanDetails = addDto.Details.Select(d => new ExercisePlanDetail
-                    {
-                        ExerciseId = d.ExerciseId,
-                        Day = d.Day,
-                        Duration = d.Duration
-                    }).ToList()
-                };
-
-                await _repository.AddExecrisePlanAsync(plan);
-                return Ok("Exercise Plan added successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
 
 
 
@@ -130,43 +92,5 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
 
-        [HttpPut("Update/{planId}")]
-        public async Task<IActionResult> UpdateExercisePlan(int planId, [FromBody] AddExercisePlanDTO updateDto)
-        {
-            try
-            {
-                var existingPlan = await _repository.GetExecrisePlanByIdAsync(planId);
-                if (existingPlan == null)
-                {
-                    return NotFound("Exercise Plan not found.");
-                }
-
-                // Update domain model with DTO values
-                existingPlan.Name = updateDto.Name;
-                existingPlan.TotalCaloriesBurned = updateDto.TotalCaloriesBurned;
-                existingPlan.ExercisePlanImage = updateDto.ExercisePlanImage;
-
-                await _repository.UpdateExecrisePlanAsync(existingPlan);
-                return Ok("Exercise Plan updated successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpDelete("Delete/{planId}")]
-        public async Task<IActionResult> DeleteExercisePlan(int planId)
-        {
-            try
-            {
-                await _repository.SoftDeleteExecrisePlanAsync(planId);
-                return Ok("Exercise Plan deleted successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
     }
 }

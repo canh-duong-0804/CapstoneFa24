@@ -9,10 +9,10 @@ namespace Repository.IRepo
 {
     public interface IExecrisePlanRepository
     {
-        Task AddExecrisePlanAsync(ExercisePlan exercisePlan);
+        /*Task AddExecrisePlanAsync(ExercisePlan exercisePlan);*/
         Task<List<ExercisePlan>> GetExecrisePlansAsync();
         Task<ExercisePlan?> GetExecrisePlanByIdAsync(int planId);
-        Task UpdateExecrisePlanAsync(ExercisePlan exercisePlan);
-        Task SoftDeleteExecrisePlanAsync(int planid);
+        /*Task UpdateExecrisePlanAsync(ExercisePlan exercisePlan);*/
+       
     }
 }
