@@ -41,7 +41,7 @@ namespace Repository.Repo
 
         public Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodDairyDateAsync(memberId);
 
-        public Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId) => FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId);
+        public Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId,date);
 
     }
 }

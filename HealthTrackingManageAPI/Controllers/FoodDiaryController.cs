@@ -183,7 +183,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpGet("get-streak")]
         [Authorize]
-        public async Task<IActionResult> GetCalorieStreak()
+        public async Task<IActionResult> GetCalorieStreak(DateTime date)
         {
            
             var memberIdClaim = User.FindFirstValue("Id");
@@ -198,7 +198,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
            
-            var streak = await _foodDiaryRepository.GetCalorieStreakAsync(memberId);
+            var streak = await _foodDiaryRepository.GetCalorieStreakAsync(memberId,date);
             if (streak == null)
             {
                 return NotFound("No calorie streak found.");

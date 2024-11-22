@@ -576,36 +576,43 @@ namespace DataAccess
             }
         }
 
-        public async Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId)
+        public async Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date)
         {
             using (var context = new HealthTrackingDBContext())
             {
                 var today = DateTime.Now.Date;
+                
+                var startOfMonth = new DateTime(date.Year, date.Month, 1);
 
-                // Lấy tất cả food diaries, bao gồm cả ngày hôm nay
+                
+                var endDate = date > today ? today : date;
+
                 var foodDiaries = await context.FoodDiaries
-                    .Where(fd => fd.MemberId == memberId && fd.Date <= today)
+                    .Where(fd => fd.MemberId == memberId &&
+                                fd.Date >= startOfMonth &&
+                                fd.Date <= endDate)
                     .OrderByDescending(fd => fd.Date)
                     .Select(fd => new { fd.Date, fd.Calories })
                     .ToListAsync();
 
                 var streakDTO = new CalorieStreakDTO();
                 var currentStreak = 0;
-                var hasEntryToday = foodDiaries.Any() && foodDiaries.First().Date == today;
 
-                // Nếu không có entry cho ngày hôm nay, bắt đầu tính từ ngày hôm qua
-                DateTime startDate = hasEntryToday ? today : today.AddDays(-1);
+              
+                var hasEntryForDate = foodDiaries.Any() && foodDiaries.First().Date == endDate;
+
+                
+                DateTime startDate = hasEntryForDate ? endDate : endDate.AddDays(-1);
                 DateTime? expectedDate = startDate;
 
                 foreach (var diary in foodDiaries)
                 {
-                    // Thêm vào danh sách các ngày có ghi chép calories
+                    
                     if (diary.Calories > 0)
                     {
                         streakDTO.Dates.Add(diary.Date.Date);
                     }
 
-                    // Tính streak
                     if (diary.Date.Date == expectedDate)
                     {
                         if (diary.Calories > 0)
@@ -614,15 +621,21 @@ namespace DataAccess
                         }
                         else
                         {
-                            // Reset streak nếu có ngày không có calories
+                           
                             currentStreak = 0;
                         }
                         streakDTO.StreakNumber = Math.Max(streakDTO.StreakNumber, currentStreak);
                         expectedDate = expectedDate.Value.AddDays(-1);
+
+                        
+                        if (expectedDate < startOfMonth)
+                        {
+                            break;
+                        }
                     }
-                    else if (diary.Date.Date < expectedDate) // Nếu có ngày bị thiếu
+                    else if (diary.Date.Date < expectedDate) 
                     {
-                        // Reset streak vì chuỗi đã bị đứt
+                        
                         currentStreak = 0;
                         if (diary.Calories > 0)
                         {
@@ -632,7 +645,11 @@ namespace DataAccess
                     }
                 }
 
-                streakDTO.Dates = streakDTO.Dates.OrderByDescending(date => date).ToList();
+                streakDTO.Dates = streakDTO.Dates
+                    .Where(d => d >= startOfMonth && d <= endDate)
+                    .OrderByDescending(d => d)
+                    .ToList();
+
                 return streakDTO;
             }
         }
