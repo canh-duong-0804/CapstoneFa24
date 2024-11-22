@@ -580,34 +580,59 @@ namespace DataAccess
         {
             using (var context = new HealthTrackingDBContext())
             {
+                var today = DateTime.Now.Date;
 
+                // Lấy tất cả food diaries, bao gồm cả ngày hôm nay
                 var foodDiaries = await context.FoodDiaries
-                    .Where(fd => fd.MemberId == memberId && fd.Date < DateTime.Now.Date)
+                    .Where(fd => fd.MemberId == memberId && fd.Date <= today)
                     .OrderByDescending(fd => fd.Date)
                     .Select(fd => new { fd.Date, fd.Calories })
                     .ToListAsync();
 
-
                 var streakDTO = new CalorieStreakDTO();
-                DateTime? expectedDate = DateTime.Now.Date;
+                var currentStreak = 0;
+                var hasEntryToday = foodDiaries.Any() && foodDiaries.First().Date == today;
 
+                // Nếu không có entry cho ngày hôm nay, bắt đầu tính từ ngày hôm qua
+                DateTime startDate = hasEntryToday ? today : today.AddDays(-1);
+                DateTime? expectedDate = startDate;
 
                 foreach (var diary in foodDiaries)
                 {
-                    if (diary.Date == expectedDate)
+                    // Thêm vào danh sách các ngày có ghi chép calories
+                    if (diary.Calories > 0)
                     {
+                        streakDTO.Dates.Add(diary.Date.Date);
+                    }
 
+                    // Tính streak
+                    if (diary.Date.Date == expectedDate)
+                    {
                         if (diary.Calories > 0)
                         {
-                            streakDTO.StreakNumber++;
-                            streakDTO.Dates.Add(diary.Date);
-                            
+                            currentStreak++;
                         }
+                        else
+                        {
+                            // Reset streak nếu có ngày không có calories
+                            currentStreak = 0;
+                        }
+                        streakDTO.StreakNumber = Math.Max(streakDTO.StreakNumber, currentStreak);
+                        expectedDate = expectedDate.Value.AddDays(-1);
                     }
-                    expectedDate = expectedDate.Value.AddDays(-1);
+                    else if (diary.Date.Date < expectedDate) // Nếu có ngày bị thiếu
+                    {
+                        // Reset streak vì chuỗi đã bị đứt
+                        currentStreak = 0;
+                        if (diary.Calories > 0)
+                        {
+                            currentStreak = 1;
+                        }
+                        expectedDate = diary.Date.AddDays(-1);
+                    }
                 }
-                streakDTO.Dates = streakDTO.Dates.OrderByDescending(date => date).ToList();
 
+                streakDTO.Dates = streakDTO.Dates.OrderByDescending(date => date).ToList();
                 return streakDTO;
             }
         }
