@@ -10,8 +10,7 @@ namespace BusinessObject.Dto.MealPlan
     {
         public int MealPlanId { get; set; }
         public string? MealPlanImage { get; set; }
-        public DateTime? ChangeDate { get; set; }
-        public int? ChangeBy { get; set; }
+
         public int? DietId { get; set; }
         public string? ShortDescription { get; set; }
         public string? LongDescription { get; set; }

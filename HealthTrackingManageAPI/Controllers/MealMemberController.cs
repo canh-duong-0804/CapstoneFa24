@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using BusinessObject.Dto.CopyMeal;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
@@ -244,7 +245,7 @@ namespace HealthTrackingManageAPI.Controllers
         
         [Authorize]
         [HttpGet("get-meal-before-by-meal-type")]
-        public async Task<IActionResult> GetMealBeforeByMealType(int Mealtype)
+        public async Task<IActionResult> GetMealBeforeByMealType(int MealtypePrevious)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -256,7 +257,7 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return BadRequest("Invalid member ID.");
             }
-            var getMealCopy = await _mealPlanMemberRepository.GetMealBeforeByMealType(memberId, Mealtype);
+            var getMealCopy = await _mealPlanMemberRepository.GetMealBeforeByMealType(memberId, MealtypePrevious);
 
             if (getMealCopy == null) return NotFound();
 
@@ -268,7 +269,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [Authorize]
         [HttpPost("Insert-copy-previous-meal")]
-        public async Task<IActionResult> InsertCopyPreviousMeal(int dirayId, int Mealtype)
+        public async Task<IActionResult> InsertCopyPreviousMeal([FromBody]InsertCopyMealDTO request)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -280,11 +281,11 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return BadRequest("Invalid member ID.");
             }
-            var getMealCopy = await _mealPlanMemberRepository.InsertCopyPreviousMeal(dirayId, Mealtype);
+            var getMealCopy = await _mealPlanMemberRepository.InsertCopyPreviousMeal(request,memberId);
 
-            if (getMealCopy == null) return NotFound();
+            if (getMealCopy == null) return BadRequest();
 
-            return Ok(getMealCopy);
+            return Ok();
         }
     }
 }

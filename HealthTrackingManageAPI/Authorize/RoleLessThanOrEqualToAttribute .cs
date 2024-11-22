@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Authorize
 {
@@ -17,8 +18,8 @@ namespace HealthTrackingManageAPI.Authorize
             var user = context.HttpContext.User;
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
-                var roleClaim = user.FindFirst("Role"); // Assuming "Role" is the claim type for role
-                if (roleClaim != null && int.TryParse(roleClaim.Value, out int roleValue))
+                var roleClaim = user.FindFirstValue(ClaimTypes.Role); // Assuming "Role" is the claim type for role
+                if (roleClaim != null && int.TryParse(roleClaim, out int roleValue))
                 {
                     if (roleValue <= _maxRole)
                     {

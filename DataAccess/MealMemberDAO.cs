@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject.Dto.CopyMeal;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
@@ -345,7 +346,7 @@ namespace DataAccess
                         var meal = await context.FoodDiaryDetails
                             .Where(fdd => fdd.Diary.MemberId == memberId
                                 && fdd.MealType == mealType
-                                && fdd.Diary.Date < DateTime.Now)
+                                && fdd.Diary.Date < DateTime.Now.AddDays(-1))
                             .OrderByDescending(fdd => fdd.Diary.Date)
                             .Select(fdd => fdd.Diary)
                             .FirstOrDefaultAsync();
@@ -389,6 +390,8 @@ namespace DataAccess
                 {
                     using (var context = new HealthTrackingDBContext())
                     {
+
+                        var getDate = await context.FoodDiaries.Where(m=> m.DiaryId == DiaryId).FirstOrDefaultAsync();
                         result = await context.FoodDiaryDetails
                             .Where(m => m.DiaryId == DiaryId && m.MealType == mealtype)
                             .Include(d => d.Diary)
@@ -400,6 +403,7 @@ namespace DataAccess
                                 TotalCarb = m.Diary.Carbs,
                                 TotalProtein = m.Diary.Protein,
                                 TotalFat = m.Diary.Fat,
+                                getDatePrevious= getDate.Date.Date,
                                 FoodDetails = context.FoodDiaryDetails
                                     .Where(fd => fd.DiaryId == DiaryId && fd.MealType == mealtype)
                                     .Select(d => new GetAllFoodOfMealMemberResonseDTO
@@ -438,22 +442,22 @@ namespace DataAccess
             return result;
         }
 
-        public async Task<bool> InsertCopyPreviousMeal(int diaryId, int mealType)
+        public async Task<bool> InsertCopyPreviousMeal(InsertCopyMealDTO request,int memberId)
         {
             try
             {
                 using var context = new HealthTrackingDBContext();
-
+                var getDiary = await context.FoodDiaries.Where(m => m.Date == request.SelectDateToAdd && m.MemberId== memberId).FirstOrDefaultAsync();
                
                 var foodDetails = await context.FoodDiaryDetails
-                    .Where(m => m.DiaryId == diaryId && m.MealType == mealType)
+                    .Where(m => m.DiaryId == request.DiaryIdPreviouseMeal && m.MealType == request.MealTypePreviousMeal)
                     .Include(d => d.Food)
                     .ThenInclude(f => f.Diet)
                     .Select(d => new FoodDiaryDetail
                     {
-                        DiaryId = diaryId, 
+                        DiaryId = getDiary.DiaryId, 
                         FoodId = d.FoodId,
-                        MealType = mealType, 
+                        MealType = request.MealTypePreviousMeal, 
                         Quantity = d.Quantity,
                        
                     })

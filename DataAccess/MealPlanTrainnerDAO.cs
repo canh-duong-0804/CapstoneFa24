@@ -88,7 +88,8 @@ namespace DataAccess
                              ShortDescription = s.ShortDescription,
                              Name = s.Name,
                              TotalCalories = s.TotalCalories,
-                             DietName=s.Diet.DietName
+                             DietName=s.Diet.DietName,
+                             
 
                          })
                          .ToListAsync();

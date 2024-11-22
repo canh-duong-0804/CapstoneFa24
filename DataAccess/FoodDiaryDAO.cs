@@ -446,27 +446,26 @@ namespace DataAccess
                 {
                     attempts++;
 
-
+                   
                     var foodDiary = await context.FoodDiaries
                         .OrderByDescending(fd => fd.Date)
                         .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date < lastDate);
 
-
                     if (foodDiary == null)
                     {
-                        break;
+                        break; 
                     }
 
                     lastDate = foodDiary.Date;
 
-
+                   
                     var foodIds = await context.FoodDiaryDetails
                         .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
                         .Select(fdd => fdd.FoodId)
                         .Distinct()
                         .ToListAsync();
 
-
+                   
                     var currentFoodDetails = await context.Foods
                         .Where(f => foodIds.Contains(f.FoodId))
                         .Include(f => f.Diet)
@@ -481,11 +480,13 @@ namespace DataAccess
                             Fat = f.Fat,
                             DietName = f.Diet.DietName
                         })
+                        .Take(3) 
                         .ToListAsync();
 
+                 
                     foodDetails.AddRange(currentFoodDetails);
 
-
+                   
                     if (foodDetails.Count >= 3 || attempts >= maxAttempts)
                     {
                         break;
@@ -500,6 +501,7 @@ namespace DataAccess
                 throw new Exception($"Unexpected error fetching food history: {ex.Message}");
             }
         }
+
 
         public async Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestAsync(int memberId)
         {
@@ -581,10 +583,10 @@ namespace DataAccess
             using (var context = new HealthTrackingDBContext())
             {
                 var today = DateTime.Now.Date;
-                
+
                 var startOfMonth = new DateTime(date.Year, date.Month, 1);
 
-                
+
                 var endDate = date > today ? today : date;
 
                 var foodDiaries = await context.FoodDiaries
@@ -598,16 +600,16 @@ namespace DataAccess
                 var streakDTO = new CalorieStreakDTO();
                 var currentStreak = 0;
 
-              
+
                 var hasEntryForDate = foodDiaries.Any() && foodDiaries.First().Date == endDate;
 
-                
+
                 DateTime startDate = hasEntryForDate ? endDate : endDate.AddDays(-1);
                 DateTime? expectedDate = startDate;
 
                 foreach (var diary in foodDiaries)
                 {
-                    
+
                     if (diary.Calories > 0)
                     {
                         streakDTO.Dates.Add(diary.Date.Date);
@@ -621,21 +623,21 @@ namespace DataAccess
                         }
                         else
                         {
-                           
+
                             currentStreak = 0;
                         }
                         streakDTO.StreakNumber = Math.Max(streakDTO.StreakNumber, currentStreak);
                         expectedDate = expectedDate.Value.AddDays(-1);
 
-                        
+
                         if (expectedDate < startOfMonth)
                         {
                             break;
                         }
                     }
-                    else if (diary.Date.Date < expectedDate) 
+                    else if (diary.Date.Date < expectedDate)
                     {
-                        
+
                         currentStreak = 0;
                         if (diary.Calories > 0)
                         {
