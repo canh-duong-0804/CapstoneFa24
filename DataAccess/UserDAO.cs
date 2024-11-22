@@ -226,8 +226,8 @@ namespace DataAccess
                     {
                         throw new Exception("User not found.");
                     }
-                    if (!VerifyPasswordHash(request.OldPassword, user.PasswordHash, user.PasswordSalt))
-                        return false;
+                    /*if (!VerifyPasswordHash(request.OldPassword, user.PasswordHash, user.PasswordSalt))
+                        return false;*/
 
                     CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
 

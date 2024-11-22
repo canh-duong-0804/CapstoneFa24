@@ -245,7 +245,8 @@ namespace DataAccess
                     }
 
 
-
+                    var streakDTO = await FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId, date);
+                   
                     var response = new MainDashBoardCaloInOfMemberResponseDTO
                     {
 
@@ -253,7 +254,8 @@ namespace DataAccess
                         Protein = foodDiary.Protein,
                         Fat = foodDiary.Fat,
                         AmountWater = waterLog.Amount,
-                        Carbs = foodDiary.Carbs
+                        Carbs = foodDiary.Carbs,
+                        streakNumber= streakDTO.StreakNumber
 
                     };
 

@@ -203,11 +203,8 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return NotFound("No calorie streak found.");
             }
-
             return Ok(streak);
         }
-
-
         /* [Authorize]
          [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
          public async Task<IActionResult> GetFoodDairyByDate(DateTime date)
@@ -229,8 +226,5 @@ namespace HealthTrackingManageAPI.Controllers
              }
              return Ok(mainDashBoardInfo);
          }*/
-
-
     }
-
 }
