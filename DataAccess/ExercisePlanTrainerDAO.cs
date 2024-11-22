@@ -147,13 +147,14 @@ namespace DataAccess
         }
 
         // Add Exercise Plan Detail
-        public async Task<bool> AddExercisePlanDetailAsync(ExercisePlanDetail detail)
+        // Repository Method to Add Multiple Exercise Plan Details
+        public async Task<bool> AddExercisePlanDetailAsync(List<ExercisePlanDetail> details)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    await context.ExercisePlanDetails.AddAsync(detail);
+                    await context.ExercisePlanDetails.AddRangeAsync(details);  // Add multiple records at once
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -163,6 +164,7 @@ namespace DataAccess
                 return false;
             }
         }
+
 
         // Update Exercise Plan Detail
         public async Task<bool> UpdateExercisePlanDetailAsync(ExercisePlanDetail detail)

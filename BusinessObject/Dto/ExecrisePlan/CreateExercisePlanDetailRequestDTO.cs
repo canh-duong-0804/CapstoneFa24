@@ -9,8 +9,13 @@ namespace BusinessObject.Dto.ExecrisePlan
     public class CreateExercisePlanDetailRequestDTO
     {
         public int ExercisePlanId { get; set; }
+        public List<ExecriseInPlan> ExecriseInPlans { get; set; }
+    }
+    public class ExecriseInPlan
+    {
         public int ExerciseId { get; set; }
         public byte Day { get; set; } // 1 = Monday, 2 = Tuesday, etc.
         public int Duration { get; set; }
     }
+
 }

@@ -37,7 +37,7 @@ namespace HealthTrackingManageAPI.Controllers
                 ExercisePlanImage = request.ExercisePlanImage,
                 Status = request.Status,
                 CreateBy = memberId,
-                CreateDate = DateTime.UtcNow
+                CreateDate = DateTime.Now
             };
 
             var success = await _exercisePlanRepo.AddExercisePlanAsync(newPlan);
@@ -66,7 +66,7 @@ namespace HealthTrackingManageAPI.Controllers
             existingPlan.ExercisePlanImage = request.ExercisePlanImage;
             existingPlan.Status = request.Status;
             existingPlan.ChangeBy = memberId;
-            existingPlan.ChangeDate = DateTime.UtcNow;
+            existingPlan.ChangeDate = DateTime.Now;
 
             var success = await _exercisePlanRepo.UpdateExercisePlanAsync(existingPlan);
 
@@ -93,21 +93,37 @@ namespace HealthTrackingManageAPI.Controllers
         [Authorize]
         public async Task<IActionResult> CreateExercisePlanDetail([FromBody] CreateExercisePlanDetailRequestDTO request)
         {
-            var newDetail = new ExercisePlanDetail
+            if (request.ExecriseInPlans == null || !request.ExecriseInPlans.Any())
             {
-                ExercisePlanId = request.ExercisePlanId,
-                ExerciseId = request.ExerciseId,
-                Day = request.Day,
-                Duration = request.Duration
-            };
+                return BadRequest("Exercise plan details cannot be empty.");
+            }
 
-            var success = await _exercisePlanRepo.AddExercisePlanDetailAsync(newDetail);
+            // Prepare list to store the details that will be added
+            var detailsToAdd = new List<ExercisePlanDetail>();
+
+            foreach (var exerciseInPlan in request.ExecriseInPlans)
+            {
+                var newDetail = new ExercisePlanDetail
+                {
+                    ExercisePlanId = request.ExercisePlanId,
+                    ExerciseId = exerciseInPlan.ExerciseId,
+                    Day = exerciseInPlan.Day,
+                    Duration = exerciseInPlan.Duration
+                };
+
+                detailsToAdd.Add(newDetail);
+            }
+
+            var success = await _exercisePlanRepo.AddExercisePlanDetailAsync(detailsToAdd);
 
             if (!success)
+            {
                 return StatusCode(500, "Failed to create exercise plan detail.");
+            }
 
-            return Ok(new { Message = "Exercise plan detail created successfully." });
+            return Ok(new { Message = "Exercise plan details created successfully." });
         }
+
 
         [HttpPut("update-exercise-plan-detail")]
         [RoleLessThanOrEqualTo(1)]

@@ -14,7 +14,7 @@ namespace Repository.IRepo
         Task<List<ExercisePlan>> GetExercisePlansAsync();
         Task<bool> UpdateExercisePlanAsync(ExercisePlan exercisePlan);
         Task<bool> SoftDeleteExercisePlanAsync(int planId);
-        Task<bool> AddExercisePlanDetailAsync(ExercisePlanDetail detail);
+        Task<bool> AddExercisePlanDetailAsync(List<ExercisePlanDetail> details);
         Task<List<ExercisePlanDetail>> GetExercisePlanDetailsAsync(int planId);
         Task<bool> UpdateExercisePlanDetailAsync(ExercisePlanDetail detail);
 

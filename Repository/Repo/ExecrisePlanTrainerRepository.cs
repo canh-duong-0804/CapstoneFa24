@@ -18,7 +18,7 @@ namespace Repository.Repo
         public Task<bool> SoftDeleteExercisePlanAsync(int planId) => ExercisePlanTrainerDAO.Instance.SoftDeleteExercisePlanAsync(planId);
         public Task<List<ExercisePlanDetail>> GetExercisePlanDetailsAsync(int planId) => ExercisePlanTrainerDAO.Instance.GetExercisePlanDetailsByPlanIdAsync(planId);
 
-        public Task<bool> AddExercisePlanDetailAsync(ExercisePlanDetail detail) => ExercisePlanTrainerDAO.Instance.AddExercisePlanDetailAsync(detail);
+        public Task<bool> AddExercisePlanDetailAsync(List<ExercisePlanDetail> details) => ExercisePlanTrainerDAO.Instance.AddExercisePlanDetailAsync(details);
         public Task<bool> UpdateExercisePlanDetailAsync(ExercisePlanDetail detail) => ExercisePlanTrainerDAO.Instance.UpdateExercisePlanDetailAsync(detail);
         public Task<bool> DeleteExercisePlanDetailAsync(int detailId) => ExercisePlanTrainerDAO.Instance.DeleteExercisePlanDetailAsync(detailId);
 
