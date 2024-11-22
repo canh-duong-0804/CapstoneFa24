@@ -181,6 +181,33 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(mainDashBoardInfo);
         }
 
+        [HttpGet("get-streak")]
+        [Authorize]
+        public async Task<IActionResult> GetCalorieStreak()
+        {
+           
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+
+           
+            var streak = await _foodDiaryRepository.GetCalorieStreakAsync(memberId);
+            if (streak == null)
+            {
+                return NotFound("No calorie streak found.");
+            }
+
+            return Ok(streak);
+        }
+
+
         /* [Authorize]
          [HttpGet("Get-Food-dairy-detail-for-member-by-date")]
          public async Task<IActionResult> GetFoodDairyByDate(DateTime date)

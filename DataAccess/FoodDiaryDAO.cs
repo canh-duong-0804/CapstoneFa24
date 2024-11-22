@@ -3,6 +3,7 @@ using BusinessObject.Dto.Food;
 using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.FoodDiaryDetails;
 using BusinessObject.Dto.MainDashBoardMobile;
+using BusinessObject.Dto.Streak;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -506,23 +507,23 @@ namespace DataAccess
             {
                 using var context = new HealthTrackingDBContext();
 
-               
+
                 var member = await context.Members
-                    .Include(m => m.Diet) 
+                    .Include(m => m.Diet)
                     .FirstOrDefaultAsync(m => m.MemberId == memberId);
 
-                
+
                 if (member == null)
                 {
                     throw new Exception("Member not found");
                 }
 
-               
+
                 var dietId = member.DietId;
 
-                
+
                 var foodSuggest = await context.Foods
-                    .Where(f => f.DietId == dietId) 
+                    .Where(f => f.DietId == dietId)
                     .Select(f => new AllFoodForMemberResponseDTO
                     {
                         FoodId = f.FoodId,
@@ -550,19 +551,19 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                 
+
                     var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     var today = DateTime.Now.Date;
 
-                 
+
                     var diaries = await context.FoodDiaries
                         .Where(fd => fd.MemberId == memberId && fd.Date >= startOfMonth && fd.Date <= today)
-                        .OrderByDescending(fd => fd.Date) 
+                        .OrderByDescending(fd => fd.Date)
                         .Select(getDiary => new GetFoodDiaryDateResponseDTO
                         {
                             DiaryId = getDiary.DiaryId,
                             Date = getDiary.Date,
-                           
+
                         })
                         .ToListAsync();
 
@@ -574,6 +575,43 @@ namespace DataAccess
                 throw new Exception($"Error fetching food diaries: {ex.Message}");
             }
         }
+
+        public async Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId)
+        {
+            using (var context = new HealthTrackingDBContext())
+            {
+
+                var foodDiaries = await context.FoodDiaries
+                    .Where(fd => fd.MemberId == memberId && fd.Date < DateTime.Now.Date)
+                    .OrderByDescending(fd => fd.Date)
+                    .Select(fd => new { fd.Date, fd.Calories })
+                    .ToListAsync();
+
+
+                var streakDTO = new CalorieStreakDTO();
+                DateTime? expectedDate = DateTime.Now.Date;
+
+
+                foreach (var diary in foodDiaries)
+                {
+                    if (diary.Date == expectedDate)
+                    {
+
+                        if (diary.Calories > 0)
+                        {
+                            streakDTO.StreakNumber++;
+                            streakDTO.Dates.Add(diary.Date);
+                            
+                        }
+                    }
+                    expectedDate = expectedDate.Value.AddDays(-1);
+                }
+                streakDTO.Dates = streakDTO.Dates.OrderByDescending(date => date).ToList();
+
+                return streakDTO;
+            }
+        }
+
 
     }
 }
