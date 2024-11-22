@@ -15,11 +15,11 @@ namespace BusinessObject.Dto.MealMember
             public double? TotalFat { get; set; }
             
 
-             public int? Quantity { get; set; }
+             //public int? Quantity { get; set; }
 
 
 
-        public DateTime getDatePrevious {  get; set; }
+       public DateTime getDatePrevious {  get; set; }
 
             public List<GetAllFoodOfMealMemberResonseDTO> FoodDetails { get; set; } = new List<GetAllFoodOfMealMemberResonseDTO>();
 

@@ -345,7 +345,7 @@ namespace DataAccess
                         var meal = await context.FoodDiaryDetails
                             .Where(fdd => fdd.Diary.MemberId == memberId
                                 && fdd.MealType == mealType
-                                && fdd.Diary.Date < DateTime.Now)
+                                && fdd.Diary.Date < DateTime.Now.AddDays(-1))
                             .OrderByDescending(fdd => fdd.Diary.Date)
                             .Select(fdd => fdd.Diary)
                             .FirstOrDefaultAsync();
@@ -389,6 +389,8 @@ namespace DataAccess
                 {
                     using (var context = new HealthTrackingDBContext())
                     {
+
+                        var getDate = await context.FoodDiaries.Where(m=> m.DiaryId == DiaryId).FirstOrDefaultAsync();
                         result = await context.FoodDiaryDetails
                             .Where(m => m.DiaryId == DiaryId && m.MealType == mealtype)
                             .Include(d => d.Diary)
@@ -400,6 +402,7 @@ namespace DataAccess
                                 TotalCarb = m.Diary.Carbs,
                                 TotalProtein = m.Diary.Protein,
                                 TotalFat = m.Diary.Fat,
+                                getDatePrevious= getDate.Date.Date,
                                 FoodDetails = context.FoodDiaryDetails
                                     .Where(fd => fd.DiaryId == DiaryId && fd.MealType == mealtype)
                                     .Select(d => new GetAllFoodOfMealMemberResonseDTO

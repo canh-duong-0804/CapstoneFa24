@@ -125,10 +125,10 @@ namespace HealthTrackingManageAPI.Controllers
             }
             var foodHistory = await _foodDiaryRepository.GetFoodHistoryAsync(memberId);
 
-            if (foodHistory == null || !foodHistory.Any())
+           /* if (foodHistory == null || !foodHistory.Any())
             {
                 return NotFound("No food history found.");
-            }
+            }*/
 
             return Ok(foodHistory);
 
@@ -150,10 +150,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
             var foodHistory = await _foodDiaryRepository.GetFoodSuggestionAsync(memberId);
 
-            if (foodHistory == null || !foodHistory.Any())
-            {
-                return NotFound("No food history found.");
-            }
+           
 
             return Ok(foodHistory);
 
