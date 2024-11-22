@@ -17,5 +17,7 @@ namespace Repository.IRepo
 		Task UpdateTotalDurationAndCaloriesAsync(int exerciseDiaryId);
 
 		Task<ExerciseDiary> GetExerciseDiaryById(int exerciseDiaryId);
-	}
+		Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId);
+
+    }
 }

@@ -174,6 +174,49 @@ namespace DataAccess
             }
         }
 
+        public async Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var today = DateTime.Today;
+
+                    // Fetch exercise diaries for the member, sorted by date descending
+                    var diaries = await context.ExerciseDiaries
+                        .Where(d => d.MemberId == memberId && d.TotalDuration > 0)
+                        .OrderByDescending(d => d.Date)
+                        .ToListAsync();
+
+                    int streak = 0;
+                    DateTime currentDate = today;
+                    List<DateTime> streakDates = new List<DateTime>();
+
+                    foreach (var diary in diaries)
+                    {
+                        if (diary.Date == currentDate) // If the diary matches the current date
+                        {
+                            streak++;
+                            streakDates.Add(diary.Date.Value); // Add the date to the streak
+                            currentDate = currentDate.AddDays(-1); // Move to the previous day
+                        }
+                        else if (diary.Date < currentDate) // If the diary is earlier than expected in the streak
+                        {
+                            break; // Streak is broken
+                        }
+                    }
+
+                    return (streak, streakDates);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error calculating exercise diary streak", ex);
+            }
+        }
+
+
+
 
 
     }

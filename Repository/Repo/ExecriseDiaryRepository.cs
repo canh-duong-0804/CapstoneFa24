@@ -19,6 +19,7 @@ namespace Repository.Repo
 		public Task UpdateTotalDurationAndCaloriesAsync(int exerciseDiaryId) => ExerciseDiaryDAO.Instance.UpdateTotalDurationAndCaloriesAsync(exerciseDiaryId);
 
 		public Task<ExerciseDiary> GetExerciseDiaryById(int exerciseDiaryId) => ExerciseDiaryDAO.Instance.GetExerciseDiaryById(exerciseDiaryId);
-	}
+        public Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId) => ExerciseDiaryDAO.Instance.GetExerciseDiaryStreakWithDates(memberId);
+    }
 
 }

@@ -198,7 +198,29 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
+        [Authorize]
+        [HttpGet("member/exercise_diary_streak")]
+        public async Task<IActionResult> GetExerciseDiaryStreak()
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                return Unauthorized("Member ID not found in claims.");
 
+            try
+            {
+                var (streakCount, streakDates) = await _exerciseDiaryRepo.GetExerciseDiaryStreakWithDates(memberId);
+
+                return Ok(new
+                {
+                    streakCount,
+                    streakDates
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 
 }
