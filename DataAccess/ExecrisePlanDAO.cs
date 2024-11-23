@@ -129,5 +129,28 @@ namespace DataAccess
                 throw new Exception($"Error deleting Exercise Plan: {ex.Message}");
             }
         }
+
+
+        // Search Exercise Plans by Name (Case-Insensitive, Partial Match, Active Only)
+        public async Task<List<ExercisePlan>> SearchExercisePlansByNameAsync(string searchTerm)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    return await context.ExercisePlans
+                        .Include(p => p.ExercisePlanDetails)
+                        .ThenInclude(d => d.Exercise)
+                        .Where(p => p.Status == true &&
+                                    EF.Functions.Like(p.Name, $"%{searchTerm}%")) // Partial match
+                        .ToListAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error searching Exercise Plans by name: {ex.Message}");
+            }
+        }
+
     }
 }

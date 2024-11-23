@@ -16,6 +16,9 @@ namespace Repository.Repo
         public Task<ExercisePlan?> GetExecrisePlanByIdAsync(int planId) => ExecrisePlanDAO.Instance.GetExecrisePlanByIdAsync(planId);
         //public Task UpdateExecrisePlanAsync(ExercisePlan exercisePlan) => ExecrisePlanDAO.Instance.UpdateExecrisePlanAsync(exercisePlan);
         //public Task SoftDeleteExecrisePlanAsync(int planid) => ExecrisePlanDAO.Instance.SoftDeleteExecrisePlanAsync(planid);
-        
+
+        public Task<List<ExercisePlan>> SearchExercisePlansByNameAsync(string searchTerm) => ExecrisePlanDAO.Instance.SearchExercisePlansByNameAsync(searchTerm);
+
+
     }
 }
