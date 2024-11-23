@@ -13,6 +13,9 @@ namespace Repository.IRepo
         Task<List<ExercisePlan>> GetExecrisePlansAsync();
         Task<ExercisePlan?> GetExecrisePlanByIdAsync(int planId);
         /*Task UpdateExecrisePlanAsync(ExercisePlan exercisePlan);*/
-       
+
+        Task<List<ExercisePlan>> SearchExercisePlansByNameAsync(string searchTerm);
+
+
     }
 }
