@@ -141,7 +141,7 @@ namespace DataAccess
                         DateChange = DateTime.UtcNow
                     };
                     double currentWeight = member.Weight;
-                    double targetWeight = member.TargetWeight.Value;
+                    double targetWeight = (member.TargetWeight.HasValue ? member.TargetWeight : member.Weight) ?? 0.0;
                     double weeklyGoal = Convert.ToDouble(member.weightPerWeek);
                     //double weeklyGoal = Convert.ToDouble(member.weightPerWeek); 
                     DateTime targetDate = DateTime.UtcNow;
