@@ -582,12 +582,12 @@ namespace DataAccess
         {
             using (var context = new HealthTrackingDBContext())
             {
-                var today = DateTime.Now.Date;
+                //var today = DateTime.Now.Date;
 
                 var startOfMonth = new DateTime(date.Year, date.Month, 1);
 
 
-                var endDate = date > today ? today : date;
+                var endDate = startOfMonth.AddMonths(1).AddDays(-1); ;
 
                 var foodDiaries = await context.FoodDiaries
                     .Where(fd => fd.MemberId == memberId &&

@@ -224,10 +224,10 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    // Fetch all valid Food IDs from the FOOD table
+                    
                     var validFoodIds = await context.Foods.Select(f => f.FoodId).ToListAsync();
 
-                    // Process Breakfast
+                    
                     if (request.ListFoodIdBreakfasts != null && request.ListFoodIdBreakfasts.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdBreakfasts)
@@ -240,7 +240,7 @@ namespace DataAccess
                             var newMealPlanDetail = new MealPlanDetail
                             {
                                 MealPlanId = request.MealPlanId,
-                                MealType = 1, // Breakfast
+                                MealType = 1, 
                                 Day = request.Day,
                                 MealDate = DateTime.Now,
                                 Description = request.DescriptionBreakFast,
@@ -251,7 +251,7 @@ namespace DataAccess
                         }
                     }
 
-                    // Process Lunch
+                   
                     if (request.ListFoodIdLunches != null && request.ListFoodIdLunches.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdLunches)
@@ -275,7 +275,7 @@ namespace DataAccess
                         }
                     }
 
-                    // Process Dinner
+                    
                     if (request.ListFoodIdDinners != null && request.ListFoodIdDinners.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdDinners)
@@ -299,7 +299,7 @@ namespace DataAccess
                         }
                     }
 
-                    // Process Snack
+                 
                     if (request.ListFoodIdSnacks != null && request.ListFoodIdSnacks.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdSnacks)
@@ -442,16 +442,17 @@ namespace DataAccess
                 {
 
                     var mealPlanDetail = await context.MealPlanDetails
-                        .Where(d => d.MealPlanId == MealPlanId && d.MealType == MealType && d.Day == Day)
-                        .GroupBy(d => new { d.MealPlanId, d.MealType, d.Day, d.Description })
+                        .Where(d => d.MealPlanId == MealPlanId  && d.Day == Day)
+                        .GroupBy(d => new { d.MealPlanId, d.Day, d.Description })
                         .Select(g => new GetMealPlanDetaiTrainnerlResponseDTO
                         {
                             MealPlanId = g.Key.MealPlanId,
-                            MealType = g.Key.MealType,
+                           
                             Day = g.Key.Day,
                             Description = g.Key.Description,
                             FoodIds = g.Select(f => new GetFoodInMealPlanResponseDTO
                             {
+                                MealType = f.MealType,
                                 FoodId = f.FoodId,
                                 FoodName = f.Food.FoodName,
                                 Quantity = f.Quantity,
