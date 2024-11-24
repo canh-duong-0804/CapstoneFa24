@@ -433,54 +433,107 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(d => d.MealPlanId == MealPlanId && d.Day == Day)
-                        .Include(d => d.Food) 
+                        .Include(d => d.Food)
                         .ToListAsync();
 
-                   
                     if (mealPlanDetails != null && mealPlanDetails.Any())
                     {
-                      
+                        // Lấy mô tả chung cho bữa ăn
                         var description = mealPlanDetails.FirstOrDefault()?.Description;
 
-                      
-                        var foodIds = mealPlanDetails.Select(d => new GetFoodInMealPlanResponseDTO
-                        {
-                            MealType = d.MealType,
-                            FoodId = d.FoodId,
-                            FoodName = d.Food.FoodName,
-                            Quantity = d.Quantity,
-                            Calories = d.Food.Calories,
-                            FoodImage = d.Food.FoodImage,
-                            Protein = d.Food.Protein,
-                            Carbs = d.Food.Carbs,
-                            Fat = d.Food.Fat
-                        }).ToList();
+                        // Tạo các danh sách riêng biệt cho các bữa ăn
+                        var breakfastFoods = mealPlanDetails
+                            .Where(d => d.MealType == 1) // Bữa sáng
+                            .Select(d => new GetFoodInMealPlanBreakfastResponseDTO
+                            {
+                                MealType = d.MealType,
+                                FoodId = d.FoodId,
+                                FoodName = d.Food.FoodName,
+                                Quantity = d.Quantity,
+                                Calories = d.Food.Calories,
+                                FoodImage = d.Food.FoodImage,
+                                Protein = d.Food.Protein,
+                                Carbs = d.Food.Carbs,
+                                Fat = d.Food.Fat
+                            }).ToList();
 
-                        
+                        var lunchFoods = mealPlanDetails
+                            .Where(d => d.MealType == 2) // Bữa trưa
+                            .Select(d => new GetFoodInMealPlanLunchResponseDTO
+                            {
+                                MealType = d.MealType,
+                                FoodId = d.FoodId,
+                                FoodName = d.Food.FoodName,
+                                Quantity = d.Quantity,
+                                Calories = d.Food.Calories,
+                                FoodImage = d.Food.FoodImage,
+                                Protein = d.Food.Protein,
+                                Carbs = d.Food.Carbs,
+                                Fat = d.Food.Fat,
+                                Description = d.Description
+                            }).ToList();
+
+                        var dinnerFoods = mealPlanDetails
+                            .Where(d => d.MealType == 3) // Bữa tối
+                            .Select(d => new GetFoodInMealPlanDinnerResponseDTO
+                            {
+                                MealType = d.MealType,
+                                FoodId = d.FoodId,
+                                FoodName = d.Food.FoodName,
+                                Quantity = d.Quantity,
+                                Calories = d.Food.Calories,
+                                FoodImage = d.Food.FoodImage,
+                                Protein = d.Food.Protein,
+                                Carbs = d.Food.Carbs,
+                                Fat = d.Food.Fat,
+                                Description = d.Description
+                            }).ToList();
+
+                        var snackFoods = mealPlanDetails
+                            .Where(d => d.MealType == 4) // Bữa nhẹ
+                            .Select(d => new GetFoodInMealPlanSnackResponseDTO
+                            {
+                                MealType = d.MealType,
+                                FoodId = d.FoodId,
+                                FoodName = d.Food.FoodName,
+                                Quantity = d.Quantity,
+                                Calories = d.Food.Calories,
+                                FoodImage = d.Food.FoodImage,
+                                Protein = d.Food.Protein,
+                                Carbs = d.Food.Carbs,
+                                Fat = d.Food.Fat,
+                                Description=d.Description
+                            }).ToList();
+
+                        // Tạo đối tượng trả về với các danh sách bữa ăn riêng biệt
                         var response = new GetMealPlanDetaiTrainnerlResponseDTO
                         {
                             MealPlanId = MealPlanId,
                             Day = Day,
-                            Description = description,
-                            FoodIds = foodIds
+                          
+                            BreakfastFoods = breakfastFoods,
+                            LunchFoods = lunchFoods,
+                            DinnerFoods = dinnerFoods,
+                            SnackFoods = snackFoods
                         };
 
                         return response;
                     }
 
-                   
+                    // Trả về null nếu không có dữ liệu
                     return null;
                 }
             }
             catch (Exception ex)
             {
-              
+                // Xử lý ngoại lệ
                 throw new Exception("An error occurred while fetching the meal plan details.", ex);
             }
         }
+
+
 
 
 
