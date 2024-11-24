@@ -8,6 +8,12 @@ namespace BusinessObject.Dto.MealPlanDetail
 {
     public class CreateMealPlanDetailRequestDTO
     {
+        public int MealPlanId { get; set; }
+        public List<MealPlanDetailDTO> MealPlanDetails { get; set; } = new List<MealPlanDetailDTO>();
+    }
+
+    public class MealPlanDetailDTO
+    {
       
         public int MealPlanId { get; set; }
       

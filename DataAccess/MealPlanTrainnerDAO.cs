@@ -224,33 +224,34 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
-                    foreach (var foodDetail in request.FoodIds)
+                    foreach (var mealPlanDetail in request.MealPlanDetails)
                     {
-                        var mealPlanDetail = new MealPlanDetail
+                        foreach (var foodDetail in mealPlanDetail.FoodIds)
                         {
-                            MealPlanId = request.MealPlanId,
-                            MealType = request.MealType,
-                            Day = request.Day,
-                            Description = request.Description,
-                            FoodId = foodDetail.FoodId, 
-                            Quantity = foodDetail.Quantity, 
-                          
-                        };
+                            var newMealPlanDetail = new MealPlanDetail
+                            {
+                                MealPlanId = request.MealPlanId,
+                                MealType = mealPlanDetail.MealType,
+                                Day = mealPlanDetail.Day,
+                                Description = mealPlanDetail.Description,
+                                FoodId = foodDetail.FoodId,
+                                Quantity = foodDetail.Quantity
+                            };
 
-                        context.MealPlanDetails.Add(mealPlanDetail);
-                        await context.SaveChangesAsync();
+                            context.MealPlanDetails.Add(newMealPlanDetail);
+                        }
                     }
 
-                    
+                    await context.SaveChangesAsync();
                     return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception("An error occurred while creating meal plan details.", ex);
             }
         }
+
 
 
         public async Task<bool> UpdateMealPlanDetailAsync(CreateMealPlanDetailRequestDTO request)
@@ -259,56 +260,59 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
-                    var existingDetails = await context.MealPlanDetails
-                        .Where(d => d.MealPlanId == request.MealPlanId &&
-                                    d.MealType == request.MealType &&
-                                    d.Day == request.Day)
-                        .ToListAsync();
-
-                    
-                    foreach (var foodDetail in request.FoodIds)
+                    foreach (var mealPlanDetail in request.MealPlanDetails)
                     {
-                        var detail = existingDetails.FirstOrDefault(d => d.FoodId == foodDetail.FoodId);
-                        if (detail != null)
+                      
+                        var existingDetails = await context.MealPlanDetails
+                            .Where(d => d.MealPlanId == request.MealPlanId &&
+                                        d.MealType == mealPlanDetail.MealType &&
+                                        d.Day == mealPlanDetail.Day)
+                            .ToListAsync();
+
+                     
+                        foreach (var foodDetail in mealPlanDetail.FoodIds)
                         {
-                            
-                            detail.Quantity = foodDetail.Quantity;
-                            detail.Description = request.Description;
-                        }
-                        else
-                        {
-                           
-                            context.MealPlanDetails.Add(new MealPlanDetail
+                            var detail = existingDetails.FirstOrDefault(d => d.FoodId == foodDetail.FoodId);
+                            if (detail != null)
                             {
-                                MealPlanId = request.MealPlanId,
-                                MealType = request.MealType,
-                                Day = request.Day,
-                                Description = request.Description,
-                                FoodId = foodDetail.FoodId,
-                                Quantity = foodDetail.Quantity
-                            });
+                              
+                                detail.Quantity = foodDetail.Quantity;
+                                detail.Description = mealPlanDetail.Description;
+                            }
+                            else
+                            {
+                               
+                                context.MealPlanDetails.Add(new MealPlanDetail
+                                {
+                                    MealPlanId = request.MealPlanId,
+                                    MealType = mealPlanDetail.MealType,
+                                    Day = mealPlanDetail.Day,
+                                    Description = mealPlanDetail.Description,
+                                    FoodId = foodDetail.FoodId,
+                                    Quantity = foodDetail.Quantity
+                                });
+                            }
                         }
+
+                        
+                        var toRemove = existingDetails
+                            .Where(d => !mealPlanDetail.FoodIds.Any(f => f.FoodId == d.FoodId))
+                            .ToList();
+
+                        context.MealPlanDetails.RemoveRange(toRemove);
                     }
 
                  
-                    var toRemove = existingDetails
-                        .Where(d => !request.FoodIds.Any(f => f.FoodId == d.FoodId))
-                        .ToList();
-
-                  
-                    context.MealPlanDetails.RemoveRange(toRemove);
-
-                   
                     await context.SaveChangesAsync();
                     return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception("An error occurred while updating the meal plan details.", ex);
             }
         }
+
 
         public async Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId, int MealType, int Day)
         {

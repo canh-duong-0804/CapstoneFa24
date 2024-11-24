@@ -18,12 +18,12 @@ namespace HealthTrackingManageAPI.Authorize
             var user = context.HttpContext.User;
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
-                var roleClaim = user.FindFirstValue(ClaimTypes.Role); // Assuming "Role" is the claim type for role
+                var roleClaim = user.FindFirstValue(ClaimTypes.Role); 
                 if (roleClaim != null && int.TryParse(roleClaim, out int roleValue))
                 {
                     if (roleValue <= _maxRole)
                     {
-                        return; // Authorized
+                        return; 
                     }
                 }
             }

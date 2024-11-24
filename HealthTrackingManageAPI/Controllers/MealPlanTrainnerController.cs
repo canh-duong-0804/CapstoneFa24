@@ -219,19 +219,6 @@ namespace HealthTrackingManageAPI.Controllers
                 {
                     return BadRequest("Invalid member ID.");
                 }
-
-                
-              /*  var role = User.FindFirstValue(ClaimTypes.Role);
-                if (role != "Trainer" && role != "Admin")
-                {
-                    return Forbid("Only trainers or admins can create meal plan details.");
-                }
-*/
-               
-
-
-
-
                 var success = await _mealPlanRepository.CreateMealPlanDetailAsync(request);
 
                 if (!success)
