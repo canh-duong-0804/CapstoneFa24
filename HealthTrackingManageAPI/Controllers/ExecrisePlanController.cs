@@ -72,6 +72,7 @@ namespace HealthTrackingManageAPI.Controllers
                 var dto = new ExercisePlanDTO
                 {
                     ExercisePlanId = plan.ExercisePlanId,
+                    ExercisePlanImage = plan.ExercisePlanImage,
                     Name = plan.Name,
                     TotalCaloriesBurned = plan.TotalCaloriesBurned,
                     Details = plan.ExercisePlanDetails.Select(d => new ExercisePlanDetailDTO

@@ -71,8 +71,6 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     return await context.ExercisePlans
-                        .Include(p => p.ExercisePlanDetails)
-                        .ThenInclude(d => d.Exercise)
                         .Where(p => p.Status == true)
                         .ToListAsync();
                 }

@@ -67,7 +67,7 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok("");
         }
 
-        [HttpPost("get-meal-plan-detail-for-member")]
+        [HttpGet("get-meal-plan-detail-for-member")]
         [Authorize]
         public async Task<IActionResult> GetMealPlanDetailForMember(int MealPlanId ,int Day)
         {
