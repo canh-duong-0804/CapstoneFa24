@@ -231,7 +231,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
         [HttpGet("get-meal-plan-detail")]
         [RoleLessThanOrEqualTo(1)]
-        public async Task<IActionResult> GetMealPlanDetail(int MealPlanId ,int MealType ,int Day )
+        public async Task<IActionResult> GetMealPlanDetail(int MealPlanId ,int Day )
         {
             try
             {
@@ -247,7 +247,7 @@ namespace HealthTrackingManageAPI.Controllers
                 }
 
                
-                var mealPlanDetails = await _mealPlanRepository.GetMealPlanDetailAsync(MealPlanId,MealType,Day);
+                var mealPlanDetails = await _mealPlanRepository.GetMealPlanDetailAsync(MealPlanId,Day);
 
                 if (mealPlanDetails == null )
                 {

@@ -434,7 +434,7 @@ namespace DataAccess
 
 
 
-        public async Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId, int MealType, int Day)
+        public async Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId , int Day)
         {
             try
             {

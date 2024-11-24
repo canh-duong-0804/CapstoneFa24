@@ -31,7 +31,7 @@ namespace Repository.Repo
 
         public Task<bool> UpdateMealPlanDetailAsync(CreateMealPlanDetailRequestDTO request) => MealPlanTrainnerDAO.Instance.UpdateMealPlanDetailAsync(request);
 
-        public Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId, int MealType, int Day) => MealPlanTrainnerDAO.Instance.GetMealPlanDetailAsync(MealPlanId, MealType, Day);
+        public Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId, int Day) => MealPlanTrainnerDAO.Instance.GetMealPlanDetailAsync(MealPlanId , Day);
         
     }
 }

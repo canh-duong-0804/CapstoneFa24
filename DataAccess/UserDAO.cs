@@ -144,10 +144,13 @@ namespace DataAccess
                     double targetWeight = member.TargetWeight.Value;
                     double weeklyGoal = Convert.ToDouble(member.weightPerWeek);
                     //double weeklyGoal = Convert.ToDouble(member.weightPerWeek); 
-
-
-                    int weeksNeeded = (int)Math.Ceiling(Math.Abs((targetWeight - currentWeight) / weeklyGoal));
-
+                    DateTime targetDate = DateTime.UtcNow;
+                    if (weeklyGoal != 0)
+                    {
+                        
+                        int weeksNeeded = (int)Math.Ceiling(Math.Abs((targetWeight - currentWeight) / weeklyGoal));
+                        targetDate = DateTime.Now.AddDays(weeksNeeded * 7);
+                    }
 
                     var goal = new Goal
                     {
@@ -155,8 +158,8 @@ namespace DataAccess
                         TargetValue = (member.TargetWeight.HasValue ? member.TargetWeight : member.Weight) ?? 0.0,
 
                         ChangeDate = DateTime.UtcNow,   
-                        //  TargetDate = DateTime.Now.AddMonths(1),
-                        TargetDate = DateTime.Now.AddDays(weeksNeeded * 7),
+                       
+                        TargetDate = targetDate,
 
                         ExerciseLevel = member.ExerciseLevel,
                         // dang goal type 1 2 3 

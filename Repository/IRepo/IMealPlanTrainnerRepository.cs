@@ -21,6 +21,6 @@ namespace Repository.IRepo
         Task<int> GetTotalMealPlanAsync();
         Task<bool> CreateMealPlanDetailAsync(CreateMealPlanDetailRequestDTO request);
         Task<bool> UpdateMealPlanDetailAsync(CreateMealPlanDetailRequestDTO request);
-        Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId, int MealType, int Day);
+        Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId, int Day);
     }
 }
