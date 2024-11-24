@@ -224,108 +224,106 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
+                    // Fetch all valid Food IDs from the FOOD table
                     var validFoodIds = await context.Foods.Select(f => f.FoodId).ToListAsync();
 
-                    foreach (var mealPlanDetail in request.MealPlanDetails)
+                    // Process Breakfast
+                    if (request.ListFoodIdBreakfasts != null && request.ListFoodIdBreakfasts.Any())
                     {
-                      
-                        if (mealPlanDetail.Breakfast.ListFoodIdBreakfasts != null)
+                        foreach (var foodDetail in request.ListFoodIdBreakfasts)
                         {
-                            foreach (var foodDetail in mealPlanDetail.Breakfast.ListFoodIdBreakfasts)
+                            if (!validFoodIds.Contains(foodDetail.FoodId))
                             {
-                                if (!validFoodIds.Contains(foodDetail.FoodIdBreakfast))
-                                {
-                                    throw new Exception($"Invalid FoodId {foodDetail.FoodIdBreakfast} for Breakfast.");
-                                }
-
-                                var newMealPlanDetail = new MealPlanDetail
-                                {
-                                    MealPlanId = request.MealPlanId,
-                                    MealType = 1, 
-                                    Day = request.Day,
-                                    MealDate = DateTime.Now,
-                                    Description = mealPlanDetail.Breakfast.Description,
-                                    FoodId = foodDetail.FoodIdBreakfast,
-                                    Quantity = foodDetail.Quantity
-                                };
-                                context.MealPlanDetails.Add(newMealPlanDetail);
+                                throw new Exception($"Invalid FoodId {foodDetail.FoodId} for Breakfast.");
                             }
-                        }
 
-                        
-                        if (mealPlanDetail.Lunch.ListFoodIdLunches != null)
-                        {
-                            foreach (var foodDetail in mealPlanDetail.Lunch.ListFoodIdLunches)
+                            var newMealPlanDetail = new MealPlanDetail
                             {
-                                if (!validFoodIds.Contains(foodDetail.FoodIdLunch))
-                                {
-                                    throw new Exception($"Invalid FoodId {foodDetail.FoodIdLunch} for Lunch.");
-                                }
-
-                                var newMealPlanDetail = new MealPlanDetail
-                                {
-                                    MealPlanId = request.MealPlanId,
-                                    MealType = 2,
-                                    Day = request.Day,
-                                    MealDate = DateTime.Now,
-                                    Description = mealPlanDetail.Lunch.Description,
-                                    FoodId = foodDetail.FoodIdLunch,
-                                    Quantity = foodDetail.Quantity
-                                };
-                                context.MealPlanDetails.Add(newMealPlanDetail);
-                            }
-                        }
-
-                        
-                        if (mealPlanDetail.Dinner.ListFoodIdDinners != null)
-                        {
-                            foreach (var foodDetail in mealPlanDetail.Dinner.ListFoodIdDinners)
-                            {
-                                if (!validFoodIds.Contains(foodDetail.FoodIdDinner))
-                                {
-                                    throw new Exception($"Invalid FoodId {foodDetail.FoodIdDinner} for Dinner.");
-                                }
-
-                                var newMealPlanDetail = new MealPlanDetail
-                                {
-                                    MealPlanId = request.MealPlanId,
-                                    MealType = 3, 
-                                    Day = request.Day,
-                                    MealDate = DateTime.Now,
-                                    Description = mealPlanDetail.Dinner.Description,
-                                    FoodId = foodDetail.FoodIdDinner,
-                                    Quantity = foodDetail.Quantity
-                                };
-                                context.MealPlanDetails.Add(newMealPlanDetail);
-                            }
-                        }
-
-                        
-                        if (mealPlanDetail.Snack.ListFoodIdSnacks != null)
-                        {
-                            foreach (var foodDetail in mealPlanDetail.Snack.ListFoodIdSnacks)
-                            {
-                                if (!validFoodIds.Contains(foodDetail.FoodIdSnack))
-                                {
-                                    throw new Exception($"Invalid FoodId {foodDetail.FoodIdSnack} for Snack.");
-                                }
-
-                                var newMealPlanDetail = new MealPlanDetail
-                                {
-                                    MealPlanId = request.MealPlanId,
-                                    MealType = 4,
-                                    Day = request.Day,
-                                    MealDate = DateTime.Now,
-                                    Description = mealPlanDetail.Snack.Description,
-                                    FoodId = foodDetail.FoodIdSnack,
-                                    Quantity = foodDetail.Quantity
-                                };
-                                context.MealPlanDetails.Add(newMealPlanDetail);
-                            }
+                                MealPlanId = request.MealPlanId,
+                                MealType = 1, // Breakfast
+                                Day = request.Day,
+                                MealDate = DateTime.Now,
+                                Description = request.DescriptionBreakFast,
+                                FoodId = foodDetail.FoodId,
+                                Quantity = foodDetail.Quantity
+                            };
+                            context.MealPlanDetails.Add(newMealPlanDetail);
                         }
                     }
 
+                    // Process Lunch
+                    if (request.ListFoodIdLunches != null && request.ListFoodIdLunches.Any())
+                    {
+                        foreach (var foodDetail in request.ListFoodIdLunches)
+                        {
+                            if (!validFoodIds.Contains(foodDetail.FoodId))
+                            {
+                                throw new Exception($"Invalid FoodId {foodDetail.FoodId} for Lunch.");
+                            }
+
+                            var newMealPlanDetail = new MealPlanDetail
+                            {
+                                MealPlanId = request.MealPlanId,
+                                MealType = 2, // Lunch
+                                Day = request.Day,
+                                MealDate = DateTime.Now,
+                                Description = request.DescriptionLunch,
+                                FoodId = foodDetail.FoodId,
+                                Quantity = foodDetail.Quantity
+                            };
+                            context.MealPlanDetails.Add(newMealPlanDetail);
+                        }
+                    }
+
+                    // Process Dinner
+                    if (request.ListFoodIdDinners != null && request.ListFoodIdDinners.Any())
+                    {
+                        foreach (var foodDetail in request.ListFoodIdDinners)
+                        {
+                            if (!validFoodIds.Contains(foodDetail.FoodId))
+                            {
+                                throw new Exception($"Invalid FoodId {foodDetail.FoodId} for Dinner.");
+                            }
+
+                            var newMealPlanDetail = new MealPlanDetail
+                            {
+                                MealPlanId = request.MealPlanId,
+                                MealType = 3, // Dinner
+                                Day = request.Day,
+                                MealDate = DateTime.Now,
+                                Description = request.DescriptionDinner,
+                                FoodId = foodDetail.FoodId,
+                                Quantity = foodDetail.Quantity
+                            };
+                            context.MealPlanDetails.Add(newMealPlanDetail);
+                        }
+                    }
+
+                    // Process Snack
+                    if (request.ListFoodIdSnacks != null && request.ListFoodIdSnacks.Any())
+                    {
+                        foreach (var foodDetail in request.ListFoodIdSnacks)
+                        {
+                            if (!validFoodIds.Contains(foodDetail.FoodId))
+                            {
+                                throw new Exception($"Invalid FoodId {foodDetail.FoodId} for Snack.");
+                            }
+
+                            var newMealPlanDetail = new MealPlanDetail
+                            {
+                                MealPlanId = request.MealPlanId,
+                                MealType = 4, // Snack
+                                Day = request.Day,
+                                MealDate = DateTime.Now,
+                                Description = request.DescriptionSnack,
+                                FoodId = foodDetail.FoodId,
+                                Quantity = foodDetail.Quantity
+                            };
+                            context.MealPlanDetails.Add(newMealPlanDetail);
+                        }
+                    }
+
+                    // Save changes to the database
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -343,84 +341,83 @@ namespace DataAccess
 
 
 
+
         public async Task<bool> UpdateMealPlanDetailAsync(CreateMealPlanDetailRequestDTO request)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    foreach (var mealPlanDetail in request.MealPlanDetails)
+                    // Meal types and associated data
+                    var mealTypes = new List<(int MealType, string? Description, List<dynamic>? FoodDetails)>
+            {
+                (1, request.DescriptionBreakFast, request.ListFoodIdBreakfasts?.Cast<dynamic>().ToList()),
+                (2, request.DescriptionLunch, request.ListFoodIdLunches?.Cast<dynamic>().ToList()),
+                (3, request.DescriptionDinner, request.ListFoodIdDinners?.Cast<dynamic>().ToList()),
+                (4, request.DescriptionSnack, request.ListFoodIdSnacks?.Cast<dynamic>().ToList())
+            };
+
+                    foreach (var (mealType, description, foodDetails) in mealTypes)
                     {
-                        // Meal types with their associated data
-                        var mealTypes = new List<(int MealType, string? Description, List<dynamic>? FoodDetails)>
-                {
-                    (1, mealPlanDetail.Breakfast.Description, mealPlanDetail.Breakfast.ListFoodIdBreakfasts?.Cast<dynamic>().ToList()),
-                    (2, mealPlanDetail.Lunch.Description, mealPlanDetail.Lunch.ListFoodIdLunches?.Cast<dynamic>().ToList()),
-                    (3, mealPlanDetail.Dinner.Description, mealPlanDetail.Dinner.ListFoodIdDinners?.Cast<dynamic>().ToList()),
-                    (4, mealPlanDetail.Snack.Description, mealPlanDetail.Snack.ListFoodIdSnacks?.Cast<dynamic>().ToList())
-                };
-
-                        foreach (var (mealType, description, foodDetails) in mealTypes)
+                        // Skip if the food details list is null or empty
+                        if (foodDetails == null || !foodDetails.Any())
                         {
-                            // Skip if the food details list is null or empty
-                            if (foodDetails == null || !foodDetails.Any())
-                            {
-                                continue;
-                            }
-
-                            // Fetch existing records for this meal type and day
-                            var existingDetails = await context.MealPlanDetails
-                                .Where(d => d.MealPlanId == request.MealPlanId && d.MealType == mealType && d.Day == request.Day)
-                                .ToListAsync();
-
-                            // Update or add new records
-                            foreach (var foodDetail in foodDetails)
-                            {
-                                int foodId = mealType switch
-                                {
-                                    1 => foodDetail.FoodIdBreakfast,
-                                    2 => foodDetail.FoodIdLunch,
-                                    3 => foodDetail.FoodIdDinner,
-                                    4 => foodDetail.FoodIdSnack,
-                                    _ => throw new InvalidOperationException("Invalid meal type.")
-                                };
-
-                                var detail = existingDetails.FirstOrDefault(d => d.FoodId == foodId);
-                                if (detail != null)
-                                {
-                                    // Update existing record
-                                    detail.Quantity = foodDetail.Quantity;
-                                    detail.Description = description;
-                                }
-                                else
-                                {
-                                    // Add new record
-                                    context.MealPlanDetails.Add(new MealPlanDetail
-                                    {
-                                        MealPlanId = request.MealPlanId,
-                                        MealType = mealType,
-                                        Day = request.Day,
-                                        MealDate = DateTime.Now,
-                                        Description = description,
-                                        FoodId = foodId,
-                                        Quantity = foodDetail.Quantity
-                                    });
-                                }
-                            }
-
-                            // Remove records that are no longer part of the meal plan
-                            var toRemove = existingDetails
-                                .Where(d => !foodDetails.Any(f =>
-                                    (mealType == 1 && f.FoodIdBreakfast == d.FoodId) ||
-                                    (mealType == 2 && f.FoodIdLunch == d.FoodId) ||
-                                    (mealType == 3 && f.FoodIdDinner == d.FoodId) ||
-                                    (mealType == 4 && f.FoodIdSnack == d.FoodId)))
-                                .ToList();
-
-                            context.MealPlanDetails.RemoveRange(toRemove);
+                            continue;
                         }
+
+                        // Fetch existing meal plan details for the given meal type and day
+                        var existingDetails = await context.MealPlanDetails
+                            .Where(d => d.MealPlanId == request.MealPlanId && d.MealType == mealType && d.Day == request.Day)
+                            .ToListAsync();
+
+                        // Update or add new records
+                        foreach (var foodDetail in foodDetails)
+                        {
+                            int foodId = mealType switch
+                            {
+                                1 => foodDetail.FoodIdBreakfast,
+                                2 => foodDetail.FoodIdLunch,
+                                3 => foodDetail.FoodIdDinner,
+                                4 => foodDetail.FoodIdSnack,
+                                _ => throw new InvalidOperationException("Invalid meal type.")
+                            };
+
+                            var detail = existingDetails.FirstOrDefault(d => d.FoodId == foodId);
+                            if (detail != null)
+                            {
+                                // Update existing record
+                                detail.Quantity = foodDetail.Quantity;
+                                detail.Description = description;
+                            }
+                            else
+                            {
+                                // Add new record
+                                context.MealPlanDetails.Add(new MealPlanDetail
+                                {
+                                    MealPlanId = request.MealPlanId,
+                                    MealType = mealType,
+                                    Day = request.Day,
+                                    MealDate = DateTime.Now,
+                                    Description = description,
+                                    FoodId = foodId,
+                                    Quantity = foodDetail.Quantity
+                                });
+                            }
+                        }
+
+                        // Remove records that are no longer part of the updated meal plan
+                        var toRemove = existingDetails
+                            .Where(d => !foodDetails.Any(f =>
+                                (mealType == 1 && f.FoodIdBreakfast == d.FoodId) ||
+                                (mealType == 2 && f.FoodIdLunch == d.FoodId) ||
+                                (mealType == 3 && f.FoodIdDinner == d.FoodId) ||
+                                (mealType == 4 && f.FoodIdSnack == d.FoodId)))
+                            .ToList();
+
+                        context.MealPlanDetails.RemoveRange(toRemove);
                     }
 
+                    // Save changes to the database
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -430,6 +427,7 @@ namespace DataAccess
                 throw new Exception("An error occurred while updating the meal plan details.", ex);
             }
         }
+
 
 
 
