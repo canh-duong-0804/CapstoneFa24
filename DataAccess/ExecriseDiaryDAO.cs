@@ -184,29 +184,46 @@ namespace DataAccess
 
                     // Fetch exercise diaries for the member, sorted by date descending
                     var diaries = await context.ExerciseDiaries
-                        .Where(d => d.MemberId == memberId && d.TotalDuration > 0)
+                        .Where(d => d.MemberId == memberId && d.Date <= today)
                         .OrderByDescending(d => d.Date)
+                        .Select(d => new { d.Date, d.TotalDuration })
                         .ToListAsync();
 
-                    int streak = 0;
-                    DateTime currentDate = today;
-                    List<DateTime> streakDates = new List<DateTime>();
+                    var streakDates = new List<DateTime>();
+                    int streakCount = 0;
+
+                    if (!diaries.Any())
+                        return (streakCount, streakDates);
+
+                    // Start checking for streaks from the most recent date
+                    DateTime? expectedDate = today;
 
                     foreach (var diary in diaries)
                     {
-                        if (diary.Date == currentDate) // If the diary matches the current date
+                        if (diary.Date == expectedDate) // If diary matches the current date in streak
                         {
-                            streak++;
-                            streakDates.Add(diary.Date.Value); // Add the date to the streak
-                            currentDate = currentDate.AddDays(-1); // Move to the previous day
+                            if (diary.TotalDuration > 0)
+                            {
+                                streakCount++;
+                                streakDates.Add(diary.Date.Value); // Add to streak dates
+                            }
+                            else
+                            {
+                                break; // Streak is broken
+                            }
+                            expectedDate = expectedDate.Value.AddDays(-1);
                         }
-                        else if (diary.Date < currentDate) // If the diary is earlier than expected in the streak
+                        else if (diary.Date < expectedDate) // Missing a day in the streak
                         {
-                            break; // Streak is broken
+                            break; // Streak ends
                         }
                     }
 
-                    return (streak, streakDates);
+                    streakDates = streakDates
+                        .OrderByDescending(d => d) // Ensure dates are in descending order
+                        .ToList();
+
+                    return (streakCount, streakDates);
                 }
             }
             catch (Exception ex)
@@ -214,6 +231,7 @@ namespace DataAccess
                 throw new Exception("Error calculating exercise diary streak", ex);
             }
         }
+
 
 
 
