@@ -427,51 +427,64 @@ namespace DataAccess
                 throw new Exception("An error occurred while updating the meal plan details.", ex);
             }
         }
-
-
-
-
-
-
-
-        public async Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId , int Day)
+        public async Task<GetMealPlanDetaiTrainnerlResponseDTO> GetMealPlanDetailAsync(int MealPlanId, int Day)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                   
+                    var mealPlanDetails = await context.MealPlanDetails
+                        .Where(d => d.MealPlanId == MealPlanId && d.Day == Day)
+                        .Include(d => d.Food) 
+                        .ToListAsync();
 
-                    var mealPlanDetail = await context.MealPlanDetails
-                        .Where(d => d.MealPlanId == MealPlanId  && d.Day == Day)
-                        .GroupBy(d => new { d.MealPlanId, d.Day, d.Description })
-                        .Select(g => new GetMealPlanDetaiTrainnerlResponseDTO
+                   
+                    if (mealPlanDetails != null && mealPlanDetails.Any())
+                    {
+                      
+                        var description = mealPlanDetails.FirstOrDefault()?.Description;
+
+                      
+                        var foodIds = mealPlanDetails.Select(d => new GetFoodInMealPlanResponseDTO
                         {
-                            MealPlanId = g.Key.MealPlanId,
-                           
-                            Day = g.Key.Day,
-                            Description = g.Key.Description,
-                            FoodIds = g.Select(f => new GetFoodInMealPlanResponseDTO
-                            {
-                                MealType = f.MealType,
-                                FoodId = f.FoodId,
-                                FoodName = f.Food.FoodName,
-                                Quantity = f.Quantity,
-                                Calories = f.Food.Calories,
-                                FoodImage = f.Food.FoodImage,
-                                Protein = f.Food.Protein,
-                                Carbs = f.Food.Carbs,
-                                Fat = f.Food.Fat
-                            }).ToList()
-                        })
-                        .FirstOrDefaultAsync();
+                            MealType = d.MealType,
+                            FoodId = d.FoodId,
+                            FoodName = d.Food.FoodName,
+                            Quantity = d.Quantity,
+                            Calories = d.Food.Calories,
+                            FoodImage = d.Food.FoodImage,
+                            Protein = d.Food.Protein,
+                            Carbs = d.Food.Carbs,
+                            Fat = d.Food.Fat
+                        }).ToList();
 
-                    return mealPlanDetail;
+                        
+                        var response = new GetMealPlanDetaiTrainnerlResponseDTO
+                        {
+                            MealPlanId = MealPlanId,
+                            Day = Day,
+                            Description = description,
+                            FoodIds = foodIds
+                        };
+
+                        return response;
+                    }
+
+                   
+                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+              
+                throw new Exception("An error occurred while fetching the meal plan details.", ex);
             }
         }
+
+
+
+
+
     }
 }
