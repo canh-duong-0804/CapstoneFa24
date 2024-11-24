@@ -446,26 +446,26 @@ namespace DataAccess
                 {
                     attempts++;
 
-                   
+
                     var foodDiary = await context.FoodDiaries
                         .OrderByDescending(fd => fd.Date)
                         .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date < lastDate);
 
                     if (foodDiary == null)
                     {
-                        break; 
+                        break;
                     }
 
                     lastDate = foodDiary.Date;
 
-                   
+
                     var foodIds = await context.FoodDiaryDetails
                         .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
                         .Select(fdd => fdd.FoodId)
                         .Distinct()
                         .ToListAsync();
 
-                   
+
                     var currentFoodDetails = await context.Foods
                         .Where(f => foodIds.Contains(f.FoodId))
                         .Include(f => f.Diet)
@@ -480,13 +480,13 @@ namespace DataAccess
                             Fat = f.Fat,
                             DietName = f.Diet.DietName
                         })
-                        .Take(3) 
+                        .Take(3)
                         .ToListAsync();
 
-                 
+
                     foodDetails.AddRange(currentFoodDetails);
 
-                   
+
                     if (foodDetails.Count >= 3 || attempts >= maxAttempts)
                     {
                         break;
@@ -582,20 +582,23 @@ namespace DataAccess
         {
             using (var context = new HealthTrackingDBContext())
             {
-                //var today = DateTime.Now.Date;
+                var today = DateTime.Now.Date;
 
                 var startOfMonth = new DateTime(date.Year, date.Month, 1);
 
 
-                var endDate = startOfMonth.AddMonths(1).AddDays(-1); ;
+                var endDate = today;
+
 
                 var foodDiaries = await context.FoodDiaries
                     .Where(fd => fd.MemberId == memberId &&
-                                fd.Date >= startOfMonth &&
-                                fd.Date <= endDate)
+                                 fd.Date.Month == startOfMonth.Month &&
+                                 fd.Date.Day <= endDate.Day &&
+                                 fd.Date.Year == startOfMonth.Year)  
                     .OrderByDescending(fd => fd.Date)
                     .Select(fd => new { fd.Date, fd.Calories })
                     .ToListAsync();
+
 
                 var streakDTO = new CalorieStreakDTO();
                 var currentStreak = 0;

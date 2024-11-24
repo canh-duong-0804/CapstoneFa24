@@ -12,8 +12,8 @@ namespace BusinessObject.Dto.MealPlanDetail
           
             public int MealPlanId { get; set; }
 
-            public int MealType { get; set; }
-            public byte Day { get; set; }
+           // public int MealType { get; set; }
+            public int Day { get; set; }
             public string? Description { get; set; }
             public List<GetFoodInMealPlanResponseDTO> FoodIds { get; set; } = new List<GetFoodInMealPlanResponseDTO>();
 
