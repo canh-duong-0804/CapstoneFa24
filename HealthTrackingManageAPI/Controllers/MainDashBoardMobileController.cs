@@ -59,8 +59,8 @@ namespace HealthTrackingManageAPI.Controllers
                 GoalType = mainDashBoardInfo.GoalType,
                 WeightDifference = mainDashBoardInfo.WeightDifference,
                 FullName = mainDashBoardInfo.UserName,
-
-
+                TargetDate = mainDashBoardInfo.TargetDate,
+                TargetWeight= mainDashBoardInfo.TargetWeight,
 
                 // Dữ liệu từ infoCalorinesMember
                 SelectDate = mainDashBoardInfo.DateMainDashBoard,

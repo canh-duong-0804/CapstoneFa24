@@ -18,14 +18,17 @@ namespace BusinessObject.Dto.MealPlanDetail
 
         
         /*  public List<GetFoodInMealPlanResponseDTO> FoodIds { get; set; } = new List<GetFoodInMealPlanResponseDTO>();*/
-        public List<GetFoodInMealPlanBreakfastResponseDTO> BreakfastFoods { get; set; }
-        public List<GetFoodInMealPlanLunchResponseDTO> LunchFoods { get; set; }
-        public List<GetFoodInMealPlanDinnerResponseDTO> DinnerFoods { get; set; }
-        public List<GetFoodInMealPlanSnackResponseDTO> SnackFoods { get; set; }
+        public List<GetFoodInMealPlanBreakfastResponseDTO> ListFoodIdBreakfasts { get; set; }
+        public List<GetFoodInMealPlanLunchResponseDTO> ListFoodIdLunches { get; set; }
+        public List<GetFoodInMealPlanDinnerResponseDTO> ListFoodIdDinners { get; set; }
+        public List<GetFoodInMealPlanSnackResponseDTO> ListFoodIdSnacks { get; set; }
 
 
 
     }
+
+   
+
     public class GetFoodInMealPlanBreakfastResponseDTO
     {
         public int FoodId { get; set; }
@@ -38,7 +41,7 @@ namespace BusinessObject.Dto.MealPlanDetail
         public double Protein { get; set; }
         public double Carbs { get; set; }
         public double Fat { get; set; }
-        public string Description { get; set; }
+        public string DescriptionBreakFast { get; set; }
 
 
     }public class GetFoodInMealPlanSnackResponseDTO
@@ -53,7 +56,7 @@ namespace BusinessObject.Dto.MealPlanDetail
         public double Protein { get; set; }
         public double Carbs { get; set; }
         public double Fat { get; set; }
-        public string Description { get; set; }
+        public string DescriptionSnack { get; set; }
 
 
     }
@@ -69,7 +72,7 @@ namespace BusinessObject.Dto.MealPlanDetail
         public double Protein { get; set; }
         public double Carbs { get; set; }
         public double Fat { get; set; }
-        public string Description { get; set; }
+        public string DescriptionLunch { get; set; }
 
 
     }
@@ -85,7 +88,7 @@ namespace BusinessObject.Dto.MealPlanDetail
         public double Protein { get; set; }
         public double Carbs { get; set; }
         public double Fat { get; set; }
-        public string Description { get; set; }
+        public string DescriptionDinner { get; set; }
 
 
     }

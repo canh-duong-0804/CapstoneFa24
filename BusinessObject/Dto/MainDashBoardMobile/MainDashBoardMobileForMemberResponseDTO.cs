@@ -15,8 +15,9 @@ namespace BusinessObject.Dto.MainDashBoardMobile
         public double CarbsInGrams { get; set; }
         public double FatInGrams { get; set; }
         public double? Weight { get; set; }
+        public double? TargetWeight { get; set; }
 
-        //public DateTime? TargetDate { get; set; }
+        public string TargetDate { get; set; }
         public string GoalType { get; set; }
         public string UserName { get; set; }
         public double WeightDifference { get; set; }

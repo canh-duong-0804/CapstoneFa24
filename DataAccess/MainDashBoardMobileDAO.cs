@@ -86,7 +86,7 @@ namespace DataAccess
 
                     var heightInMeters = member.Height / 100.0;
                     var bmi = currentWeight / (heightInMeters * heightInMeters);
-                    var weightGoal = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân"));
+                    var weightGoal = member.Goals.OrderByDescending(d=>d.GoalId).FirstOrDefault();
                     var calorieAdjustment = 0.0;
                     //DateTime? targetDate = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân")).TargetDate;
 
@@ -119,6 +119,7 @@ namespace DataAccess
                             goalType = "tăng cân";
                         }
                     }
+                    weightDifference = Math.Abs(weightDifference);
 
                     var dailyCalories = maintenanceCalories + calorieAdjustment;
 
@@ -165,11 +166,13 @@ namespace DataAccess
                         CarbsInGrams = Math.Round((dailyCalories * 0.45) / 4, 1),   // 45% carbs
                         FatInGrams = Math.Round((dailyCalories * 0.25) / 9, 1),     // 25% fat
                         //TargetDate = targetDate,
+                        TargetWeight=weightGoal.TargetValue,
                         Weight = currentWeight,
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
                         BMI = Math.Round(bmi.Value, 0),
-                        UserName = member.Username
+                        UserName = member.Username,
+                        TargetDate = weightGoal.TargetDate.ToString("dd/MM/yyyy"),
                     };
 
 

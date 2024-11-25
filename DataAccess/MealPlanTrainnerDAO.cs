@@ -359,18 +359,18 @@ namespace DataAccess
 
                     foreach (var (mealType, description, foodDetails) in mealTypes)
                     {
-                        // Skip if the food details list is null or empty
+                       
                         if (foodDetails == null || !foodDetails.Any())
                         {
                             continue;
                         }
 
-                        // Fetch existing meal plan details for the given meal type and day
+                      
                         var existingDetails = await context.MealPlanDetails
                             .Where(d => d.MealPlanId == request.MealPlanId && d.MealType == mealType && d.Day == request.Day)
                             .ToListAsync();
 
-                        // Update or add new records
+                       
                         foreach (var foodDetail in foodDetails)
                         {
                             int foodId = mealType switch
@@ -385,13 +385,13 @@ namespace DataAccess
                             var detail = existingDetails.FirstOrDefault(d => d.FoodId == foodId);
                             if (detail != null)
                             {
-                                // Update existing record
+                                
                                 detail.Quantity = foodDetail.Quantity;
                                 detail.Description = description;
                             }
                             else
                             {
-                                // Add new record
+                               
                                 context.MealPlanDetails.Add(new MealPlanDetail
                                 {
                                     MealPlanId = request.MealPlanId,
@@ -405,7 +405,7 @@ namespace DataAccess
                             }
                         }
 
-                        // Remove records that are no longer part of the updated meal plan
+                       
                         var toRemove = existingDetails
                             .Where(d => !foodDetails.Any(f =>
                                 (mealType == 1 && f.FoodIdBreakfast == d.FoodId) ||
@@ -417,7 +417,7 @@ namespace DataAccess
                         context.MealPlanDetails.RemoveRange(toRemove);
                     }
 
-                    // Save changes to the database
+                    
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -440,12 +440,12 @@ namespace DataAccess
 
                     if (mealPlanDetails != null && mealPlanDetails.Any())
                     {
-                        // Lấy mô tả chung cho bữa ăn
+                      
                         var description = mealPlanDetails.FirstOrDefault()?.Description;
 
-                        // Tạo các danh sách riêng biệt cho các bữa ăn
+                       
                         var breakfastFoods = mealPlanDetails
-                            .Where(d => d.MealType == 1) // Bữa sáng
+                            .Where(d => d.MealType == 1) 
                             .Select(d => new GetFoodInMealPlanBreakfastResponseDTO
                             {
                                 MealType = d.MealType,
@@ -456,11 +456,12 @@ namespace DataAccess
                                 FoodImage = d.Food.FoodImage,
                                 Protein = d.Food.Protein,
                                 Carbs = d.Food.Carbs,
-                                Fat = d.Food.Fat
+                                Fat = d.Food.Fat,
+                                DescriptionBreakFast=d.Description,
                             }).ToList();
 
                         var lunchFoods = mealPlanDetails
-                            .Where(d => d.MealType == 2) // Bữa trưa
+                            .Where(d => d.MealType == 2) 
                             .Select(d => new GetFoodInMealPlanLunchResponseDTO
                             {
                                 MealType = d.MealType,
@@ -472,11 +473,11 @@ namespace DataAccess
                                 Protein = d.Food.Protein,
                                 Carbs = d.Food.Carbs,
                                 Fat = d.Food.Fat,
-                                Description = d.Description
+                                DescriptionLunch = d.Description
                             }).ToList();
 
                         var dinnerFoods = mealPlanDetails
-                            .Where(d => d.MealType == 3) // Bữa tối
+                            .Where(d => d.MealType == 3) 
                             .Select(d => new GetFoodInMealPlanDinnerResponseDTO
                             {
                                 MealType = d.MealType,
@@ -488,11 +489,11 @@ namespace DataAccess
                                 Protein = d.Food.Protein,
                                 Carbs = d.Food.Carbs,
                                 Fat = d.Food.Fat,
-                                Description = d.Description
+                                DescriptionDinner = d.Description
                             }).ToList();
 
                         var snackFoods = mealPlanDetails
-                            .Where(d => d.MealType == 4) // Bữa nhẹ
+                            .Where(d => d.MealType == 4) 
                             .Select(d => new GetFoodInMealPlanSnackResponseDTO
                             {
                                 MealType = d.MealType,
@@ -504,19 +505,19 @@ namespace DataAccess
                                 Protein = d.Food.Protein,
                                 Carbs = d.Food.Carbs,
                                 Fat = d.Food.Fat,
-                                Description=d.Description
+                                DescriptionSnack=d.Description
                             }).ToList();
 
-                        // Tạo đối tượng trả về với các danh sách bữa ăn riêng biệt
+                        
                         var response = new GetMealPlanDetaiTrainnerlResponseDTO
                         {
                             MealPlanId = MealPlanId,
                             Day = Day,
                           
-                            BreakfastFoods = breakfastFoods,
-                            LunchFoods = lunchFoods,
-                            DinnerFoods = dinnerFoods,
-                            SnackFoods = snackFoods
+                            ListFoodIdBreakfasts = breakfastFoods,
+                            ListFoodIdLunches = lunchFoods,
+                            ListFoodIdDinners = dinnerFoods,
+                            ListFoodIdSnacks = snackFoods
                         };
 
                         return response;
