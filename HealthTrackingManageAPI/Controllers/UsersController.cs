@@ -86,7 +86,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             var model = mapper.Map<BusinessObject.Models.Member>(member);
 
-            bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
+           /* bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
             if (!ifUserNameUnique)
             {
                 return BadRequest("Username already exists");
@@ -104,7 +104,7 @@ namespace HealthTrackingManageAPI.Controllers
             if (!ifPhoneUnique)
             {
                 return BadRequest("Phone number already exists");
-            }
+            }*/
 
 
            // var user = await _userRepo.Register(model,member.Password,member.Weight);
@@ -117,8 +117,35 @@ namespace HealthTrackingManageAPI.Controllers
     
             return Ok();
         }
-         
-        
+        [HttpGet("check-email")]
+        public async Task<IActionResult> CheckEmailUnique([FromQuery] string email)
+        {
+            
+                bool ifEmailUnique =  _userRepo.IsUniqueEmail(email);
+                if (!ifEmailUnique)
+                {
+                    return BadRequest("Email already exists");
+                }
+
+                return Ok();
+            
+        }
+
+        [HttpGet("check-phone")]
+        public async Task<IActionResult> CheckPhoneUnique([FromQuery] string phoneNumber)
+        {
+            
+                bool ifPhoneUnique =  _userRepo.IsUniquePhonenumber(phoneNumber);
+                if (!ifPhoneUnique)
+                {
+                    return BadRequest("Phone number already exists");
+                }
+
+                return Ok();
+            
+        }
+
+
         [HttpPut("reset-password")]
         [Authorize]
         public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestDTO request)
