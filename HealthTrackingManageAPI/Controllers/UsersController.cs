@@ -170,21 +170,12 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         [HttpPut("reset-password-otp")]
-        [Authorize]
         public async Task<IActionResult> ResetPasswordOtp([FromBody] ChangePasswordRequestDTO request)
         {
             var memberIdClaim = User.FindFirstValue("Id");
-            if (memberIdClaim == null)
-            {
-                return Unauthorized("Member ID not found in claims.");
-            }
+            
 
-            if (!int.TryParse(memberIdClaim, out int memberId))
-            {
-                return BadRequest("Invalid member ID.");
-            }
-
-            var user = await _userRepo.ResetPasswordOtpAsync(request,memberId);
+            var user = await _userRepo.ResetPasswordOtpAsync(request);
             if (user == null)
             {
                 return BadRequest("Error while registering the user");

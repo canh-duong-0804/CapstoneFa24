@@ -24,7 +24,7 @@ namespace Repository.IRepo
         Task<Member> GetMemberByIdAsync(int userId);
         Task UpdateMemberProfileAsync(Member user);
         Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request,int memberId);
-        Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request, int memberId);
+        Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request);
         Task<BusinessObject.Models.Member> DeleteAccount(Member model, string password);
     }
 }

@@ -254,14 +254,14 @@ namespace DataAccess
 
         }
 
-        public async Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request, int memberId)
+        public async Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var user = await context.Members.FirstOrDefaultAsync(u => u.MemberId == memberId);
+                    var user = await context.Members.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
                    
 
                     CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
