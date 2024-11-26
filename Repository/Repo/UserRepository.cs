@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace Repository.Repo
 {
@@ -43,6 +44,8 @@ namespace Repository.Repo
         public Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request,int memberId) => UserDAO.Instance.ResetPasswordAsync(request,memberId);
 
         public Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request, int memberId) => UserDAO.Instance.ResetPasswordOtpAsync(request, memberId);
+
+        public Task<BusinessObject.Models.Member> DeleteAccount(BusinessObject.Models.Member model, string password) => UserDAO.Instance.DeleteAccount(model, password);
         
     }
 }

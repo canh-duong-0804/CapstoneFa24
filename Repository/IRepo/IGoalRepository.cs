@@ -17,8 +17,8 @@ namespace Repository.IRepo
         Task<bool> AddGoalWeightAsync(int memberId, double weightCurrent);
         Task<GoalResponseDTO> GetGoalByIdAsync(int id);
         
-        Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId, DateTime date);
-        Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date);
+        Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId);
+        //Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date);
 
         /* Task<bool> updateGoal(int memberId, GoalRequestDTO updatedGoal);*/
         Task<bool> UpdateGoalAsync(int memberId, GoalRequestDTO updatedGoal);

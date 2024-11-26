@@ -226,6 +226,26 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(response);
         }
+        
+        
+        [HttpPost("Delete-Account")]
+        public async Task<IActionResult> DeleteAccount([FromBody] LoginRequestDTO member)
+        {
+            var mapper = MapperConfig.InitializeAutomapper();
+
+            var model = mapper.Map<BusinessObject.Models.Member>(member);
+            model.PhoneNumber = member.Email;
+            var user = await _userRepo.DeleteAccount(model, member.Password);
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password");
+            }
+
+            
+
+            return Ok();
+        }
 
         private async Task<TokenModel> GenerateToken(BusinessObject.Models.Member user)
         {
@@ -509,6 +529,8 @@ namespace HealthTrackingManageAPI.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
+
 
 
 	}

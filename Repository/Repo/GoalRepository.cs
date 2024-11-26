@@ -27,9 +27,9 @@ namespace Repository.Repo
 
         public Task<GoalResponseDTO> GetGoalByIdAsync(int id) => GoalDAO.Instance.GetGoalByIdAsync(id);
 
-        public Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId, DateTime date) => GoalDAO.Instance.GetInforGoalWeightMemberForGraph(memberId,date);
+        public Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId) => GoalDAO.Instance.GetInforGoalWeightMemberForGraph(memberId);
 
-        public Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date) => GoalDAO.Instance.GetInforGoalWeightMemberForGraphInMonth(memberId, date);
+        //public Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date) => GoalDAO.Instance.GetInforGoalWeightMemberForGraphInMonth(memberId, date);
 
 
         public Task<bool> UpdateGoalAsync(int memberId, GoalRequestDTO updatedGoal) => GoalDAO.Instance.updateGoal(memberId, updatedGoal);
