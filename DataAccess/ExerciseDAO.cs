@@ -105,16 +105,7 @@ namespace DataAccess
                             .Where(c => c.ExerciseId == exerciseId)
                             .FirstOrDefaultAsync();
 
-                        if (cardio != null)
-                        {
-                            result.Minutes1 = cardio.Minutes1 ?? 0;
-                            result.Minutes2 = cardio.Minutes2 ?? 0;
-                            result.Minutes3 = cardio.Minutes3 ?? 0;
-                            result.Calories1 = cardio.Calories1 ?? 0;
-                            result.Calories2 = cardio.Calories2 ?? 0;
-                            result.Calories3 = cardio.Calories3 ?? 0;
-                            result.MetValue = cardio.MetValue ?? 0;
-                        }
+                        
                     
                     return result;
                 }
@@ -157,18 +148,7 @@ namespace DataAccess
                             .Where(r => r.ExerciseId == exerciseId)
                             .FirstOrDefaultAsync();
 
-                        if (resistance != null)
-                        {
-                            result.Reps1 = resistance.Reps1 ?? 0;
-                            result.Reps2 = resistance.Reps2 ?? 0;
-                            result.Reps3 = resistance.Reps3 ?? 0;
-                            result.Sets1 = resistance.Sets1 ?? 0;
-                            result.Sets2 = resistance.Sets2 ?? 0;
-                            result.Sets3 = resistance.Sets3 ?? 0;
-                            result.Minutes1 = resistance.Minutes1 ?? 0;
-                            result.Minutes2 = resistance.Minutes2 ?? 0;
-                            result.Minutes3 = resistance.Minutes3 ?? 0;
-                        }
+                        
                     
 
                     return result;

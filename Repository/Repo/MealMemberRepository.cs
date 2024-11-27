@@ -57,6 +57,7 @@ public Task CreateMealMemberDetailsAsync(MealMemberDetail mealMemberDetails) => 
 
         public Task UpdateMealMemberTotalCaloriesAsync(int mealMemberId) => MealMemberDAO.Instance.UpdateMealMemberTotalCaloriesAsync(mealMemberId);
 
-      
+        public Task<bool> UploadImageForMealMember(string urlImage, int mealMemberid) => MealMemberDAO.Instance.UploadImageForMealMember(urlImage,mealMemberid);
+
     }
 }

@@ -1,7 +1,10 @@
 ﻿
 using BusinessObject.Models;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 using HealthTrackingManageAPI;
 using HealthTrackingManageAPI.NewFolder.EsmsHelper;
+using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 //using Microsoft.Extensions.Configuration;
@@ -52,8 +55,10 @@ builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
 builder.Services.AddScoped<IWaterLogRepository, WaterLogRepository>();
 builder.Services.AddScoped<IExecrisePlanRepository, ExecrisePlanRepository>();
 builder.Services.AddScoped<IMealPlanTrainnerRepository, MealPlanTrainnerRepository>();
-
-
+builder.Services.AddScoped<IExerciseTrainerRepository, ExerciseTrainerRepository>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<ImageUploadDto>, ImageUploadValidator>();
+builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<SpeedSMSService>();
 
 //builder.Services.AddHttpClient<ITwilioRestClient, TwilloClient>();

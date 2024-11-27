@@ -39,6 +39,7 @@ namespace Repository.Repo
 
         public Task<Food> UpdateFoodAsync(Food food) => FoodDAO.Instance.UpdateFoodAsync(food);
 
-       
+        public Task<bool> UploadImageFood(string urlImage, int foodId) => FoodDAO.Instance.UploadImageFood(urlImage, foodId);
+
     }
 }

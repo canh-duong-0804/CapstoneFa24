@@ -11,12 +11,13 @@ namespace BusinessObject.Dto.Member
 		public string Username { get; set; }
 		public string Email { get; set; }
 		public string PhoneNumber { get; set; }
-		public string MemberImage { get; set; }
+		public string ImageMember { get; set; }
 		public DateTime Dob { get; set; }
-		public bool Gender { get; set; }
+		//public bool Gender { get; set; }
 		public float Height { get; set; }
 		public double Weight { get; set; }
+      
 
-	}
+    }
 
 }
