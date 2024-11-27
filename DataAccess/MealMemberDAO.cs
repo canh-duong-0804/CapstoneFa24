@@ -481,5 +481,34 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> UploadImageForMealMember(string urlImage, int mealMemberId)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+                
+                var mealMember = await context.MealMembers
+                    .FirstOrDefaultAsync(m => m.MealMemberId == mealMemberId);
+
+                if (mealMember == null)
+                {
+                    throw new Exception("MealMember not found.");
+                }
+
+               
+                mealMember.Image = urlImage;
+
+             
+                await context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error uploading image for meal member: {ex.Message}", ex);
+            }
+        }
+
     }
 }

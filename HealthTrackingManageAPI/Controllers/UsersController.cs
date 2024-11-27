@@ -8,6 +8,7 @@ using BusinessObject.Dto.Register;
 using BusinessObject.Dto.ResetPassword;
 using BusinessObject.Models;
 using HealthTrackingManageAPI.NewFolder;
+using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,12 +33,14 @@ namespace HealthTrackingManageAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly AppSettingsKey _appSettings;
         private readonly HealthTrackingDBContext _context;
-        public UsersController(HealthTrackingDBContext context, IConfiguration configuration, IUserRepository userRepo, IOptionsMonitor<AppSettingsKey> optionsMonitor)
+        private readonly CloudinaryService _cloudinaryService;
+        public UsersController(HealthTrackingDBContext context, IConfiguration configuration, IUserRepository userRepo, IOptionsMonitor<AppSettingsKey> optionsMonitor, CloudinaryService cloudinaryService)
         {
             _configuration = configuration;
             _userRepo = userRepo;
             _context = context;
             _appSettings = optionsMonitor.CurrentValue;
+            _cloudinaryService = cloudinaryService; 
         }
 
        /* [HttpPost("register")]
@@ -460,7 +463,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 				// Get user details
 				var user = await _userRepo.GetMemberByIdAsync(parsedUserId);
-                var bodyMeasureChange = user.BodyMeasureChanges.FirstOrDefault();
+                var bodyMeasureChange = user.BodyMeasureChanges.OrderByDescending(d=>d.BodyMeasureId).FirstOrDefault();
                 if (user == null)
 				{
 					return NotFound("User not found");
@@ -481,48 +484,78 @@ namespace HealthTrackingManageAPI.Controllers
 		}
 
 
-		[Authorize]
-		[HttpPut("editMemberProfile")]
-		public async Task<IActionResult> EditMemberProfile([FromBody] MemberProfileDto updatedProfile)
-		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest("Invalid profile data.");
-			}
+        [Authorize]
+        [HttpPut("editMemberProfile")]
+        public async Task<IActionResult> EditMemberProfile([FromBody] MemberProfileDto updatedProfile)
+        {
+            
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid profile data.");
+            }
 
-			try
-			{
-				// Get userId from token
-				var userId = User.FindFirstValue("Id");
-				if (userId == null)
-				{
-					return BadRequest("User ID not found in token.");
-				}
+            try
+            {
+               
+                var userId = User.FindFirstValue("Id");
+                if (userId == null)
+                {
+                    return BadRequest("User ID not found in token.");
+                }
 
-				// Retrieve the existing user from the repository
-				var user = await _userRepo.GetMemberByIdAsync(int.Parse(userId));
-				if (user == null)
-				{
-					return NotFound("User not found.");
-				}
+               
+                var user = await _userRepo.GetMemberByIdAsync(int.Parse(userId));
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
 
-				// Use AutoMapper to map the updated DTO data to the user entity
-				var mapper = MapperConfig.InitializeAutomapper();
-				mapper.Map(updatedProfile, user);
+                var mapper = MapperConfig.InitializeAutomapper();
+                mapper.Map(updatedProfile, user);
 
-				// Save changes to the database
-				await _userRepo.UpdateMemberProfileAsync(user);
+                
+                await _userRepo.UpdateMemberProfileAsync(user,updatedProfile.Weight);
 
-				return Ok("Profile updated successfully.");
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
+                
+                return Ok(new
+                {
+                    message = "Profile updated successfully",
+                    imagePath = updatedProfile.ImageMember
+                });
+            }
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [Authorize]
+        [HttpPut("upload-image-meal-plan")]
+        public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized();
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest();
+            }
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var uploadResult = await _cloudinaryService.UploadImageAsync(
+                    imageFile,
+                    "user_uploads"
+                );
+                var check = await _userRepo.UploadImageForMember(uploadResult.Url.ToString(), memberId);
 
 
+                if (check) return Ok();
 
-
-	}
+            }
+            return BadRequest();
+        }
+    }
 }

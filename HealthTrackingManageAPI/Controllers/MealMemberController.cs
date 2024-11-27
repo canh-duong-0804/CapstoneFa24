@@ -3,8 +3,10 @@ using BusinessObject.Dto.CopyMeal;
 using BusinessObject.Dto.Food;
 using BusinessObject.Dto.MealDetailMember;
 using BusinessObject.Dto.MealMember;
+using BusinessObject.Dto.Member;
 using BusinessObject.Models;
 using DataAccess;
+using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +20,12 @@ namespace HealthTrackingManageAPI.Controllers
     [ApiController]
     public class MealMemberController : ControllerBase
     {
-
+        private readonly CloudinaryService _cloudinaryService;
         private readonly IMealMemberRepository _mealPlanMemberRepository;
-        public MealMemberController(IMealMemberRepository mealPlanMemberRepository)
+        public MealMemberController(IMealMemberRepository mealPlanMemberRepository, CloudinaryService cloudinaryService)
         {
             _mealPlanMemberRepository = mealPlanMemberRepository;
+            _cloudinaryService = cloudinaryService;
         }
 
 
@@ -57,7 +60,24 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(mealMemberDtos);
         }
 
+        [Authorize]
+        [HttpPut("upload-image-meal-plan")]
+        public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile, [FromForm] int mealMemberid)
+        {
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var uploadResult = await _cloudinaryService.UploadImageAsync(
+                    imageFile,
+                    "user_uploads"
+                );
+              var check =  await _mealPlanMemberRepository.UploadImageForMealMember(uploadResult.Url.ToString(), mealMemberid);
+               
+             
+               if(check) return Ok();
 
+            }
+            return BadRequest();
+        }
 
 
 
@@ -102,7 +122,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             await _mealPlanMemberRepository.UpdateMealMemberTotalCaloriesAsync(mealMemberId);
 
-            return Ok();
+            return Ok(mealMemberId);
         }
 
         [Authorize]

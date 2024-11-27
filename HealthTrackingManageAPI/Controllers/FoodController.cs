@@ -1,6 +1,7 @@
 ﻿using BusinessObject;
 using BusinessObject.Dto.Food;
 using BusinessObject.Models;
+using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace HealthTrackingManageAPI.Controllers
     [ApiController]
     public class FoodController : ControllerBase
     {
+        private readonly CloudinaryService _cloudinaryService;
         private readonly IFoodRepository _foodRepository;
-        public FoodController(IFoodRepository foodRepository)
+        public FoodController(IFoodRepository foodRepository, CloudinaryService cloudinaryService)
         {
             _foodRepository = foodRepository;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpGet("get-all-foods-for-staff")]
@@ -90,10 +93,29 @@ namespace HealthTrackingManageAPI.Controllers
 
             var createdFood = await _foodRepository.CreateFoodAsync(foodModel);
             // return CreatedAtAction(nameof(GetAllFoodsForStaff), new { id = createdFood.FoodId }, createdFood);
-            return Ok();
+            return Ok(createdFood.FoodId);
         }
 
-       
+        [Authorize]
+        [HttpPut("upload-image-meal-plan")]
+        public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile, [FromForm] int FoodId)
+        {
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var uploadResult = await _cloudinaryService.UploadImageAsync(
+                    imageFile,
+                    "user_uploads"
+                );
+                var check = await _foodRepository.UploadImageFood(uploadResult.Url.ToString(), FoodId);
+
+
+                if (check) return Ok();
+
+            }
+            return BadRequest();
+        }
+
+
         [HttpPut("update-food")]
         public async Task<IActionResult> UpdateFoodStatus([FromBody] UpdateFoodRequestDTO food)
         {

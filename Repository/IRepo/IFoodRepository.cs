@@ -29,5 +29,6 @@ namespace Repository.IRepo
         Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int FoodId, DateTime SelectDate, int memberId);
         Task<List<FoodListBoxResponseDTO>> GetListBoxFoodForStaffAsync();
         Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string foodName);
+        Task<bool> UploadImageFood(string v, int foodId);
     }
 }

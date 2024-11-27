@@ -25,6 +25,7 @@ namespace Repository.IRepo
         Task<MealMemberDetailResonseDTO> GetMealMemberDetailAsync(int mealMemberId);
         Task<bool> InsertCopyPreviousMeal(InsertCopyMealDTO request,int memberId);
         Task UpdateMealMemberTotalCaloriesAsync(int mealMemberId);
+        Task<bool> UploadImageForMealMember(string urlImage, int mealMemberid);
 
         //Task<bool> CreateMealPlanForMember(MealMember mealMemberModel);
     }

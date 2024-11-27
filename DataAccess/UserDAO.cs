@@ -208,14 +208,73 @@ namespace DataAccess
             }
         }
 
-        public async Task UpdateMemberProfileAsync(Member user)
+        public async Task UpdateMemberProfileAsync(Member user, double weight)
         {
-            using (var context = new HealthTrackingDBContext())
+            try
             {
-                context.Members.Update(user);
-                await context.SaveChangesAsync();
+                using (var context = new HealthTrackingDBContext())
+                {
+                    
+                    var existingMember = await context.Members
+                        .FirstOrDefaultAsync(m => m.MemberId == user.MemberId);
+
+                    if (existingMember == null)
+                    {
+                        throw new Exception("Member not found.");
+                    }
+
+                   
+                    var latestGoal = await context.Goals
+                        .Where(d => d.MemberId == user.MemberId)
+                        .OrderByDescending(d => d.GoalId)
+                        .FirstOrDefaultAsync();
+
+                    if (latestGoal == null)
+                    {
+                        throw new Exception("Goal not found.");
+                    }
+
+                
+                    existingMember.Username = user.Username;
+                    existingMember.PhoneNumber = user.PhoneNumber;
+                    existingMember.ImageMember = user.ImageMember;
+                    existingMember.Dob = user.Dob;
+
+                    
+                    var addNewWeightCurrent = new BodyMeasureChange
+                    {
+                        MemberId = user.MemberId,
+                        Weight = weight,
+                        DateChange = DateTime.Now,
+                        BodyFat = 0,
+                        Muscles = 0,
+                    };
+
+                    
+                    var newGoal = new Goal
+                    {
+                        MemberId = latestGoal.MemberId,
+                        GoalType = latestGoal.GoalType,
+                        ExerciseLevel = latestGoal.ExerciseLevel,
+                        TargetValue = latestGoal.TargetValue,
+                        TargetDate = latestGoal.TargetDate,
+                        ChangeDate = DateTime.Now
+                    };
+
+                  
+                    context.BodyMeasureChanges.Add(addNewWeightCurrent);
+                    context.Goals.Add(newGoal);
+
+                  
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while updating the member profile.", e);
             }
         }
+
 
         public async Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request, int memberId)
         {
@@ -305,6 +364,35 @@ namespace DataAccess
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<bool> UploadImageForMember(string urlImage, int memberId)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+
+                var mealMember = await context.Members
+                    .FirstOrDefaultAsync(m => m.MemberId == memberId);
+
+                if (mealMember == null)
+                {
+                    throw new Exception("MealMember not found.");
+                }
+
+
+                mealMember.ImageMember = urlImage;
+
+
+                await context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error uploading image for meal member: {ex.Message}", ex);
             }
         }
     }

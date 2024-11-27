@@ -24,6 +24,7 @@ namespace BusinessObject.Models
 
         public int MemberId { get; set; }
         public string Username { get; set; } = null!;
+        public string? ImageMember { get; set; }
         public string Email { get; set; } = null!;
         public byte[]? PasswordHash { get; set; }
         public byte[]? PasswordSalt { get; set; }

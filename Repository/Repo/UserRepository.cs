@@ -21,7 +21,7 @@ namespace Repository.Repo
         public Task<BusinessObject.Models.Member> GetMemberByIdAsync(int userId) => UserDAO.Instance.GetMemberByIdAsync(userId);
 
        
-        public Task UpdateMemberProfileAsync(BusinessObject.Models.Member member) => UserDAO.Instance.UpdateMemberProfileAsync(member);
+        public Task UpdateMemberProfileAsync(BusinessObject.Models.Member member, double weight) => UserDAO.Instance.UpdateMemberProfileAsync(member, weight);
 
 
         public bool IsUniqueEmail(string email) => UserDAO.Instance.IsUniqueEmail(email);
@@ -46,6 +46,8 @@ namespace Repository.Repo
         public Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request) => UserDAO.Instance.ResetPasswordOtpAsync(request);
 
         public Task<BusinessObject.Models.Member> DeleteAccount(BusinessObject.Models.Member model, string password) => UserDAO.Instance.DeleteAccount(model, password);
+
+        public Task<bool> UploadImageForMember(string urlImage, int memberId) => UserDAO.Instance.UploadImageForMember(urlImage, memberId);
         
     }
 }
