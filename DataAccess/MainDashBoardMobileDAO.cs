@@ -88,10 +88,8 @@ namespace DataAccess
                     var bmi = currentWeight / (heightInMeters * heightInMeters);
                     var weightGoal = member.Goals.OrderByDescending(d=>d.GoalId).FirstOrDefault();
                     var calorieAdjustment = 0.0;
-                    //DateTime? targetDate = member.Goals.FirstOrDefault(g => g.GoalType.Contains("cân")).TargetDate;
-
-                    // bo goal type lay ra o db
-                    string goalType = "duy trì";
+                    
+                    string goalType = "duy tri";
                     double weightDifference = 0;
 
                     if (weightGoal != null)
@@ -109,14 +107,14 @@ namespace DataAccess
 
                             /*  var totalDeficitNeeded = Math.Abs(weightDifference) * 7700;
                               calorieAdjustment = -1 * (totalDeficitNeeded / daysUntilTarget);*/
-                            goalType = "giảm cân";
+                            goalType = "giam can";
                         }
                         else if (weightDifference > 0)
                         {
 
                             /*  var totalSurplusNeeded = weightDifference * 7700;
                               calorieAdjustment = totalSurplusNeeded / daysUntilTarget;*/
-                            goalType = "tăng cân";
+                            goalType = "tang can";
                         }
                     }
                     weightDifference = Math.Abs(weightDifference);

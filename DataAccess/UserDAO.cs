@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.Register;
+﻿using BusinessObject.Dto.Login;
+using BusinessObject.Dto.Register;
 using BusinessObject.Dto.ResetPassword;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
@@ -253,14 +254,14 @@ namespace DataAccess
 
         }
 
-        public async Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request, int memberId)
+        public async Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var user = await context.Members.FirstOrDefaultAsync(u => u.MemberId == memberId);
+                    var user = await context.Members.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
                    
 
                     CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
@@ -279,6 +280,31 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while resetting the password: {ex.Message}");
+            }
+        }
+
+        public async Task<Member> DeleteAccount(Member loginRequestDTO, string password)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+
+                    var user = await context.Members.FirstOrDefaultAsync(x => x.PhoneNumber == loginRequestDTO.PhoneNumber);
+
+                    if (user == null)
+                        return null;
+
+
+                    if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                        return null;
+
+                    return user;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

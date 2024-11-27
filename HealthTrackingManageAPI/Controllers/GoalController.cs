@@ -76,9 +76,9 @@ namespace HealthTrackingManageAPI.Controllers
         
         
         
-        [HttpGet("get-info-goal-weight-member-for-graph-in-week")]
+        [HttpGet("get-info-goal-weight-member-for-graph")]
         [Authorize]
-        public async Task<IActionResult> GetInforGoalWeightMemberForGraph(DateTime date)
+        public async Task<IActionResult> GetInforGoalWeightMemberForGraph()
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -91,7 +91,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return BadRequest("Invalid member ID.");
             }
 
-            var goal = await _goalRepository.GetInforGoalWeightMemberForGraph(memberId,date);
+            var goal = await _goalRepository.GetInforGoalWeightMemberForGraph(memberId);
            
         
             if (goal == null)
@@ -105,7 +105,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         
-        [HttpGet("get-info-goal-weight-member-for-graph-in-month")]
+       /* [HttpGet("get-info-goal-weight-member-for-graph-in-month")]
         [Authorize]
         public async Task<IActionResult> GetInforGoalWeightMemberForGraphInMonth(DateTime date)
         {
@@ -131,7 +131,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
             return Ok(goal);
-        }
+        }*/
 
 
 

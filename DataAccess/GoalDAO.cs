@@ -261,126 +261,59 @@ namespace DataAccess
             return false;
         }
 
-        public async Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId, DateTime date)
+        public async Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var startOfWeek = date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Monday);
-                    var endOfWeek = startOfWeek.AddDays(7).AddTicks(-1);
-                    var today = DateTime.UtcNow;
+                  
+                    var bodyMeasureChanges = await context.BodyMeasureChanges
+                        .Where(b => b.MemberId == memberId)
+                        .ToListAsync(); 
 
-
-                    var allRecords = await context.BodyMeasureChanges
-                .Where(b => b.MemberId == memberId && b.DateChange >= startOfWeek && b.DateChange <= today.AddDays(1).AddTicks(-1))
-                .ToListAsync();
-
-                    
-                    var currentWeight = allRecords
+                    var groupedBodyMeasures = bodyMeasureChanges
                         .GroupBy(b => b.DateChange.Value.Date)
-                        .Select(g => g.OrderByDescending(b => b.DateChange).First())
+                        .Select(g => g.OrderBy(b => b.DateChange).FirstOrDefault())
+                        .OrderBy(b => b.DateChange)
                         .Select(b => new WeightDTO
                         {
-                            Date = b.DateChange?.ToString("dd-MM-yyyy"),
+                            Date = b.DateChange.Value.ToString("dd-MM-yyyy"),
                             Weight = b.Weight
                         })
                         .ToList();
 
-                   
-                    var firstDayRecord = allRecords
-                        .Where(b => b.DateChange.Value.Date == startOfWeek.Date)
-                        .OrderByDescending(b => b.DateChange) 
-                        .FirstOrDefault();
+                    
+                    var goals = await context.Goals
+                        .Where(g => g.MemberId == memberId)
+                        .ToListAsync(); 
 
-                    if (firstDayRecord == null)
-                    {
-                       
-                        currentWeight.Add(new WeightDTO
-                        {
-                            Date = startOfWeek.ToString("dd-MM-yyyy"),
-                            Weight = 0
-                        });
-                    }
-                    else
-                    {
-                       
-                        if (!currentWeight.Any(cw => cw.Date == startOfWeek.ToString("dd-MM-yyyy")))
-                        {
-                            currentWeight.Add(new WeightDTO
-                            {
-                                Date = startOfWeek.ToString("dd-MM-yyyy"),
-                                Weight = firstDayRecord.Weight
-                            });
-                        }
-                    }
-
-
-                    currentWeight = currentWeight
-                        .OrderBy(cw => DateTime.ParseExact(cw.Date, "dd-MM-yyyy", null))
-                        .ToList();
-
-
-                    var allGoals = await context.Goals
-                        .Where(g => g.MemberId == memberId && g.ChangeDate >= startOfWeek && g.ChangeDate <= today.AddDays(1).AddTicks(-1))
-                        .ToListAsync();
-
-                    var rawGoals = allGoals
+                    var groupedGoals = goals
                         .GroupBy(g => g.ChangeDate.Date)
-                        .Select(g => g.OrderByDescending(x => x.GoalId).First())
+                        .Select(g => g.OrderBy(goal => goal.ChangeDate).FirstOrDefault()) 
                         .OrderBy(g => g.ChangeDate)
+                        .Select(g => new WeightDTO
+                        {
+                            Date = g.ChangeDate.ToString("dd-MM-yyyy"),
+                            Weight = g.TargetValue 
+                        })
                         .ToList();
 
-                
-                    var goalWeight = new List<WeightDTO>();
-                    double? lastTargetWeight = 0;
-                    bool isFirstIteration = true;
-
-                    for (var day = startOfWeek; day <= endOfWeek; day = day.AddDays(1))
-                    {
-                        if (day <= today)
-                        {
-                            var applicableGoal = rawGoals
-                                .Where(g => g.ChangeDate.Date == day.Date)
-                                .OrderByDescending(g => g.ChangeDate)
-                                .FirstOrDefault();
-
-
-
-                            if (isFirstIteration && applicableGoal == null)
-                            {
-                                goalWeight.Add(new WeightDTO
-                                {
-                                    Weight = 0,
-                                    Date = day.ToString("dd-MM-yyyy")
-                                });
-                            }
-                            else if (applicableGoal != null)
-                            {
-                                lastTargetWeight = applicableGoal.TargetValue;
-                                goalWeight.Add(new WeightDTO
-                                {
-                                    Weight = lastTargetWeight,
-                                    Date = day.ToString("dd-MM-yyyy")
-                                });
-                            }
-
-                            isFirstIteration = false;
-                        }
-                    }
-
+                 
                     return new GetInforGoalWeightMemberForGraphResponseDTO
                     {
-                        goalWeight = goalWeight,
-                        currentWeight = currentWeight
+                        currentWeight = groupedBodyMeasures,
+                        goalWeight = groupedGoals
                     };
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while retrieving the goal.", ex);
+                throw new Exception("An error occurred while retrieving daily member data.", ex);
             }
         }
+
+
 
 
 
@@ -478,7 +411,7 @@ namespace DataAccess
 
 
 
-        public async Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date)
+        /*public async Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date)
         {
             try
             {
@@ -597,7 +530,7 @@ namespace DataAccess
             }
         }
 
-
+*/
 
 
         /*public async Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date)
