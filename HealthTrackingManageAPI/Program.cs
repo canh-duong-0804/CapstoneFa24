@@ -52,7 +52,9 @@ builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
 builder.Services.AddScoped<IWaterLogRepository, WaterLogRepository>();
 builder.Services.AddScoped<IExecrisePlanRepository, ExecrisePlanRepository>();
 builder.Services.AddScoped<IMealPlanTrainnerRepository, MealPlanTrainnerRepository>();
-
+builder.Services.AddScoped<INutrientRepository, NutrientRepository>();
+builder.Services.AddScoped<ICaloriesRepository, CaloriesRepository>();
+builder.Services.AddScoped<IMacroRepository, MacroRepository>();
 
 builder.Services.AddScoped<SpeedSMSService>();
 
