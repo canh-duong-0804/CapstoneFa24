@@ -19,7 +19,7 @@ namespace Repository.Repo
     {
         public Task<bool> AddFoodListToDiaryAsync(FoodDiaryDetailRequestDTO listFoodDiaryDetail) => FoodDiaryDAO.Instance.AddFoodListToDiaryAsync(listFoodDiaryDetail);
 
-        public Task<bool> DeleteFoodListToDiaryAsync(int id) => FoodDiaryDAO.Instance.DeleteFoodListToDiaryAsync(id);
+        public Task<bool> DeleteFoodListToDiaryAsync(int foodDiaryDetailId) => FoodDiaryDAO.Instance.DeleteFoodListToDiaryAsync(foodDiaryDetailId);
 
         public Task getDailyFoodDiaryFollowMeal(int dairyID, int mealType) => FoodDiaryDAO.Instance.getDailyFoodDiaryFollowMeal(dairyID, mealType);
 

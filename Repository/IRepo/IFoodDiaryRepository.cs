@@ -16,7 +16,7 @@ namespace Repository.IRepo
     public interface IFoodDiaryRepository
     {
         Task<bool> AddFoodListToDiaryAsync(FoodDiaryDetailRequestDTO listFoodDiaryDetail);
-        Task<bool> DeleteFoodListToDiaryAsync(int id);
+        Task<bool> DeleteFoodListToDiaryAsync(int foodDiaryDetailId);
         Task getDailyFoodDiaryFollowMeal(int dairyID, int mealType);
         Task<FoodDiary> GetOrCreateFoodDiaryByDate(int memberId, DateTime date);
         Task<UpdateFoodDiaryRequestDTO> UpdateFoodDiary(UpdateFoodDiaryRequestDTO updatedFoodDiary);

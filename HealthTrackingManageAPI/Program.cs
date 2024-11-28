@@ -56,6 +56,9 @@ builder.Services.AddScoped<IWaterLogRepository, WaterLogRepository>();
 builder.Services.AddScoped<IExecrisePlanRepository, ExecrisePlanRepository>();
 builder.Services.AddScoped<IMealPlanTrainnerRepository, MealPlanTrainnerRepository>();
 builder.Services.AddScoped<IExerciseTrainerRepository, ExerciseTrainerRepository>();
+
+builder.Services.AddScoped<IChatMemberRepository, ChatMemberRepository>();
+builder.Services.AddScoped<IAdminChatRepository, AdminChatRepository>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<ImageUploadDto>, ImageUploadValidator>();
 builder.Services.AddScoped<CloudinaryService>();

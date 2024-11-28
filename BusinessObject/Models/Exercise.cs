@@ -17,11 +17,12 @@ namespace BusinessObject.Models
         public int CreateBy { get; set; }
         public DateTime CreateDate { get; set; }
         public int? ChangeBy { get; set; }
-        public bool? IsCardio { get; set; }
+        public int? TypeExercise { get; set; }
         public string? ExerciseImage { get; set; }
         public DateTime? ChangeDate { get; set; }
         public string ExerciseName { get; set; } = null!;
         public string? Description { get; set; }
+        public double? MetValue { get; set; }
         public bool? Status { get; set; }
 
         public virtual staff CreateByNavigation { get; set; } = null!;

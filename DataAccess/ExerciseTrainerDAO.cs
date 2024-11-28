@@ -42,7 +42,7 @@ namespace DataAccess
                         CreateBy = memberId,
                         CreateDate = DateTime.UtcNow,
                         ExerciseImage = request.ExerciseImage,
-                        IsCardio = request.IsCardio,
+                        TypeExercise = request.TypeExercise,
                         Status = true
                     };
 
@@ -50,7 +50,7 @@ namespace DataAccess
                     context.Exercises.Add(exercise);
                     await context.SaveChangesAsync();
 
-                    if (request.IsCardio)
+                    if (request.TypeExercise == 1)
                     {
 
                         if (request.CardioMetrics == null)
@@ -61,8 +61,8 @@ namespace DataAccess
                         var cardioDetail = new ExerciseCardio
                         {
                             ExerciseId = exercise.ExerciseId,
-                            MetricsCardio = request.CardioMetrics.MetricsCardio,
-                            MetValue = request.CardioMetrics.MetValue
+                           // MetricsCardio = request.CardioMetrics.MetricsCardio,
+                           // MetValue = request.CardioMetrics.MetValue
                         };
 
                         context.ExerciseCardios.Add(cardioDetail);
@@ -78,7 +78,7 @@ namespace DataAccess
                         var resistanceDetail = new ExerciseResistance
                         {
                             ExerciseId = exercise.ExerciseId,
-                            MetricsResistance = request.ResistanceMetrics.MetricsResistance
+                            //MetricsResistance = request.ResistanceMetrics.MetricsResistance
                         };
 
                         context.ExerciseResistances.Add(resistanceDetail);
@@ -147,20 +147,44 @@ namespace DataAccess
                         ExerciseName = exercise.ExerciseName,
                         Description = exercise.Description,
                         ExerciseImage = exercise.ExerciseImage,
-                        IsCardio = exercise.IsCardio ?? false,
-                        CardioMetrics = exercise.IsCardio == true
+                        MetValue=exercise.MetValue,
+                       
+                        
+                        TypeExercise=exercise.TypeExercise,
+                        CardioMetrics = exercise.TypeExercise == 1
                             ? exercise.ExerciseCardios.Select(c => new UpdateExerciseCardioDTO
                             {
-                                MetricsCardio = c.MetricsCardio,
-                                MetValue = c.MetValue
+                                //MetricsCardio = c.MetricsCardio,
+                               //MetValue = c.MetValue
+                               Calories1 = c.Calories1,
+                               Calories2 = c.Calories2,
+                               Calories3 = c.Calories3, 
+                               Minutes1 = c.Minutes1,
+                               Minutes2 = c.Minutes2,   
+                               Minutes3 = c.Minutes3,   
+                               
+
+
                             }).FirstOrDefault()
                             : null,
-                        ResistanceMetrics = exercise.IsCardio == false
+                        ResistanceMetrics = exercise.TypeExercise == 2
                             ? exercise.ExerciseResistances.Select(r => new UpdateExerciseResistanceDTO
                             {
-                                MetricsResistance = r.MetricsResistance
+
+                                Reps1 = r.Reps1,
+                                Reps2 = r.Reps2,
+                                Reps3 = r.Reps3,
+                                Sets1 = r.Sets1,
+                                Sets2 = r.Sets2,
+                                Sets3 = r.Sets3,
+                                Minutes1= r.Minutes1,
+                                Minutes2 = r.Minutes2,
+                                Minutes3 = r.Minutes3,
+
+                            //    MetricsResistance = r.MetricsResistance
                             }).FirstOrDefault()
-                            : null
+                            : null,
+
                     };
 
                     return exerciseDto;
@@ -191,27 +215,27 @@ namespace DataAccess
                     exercise.ExerciseName = updateRequest.ExerciseName ?? exercise.ExerciseName;
                     exercise.Description = updateRequest.Description ?? exercise.Description;
                     exercise.ExerciseImage = updateRequest.ExerciseImage ?? exercise.ExerciseImage;
-                    exercise.IsCardio = updateRequest.IsCardio ?? exercise.IsCardio;
+                    //exercise.TypeExercise = updateRequest.IsCardio ?? exercise.IsCardio;
                     exercise.ChangeDate = DateTime.UtcNow;
                     exercise.ChangeBy = memberId;
 
-                    if (exercise.IsCardio == true && updateRequest.CardioMetrics != null)
+                    if (exercise.TypeExercise == 1 && updateRequest.CardioMetrics != null)
                     {
                        
                         var cardioDetail = exercise.ExerciseCardios.FirstOrDefault();
                         if (cardioDetail != null)
                         {
-                            cardioDetail.MetricsCardio = updateRequest.CardioMetrics.MetricsCardio ?? cardioDetail.MetricsCardio;
-                            cardioDetail.MetValue = updateRequest.CardioMetrics.MetValue ?? cardioDetail.MetValue;
+                          //  cardioDetail.MetricsCardio = updateRequest.CardioMetrics.MetricsCardio ?? cardioDetail.MetricsCardio;
+                         //   cardioDetail.MetValue = updateRequest.CardioMetrics.MetValue ?? cardioDetail.MetValue;
                         }
                     }
-                    else if (exercise.IsCardio == false && updateRequest.ResistanceMetrics != null)
+                    else if (exercise.TypeExercise == 2 && updateRequest.ResistanceMetrics != null)
                     {
                         
                         var resistanceDetail = exercise.ExerciseResistances.FirstOrDefault();
                         if (resistanceDetail != null)
                         {
-                            resistanceDetail.MetricsResistance = updateRequest.ResistanceMetrics.MetricsResistance ?? resistanceDetail.MetricsResistance;
+                          //  resistanceDetail.MetricsResistance = updateRequest.ResistanceMetrics.MetricsResistance ?? resistanceDetail.MetricsResistance;
                         }
                     }
 

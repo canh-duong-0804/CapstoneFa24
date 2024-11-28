@@ -32,7 +32,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, bool? isCardioFilter)
+        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace DataAccess
 
                     if (isCardioFilter.HasValue)
                     {
-                        query = query.Where(e => e.IsCardio == isCardioFilter.Value);
+                        query = query.Where(e => e.TypeExercise == isCardioFilter.Value);
                     }
 
                     var exercises = await query
@@ -59,7 +59,10 @@ namespace DataAccess
 
                             ExerciseImage = e.ExerciseImage,
                             ExerciseName = e.ExerciseName,
-                            CategoryExercise = e.IsCardio == true ? "Cardio" : "Kháng lực"
+                            CategoryExercise = e.TypeExercise == 1 ? "Cardio" :
+                                               e.TypeExercise == 2 ? "Kháng lực" :
+                                               e.TypeExercise == 3 ? "Các bài tập khác": "khong xac dinh"
+
                         })
                         .ToListAsync();
 
@@ -84,26 +87,33 @@ namespace DataAccess
                     var exercise = await context.Exercises
                     .Where(e => e.ExerciseId == exerciseId)
                     .FirstOrDefaultAsync();
-
-                    if (exercise == null || exercise.IsCardio == false) return null;
+                    var cardio = await context.ExerciseCardios
+                           .Where(c => c.ExerciseId == exerciseId)
+                           .FirstOrDefaultAsync();
+                    if (exercise == null || exercise.TypeExercise == 2) return null;
 
 
 
                     var result = new GetExerciseDetailOfCardiorResponseDTO
                     {
                         ExerciseId = exercise.ExerciseId,
-                        IsCardio = exercise.IsCardio,
-                        CategoryExercise = exercise.IsCardio == true ? "Cardio" : "Kháng lực",
+                        TypeExercise = exercise.TypeExercise,
+                        CategoryExercise = exercise.TypeExercise switch
+                        {
+                            1 => "Cardio",
+                            2 => "Kháng lực",
+                            3 => "Các bài tập khác",
+                            _ => "Không xác định"
+                        },
                         ExerciseImage = exercise.ExerciseImage,
                         ExerciseName = exercise.ExerciseName,
-                        Description = exercise.Description
+                        Description = exercise.Description,
+                        //MetricsCardio=cardio.MetricsCardio
                     };
 
 
                    
-                        var cardio = await context.ExerciseCardios
-                            .Where(c => c.ExerciseId == exerciseId)
-                            .FirstOrDefaultAsync();
+                       
 
                         
                     
@@ -128,29 +138,28 @@ namespace DataAccess
                     var exercise = await context.Exercises
                 .Where(e => e.ExerciseId == exerciseId)
                 .FirstOrDefaultAsync();
-
-                    if (exercise == null || exercise.IsCardio == true) return null;
+                    var resistance = await context.ExerciseResistances
+                                                .Where(r => r.ExerciseId == exerciseId)
+                                                .FirstOrDefaultAsync();
+                    if (exercise == null || exercise.TypeExercise == 1) return null;
 
 
                     var result = new GetExerciseDetailOfResitanceResponseDTO
                     {
                         ExerciseId = exercise.ExerciseId,
-                        IsCardio = exercise.IsCardio,
-                        CategoryExercise = exercise.IsCardio == false ? "Kháng lực" : "Cardio",
+                        TypeExercise = exercise.TypeExercise,
+                        CategoryExercise = exercise.TypeExercise switch
+                        {
+                            1 => "Cardio",      
+                            2 => "Kháng lực",    
+                            3 => "Các bài tập khác", 
+                            _ => "Không xác định" 
+                        },
                         ExerciseImage = exercise.ExerciseImage,
                         ExerciseName = exercise.ExerciseName,
-                        Description = exercise.Description
+                        Description = exercise.Description,
+                        //MetricsResistance= resistance.MetricsResistance
                     };
-
-
-                   
-                        var resistance = await context.ExerciseResistances
-                            .Where(r => r.ExerciseId == exerciseId)
-                            .FirstOrDefaultAsync();
-
-                        
-                    
-
                     return result;
                 }
             }

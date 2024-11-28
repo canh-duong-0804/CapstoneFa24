@@ -34,7 +34,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     // Retrieve the MET value for the exercise
-                    var exercise = await context.ExerciseCardios
+                    var exercise = await context.Exercises
                         .FirstOrDefaultAsync(e => e.ExerciseId == exerciseId);
 
                     if (exercise == null)
@@ -101,7 +101,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var exercise = await context.ExerciseCardios
+                    var exercise = await context.Exercises
                         .FirstOrDefaultAsync(e => e.ExerciseId == exerciseId);
 
                     return exercise?.MetValue;

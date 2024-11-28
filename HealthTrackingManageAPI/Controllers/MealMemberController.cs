@@ -83,7 +83,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [Authorize]
         [HttpPost("create-meal-plan-for-member")]
-        public async Task<IActionResult> CreateMealPlanForMember([FromBody] CreateMealMemberRequestDTO mealMemberDto)
+        public async Task<IActionResult> CreateMealPlanForMember([FromForm] CreateMealMemberRequestDTO mealMemberDto, IFormFile? imageFile)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -111,12 +111,15 @@ namespace HealthTrackingManageAPI.Controllers
             var mealMemberId = await _mealPlanMemberRepository.CreateMealMemberAsync(mealMember);
 
             var mealMemberDetails = mapper.Map<List<MealMemberDetail>>(mealMemberDto.MealDetails);
+
+
+
             foreach (var detail in mealMemberDetails)
             {
                 detail.MemberId = memberId;
                 detail.MealMemberId = mealMemberId;
             }
-
+            mealMemberDto.MealDetails.Count();
             await _mealPlanMemberRepository.CreateMealMemberDetailsAsync(mealMemberDetails);
 
 
