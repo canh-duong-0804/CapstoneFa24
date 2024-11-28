@@ -23,19 +23,24 @@ namespace YourAPINamespace.Controllers
 
         
         [HttpPost("create-chat")]
-        public async Task<ActionResult<MessageChat>> CreateChat([FromBody] MemberCreateChatRequest request)
+        public async Task<IActionResult> CreateChat([FromBody] MemberCreateChatRequest request)
         {
             try
             {
-               
-                int memberId = GetCurrentMemberId();
 
-                var chat = await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
-                return Ok(new
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
                 {
-                    ChatId = chat.MessageChatId,
-                    Message = "Chat created successfully"
-                });
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
+
+                 await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -45,11 +50,20 @@ namespace YourAPINamespace.Controllers
 
         // Member retrieves their chat history
         [HttpGet("my-chats")]
-        public async Task<ActionResult<List<MessageChat>>> GetMemberChats()
+        public async Task<ActionResult> GetMemberChats()
         {
             try
             {
-                int memberId = GetCurrentMemberId();
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
 
                 var chats = await _chatRepository.GetMemberChatsAsync(memberId);
                 return Ok(chats);
@@ -62,11 +76,20 @@ namespace YourAPINamespace.Controllers
 
        
         [HttpGet("chat-details/{chatId}")]
-        public async Task<ActionResult<MessageChat>> GetChatDetails(int chatId)
+        public async Task<ActionResult> GetChatDetails(int chatId)
         {
             try
             {
-                int memberId = GetCurrentMemberId();
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
 
                 var chat = await _chatRepository.GetMemberChatDetailsAsync(memberId, chatId);
                 if (chat == null)
@@ -86,7 +109,16 @@ namespace YourAPINamespace.Controllers
         {
             try
             {
-                int memberId = GetCurrentMemberId();
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
 
                 await _chatRepository.RateChatAsync(memberId, request.ChatId, request.RatingStar);
                 return Ok(new { message = "Chat rated successfully" });
@@ -98,16 +130,7 @@ namespace YourAPINamespace.Controllers
         }
 
     
-        private int GetCurrentMemberId()
-        {
-            
-            var memberId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(memberId))
-                throw new UnauthorizedAccessException("Member not authenticated");
-
-            return int.Parse(memberId);
-        }
+        
     }
 
    

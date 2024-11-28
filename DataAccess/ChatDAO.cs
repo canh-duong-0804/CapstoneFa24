@@ -29,7 +29,7 @@ namespace DataAccess
 
         private ChatDAO() { }
 
-        public async Task<MessageChat> CreateChatAsync(int memberId, string initialMessage)
+        public async Task CreateChatAsync(int memberId, string initialMessage)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace DataAccess
                     context.MessageChats.Add(newChat);
                     await context.SaveChangesAsync();
 
-                    return newChat;
+                   // return newChat;
                 }
             }
             catch (Exception ex)
