@@ -22,6 +22,9 @@ namespace Repository.Repo
         
 
         public Task RateChatAsync(int memberId, int chatId, double rating) => ChatDAO.Instance.RateChatAsync(memberId, chatId, rating);
-       
+
+        public Task SendMessageMemberAsync(int memberId, int chatId, string messageContent) => ChatDAO.Instance.SendMessageMemberAsync(memberId, chatId, messageContent);
+
+        
     }
 }

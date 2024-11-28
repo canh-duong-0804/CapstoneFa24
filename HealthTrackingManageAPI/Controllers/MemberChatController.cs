@@ -21,7 +21,7 @@ namespace YourAPINamespace.Controllers
             _chatRepository = chatRepository;
         }
 
-        
+
         [HttpPost("create-chat")]
         public async Task<IActionResult> CreateChat([FromBody] MemberCreateChatRequest request)
         {
@@ -39,7 +39,7 @@ namespace YourAPINamespace.Controllers
                     return BadRequest();
                 }
 
-                 await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
+                await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
                 return Ok();
             }
             catch (Exception ex)
@@ -47,6 +47,34 @@ namespace YourAPINamespace.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("send-message")]
+        public async Task<IActionResult> SendMessage([FromBody] SendMessageRequestMember request)
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+
+
+                await _chatRepository.SendMessageMemberAsync(memberId, request.ChatId, request.MessageContent);
+
+                return Ok(new { message = "Message sent successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
         // Member retrieves their chat history
         [HttpGet("my-chats")]
@@ -74,7 +102,7 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-       
+
         [HttpGet("chat-details/{chatId}")]
         public async Task<ActionResult> GetChatDetails(int chatId)
         {
@@ -103,7 +131,7 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-       
+
         [HttpPost("rate-chat")]
         public async Task<ActionResult> RateChatInteraction([FromBody] MemberChatRatingRequest request)
         {
@@ -129,11 +157,18 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-    
-        
+
+
     }
 
-   
+
+
+    public class SendMessageRequestMember
+    {
+        public int ChatId { get; set; } // ID của đoạn chat
+        public string MessageContent { get; set; } = null!; // Nội dung tin nhắn
+    }
+
     public class MemberCreateChatRequest
     {
         public string InitialMessage { get; set; }

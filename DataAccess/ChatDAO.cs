@@ -38,15 +38,15 @@ namespace DataAccess
                     var newChat = new MessageChat
                     {
                         MemberId = memberId,
-                        
+
                         CreateAt = DateTime.UtcNow,
-                      
+
                     };
 
                     context.MessageChats.Add(newChat);
                     await context.SaveChangesAsync();
 
-                   // return newChat;
+                    // return newChat;
                 }
             }
             catch (Exception ex)
@@ -127,17 +127,17 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
+
                     var chat = await context.MessageChats.FirstOrDefaultAsync(c => c.MessageChatId == chatId);
                     if (chat == null)
                     {
                         throw new Exception("Chat not found.");
                     }
 
-                   
+
                     chat.StaffId = staffId;
 
-                    
+
                     context.MessageChats.Update(chat);
                     await context.SaveChangesAsync();
                 }
@@ -154,14 +154,14 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                   
+
                     var chat = await context.MessageChats.FirstOrDefaultAsync(c => c.MessageChatId == chatId);
                     if (chat == null)
                     {
                         throw new Exception("Chat not found.");
                     }
 
-                   
+
                     if (chat.StaffId != staffId)
                     {
                         throw new Exception("You are not assigned to this chat.");
@@ -177,6 +177,42 @@ namespace DataAccess
                     };
 
 
+                    context.MessageChatDetails.Add(message);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error sending message: {ex.Message}", ex);
+            }
+        }
+
+        public async Task SendMessageMemberAsync(int memberId, int chatId, string messageContent)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    
+                    var chat = await context.MessageChats
+                        .FirstOrDefaultAsync(c => c.MessageChatId == chatId && c.MemberId == memberId);
+
+                    if (chat == null)
+                    {
+                        throw new Exception("Chat not found or unauthorized.");
+                    }
+
+                   
+                    var message = new MessageChatDetail
+                    {
+                        MessageChatId = chatId, 
+                        SenderType = "1", 
+                        
+                        MessageContent = messageContent,
+                        SentAt = DateTime.UtcNow 
+                    };
+
+                    
                     context.MessageChatDetails.Add(message);
                     await context.SaveChangesAsync();
                 }
