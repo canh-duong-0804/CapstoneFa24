@@ -9,7 +9,7 @@ using Repository.IRepo;
 
 namespace YourAPINamespace.Controllers
 {
-    [Authorize(Roles = "Member")]
+    [Authorize]
     [ApiController]
     [Route("api/member/[controller]")]
     public class MemberChatController : ControllerBase
