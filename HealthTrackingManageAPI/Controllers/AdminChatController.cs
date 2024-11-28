@@ -8,7 +8,7 @@ using HealthTrackingManageAPI.Authorize;
 
 namespace YourAPINamespace.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     [ApiController]
     [Route("api/admin/[controller]")]
     public class AdminChatController : ControllerBase

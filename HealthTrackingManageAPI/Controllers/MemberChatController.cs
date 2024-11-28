@@ -21,21 +21,26 @@ namespace YourAPINamespace.Controllers
             _chatRepository = chatRepository;
         }
 
-        
+
         [HttpPost("create-chat")]
-        public async Task<ActionResult<MessageChat>> CreateChat([FromBody] MemberCreateChatRequest request)
+        public async Task<IActionResult> CreateChat([FromBody] MemberCreateChatRequest request)
         {
             try
             {
-               
-                int memberId = GetCurrentMemberId();
 
-                var chat = await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
-                return Ok(new
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
                 {
-                    ChatId = chat.MessageChatId,
-                    Message = "Chat created successfully"
-                });
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
+
+                await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -43,13 +48,50 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-        // Member retrieves their chat history
-        [HttpGet("my-chats")]
-        public async Task<ActionResult<List<MessageChat>>> GetMemberChats()
+        [HttpPost("send-message")]
+        public async Task<IActionResult> SendMessage([FromBody] SendMessageRequestMember request)
         {
             try
             {
-                int memberId = GetCurrentMemberId();
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+
+
+                await _chatRepository.SendMessageMemberAsync(memberId, request.ChatId, request.MessageContent);
+
+                return Ok(new { message = "Message sent successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        // Member retrieves their chat history
+        [HttpGet("my-chats")]
+        public async Task<ActionResult> GetMemberChats()
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
 
                 var chats = await _chatRepository.GetMemberChatsAsync(memberId);
                 return Ok(chats);
@@ -60,13 +102,22 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-       
+
         [HttpGet("chat-details/{chatId}")]
-        public async Task<ActionResult<MessageChat>> GetChatDetails(int chatId)
+        public async Task<ActionResult> GetChatDetails(int chatId)
         {
             try
             {
-                int memberId = GetCurrentMemberId();
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
 
                 var chat = await _chatRepository.GetMemberChatDetailsAsync(memberId, chatId);
                 if (chat == null)
@@ -80,13 +131,22 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-       
+
         [HttpPost("rate-chat")]
         public async Task<ActionResult> RateChatInteraction([FromBody] MemberChatRatingRequest request)
         {
             try
             {
-                int memberId = GetCurrentMemberId();
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
 
                 await _chatRepository.RateChatAsync(memberId, request.ChatId, request.RatingStar);
                 return Ok(new { message = "Chat rated successfully" });
@@ -97,20 +157,18 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-    
-        private int GetCurrentMemberId()
-        {
-            
-            var memberId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(memberId))
-                throw new UnauthorizedAccessException("Member not authenticated");
 
-            return int.Parse(memberId);
-        }
     }
 
-   
+
+
+    public class SendMessageRequestMember
+    {
+        public int ChatId { get; set; } // ID của đoạn chat
+        public string MessageContent { get; set; } = null!; // Nội dung tin nhắn
+    }
+
     public class MemberCreateChatRequest
     {
         public string InitialMessage { get; set; }
