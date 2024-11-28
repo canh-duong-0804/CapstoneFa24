@@ -11,7 +11,7 @@ namespace Repository.Repo
 {
     public class ChatMemberRepository : IChatMemberRepository
     {
-        public Task CreateChatAsync(int memberId, string initialMessage)=> ChatDAO.Instance.CreateChatAsync(memberId, initialMessage);
+        public Task CreateChatAsync(int memberId)=> ChatDAO.Instance.CreateChatAsync(memberId);
 
 
 

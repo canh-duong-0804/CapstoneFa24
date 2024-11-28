@@ -148,7 +148,7 @@ namespace DataAccess
                     DateTime targetDate = DateTime.UtcNow;
                     if (weeklyGoal != 0)
                     {
-                        
+
                         int weeksNeeded = (int)Math.Ceiling(Math.Abs((targetWeight - currentWeight) / weeklyGoal));
                         targetDate = DateTime.Now.AddDays(weeksNeeded * 7);
                     }
@@ -158,8 +158,8 @@ namespace DataAccess
                         MemberId = savedMember.MemberId,
                         TargetValue = (member.TargetWeight.HasValue ? member.TargetWeight : member.Weight) ?? 0.0,
 
-                        ChangeDate = DateTime.UtcNow,   
-                       
+                        ChangeDate = DateTime.UtcNow,
+
                         TargetDate = targetDate,
 
                         ExerciseLevel = member.ExerciseLevel,
@@ -183,7 +183,7 @@ namespace DataAccess
             }
         }
 
-        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        public bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             using (var hmac = new HMACSHA512(storedSalt))
             {
@@ -192,7 +192,7 @@ namespace DataAccess
             }
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
@@ -214,7 +214,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     var existingMember = await context.Members
                         .FirstOrDefaultAsync(m => m.MemberId == user.MemberId);
 
@@ -223,7 +223,7 @@ namespace DataAccess
                         throw new Exception("Member not found.");
                     }
 
-                   
+
                     var latestGoal = await context.Goals
                         .Where(d => d.MemberId == user.MemberId)
                         .OrderByDescending(d => d.GoalId)
@@ -234,13 +234,13 @@ namespace DataAccess
                         throw new Exception("Goal not found.");
                     }
 
-                
+
                     existingMember.Username = user.Username;
                     existingMember.PhoneNumber = user.PhoneNumber;
                     existingMember.ImageMember = user.ImageMember;
                     existingMember.Dob = user.Dob;
 
-                    
+
                     var addNewWeightCurrent = new BodyMeasureChange
                     {
                         MemberId = user.MemberId,
@@ -250,7 +250,7 @@ namespace DataAccess
                         Muscles = 0,
                     };
 
-                    
+
                     var newGoal = new Goal
                     {
                         MemberId = latestGoal.MemberId,
@@ -261,11 +261,11 @@ namespace DataAccess
                         ChangeDate = DateTime.Now
                     };
 
-                  
+
                     context.BodyMeasureChanges.Add(addNewWeightCurrent);
                     context.Goals.Add(newGoal);
 
-                  
+
                     await context.SaveChangesAsync();
                 }
             }
@@ -289,8 +289,8 @@ namespace DataAccess
                     {
                         throw new Exception("User not found.");
                     }
-                    /*if (!VerifyPasswordHash(request.OldPassword, user.PasswordHash, user.PasswordSalt))
-                        return false;*/
+                    if (!VerifyPasswordHash(request.NewPassword, user.PasswordHash, user.PasswordSalt))
+                        return false;
 
                     CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -321,7 +321,7 @@ namespace DataAccess
                 {
 
                     var user = await context.Members.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
-                   
+
 
                     CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
 

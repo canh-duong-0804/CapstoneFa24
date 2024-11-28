@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using BusinessObject.Models;
 using Repository.IRepo;
 using HealthTrackingManageAPI.Authorize;
+using System.Security.Claims;
 
 namespace YourAPINamespace.Controllers
 {
@@ -59,7 +60,18 @@ namespace YourAPINamespace.Controllers
         {
             try
             {
-                await _adminChatRepository.SendMessageAsync(request.ChatId, request.StaffId, request.MessageContent);
+
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest();
+                }
+                await _adminChatRepository.SendMessageAsync(request.ChatId, StaffId, request.MessageContent);
                 return Ok(new { message = "Message sent successfully." });
             }
             catch (Exception ex)
@@ -79,7 +91,7 @@ namespace YourAPINamespace.Controllers
     public class SendMessageRequest
     {
         public int ChatId { get; set; }
-        public int StaffId { get; set; }
+       // public int StaffId { get; set; }
         public string MessageContent { get; set; }
     }
 }
