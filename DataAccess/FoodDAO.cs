@@ -332,11 +332,13 @@ namespace DataAccess
 
 
 
-                    responseDto.totalFat = getGoalCalo.Fat;
-                    responseDto.totalCalories = getGoalCalo.GoalCalories;
-                    responseDto.totalCarb = getGoalCalo.Carbs; ;
-                    responseDto.totalProtein = getGoalCalo.Protein;
+                    responseDto.totalFat = (double)Math.Round((decimal)(getGoalCalo.GoalCalories * 0.25) / 9, 1);
+                    responseDto.totalCalories = (double)getGoalCalo.GoalCalories;
+                    responseDto.totalCarb = (double)Math.Round((decimal)(getGoalCalo.GoalCalories * 0.45) / 4, 1);
+                    responseDto.totalProtein = (double)Math.Round((decimal)(getGoalCalo.GoalCalories * 0.3) / 4, 1);
                     return responseDto;
+
+
                 }
             }
             catch (Exception ex)

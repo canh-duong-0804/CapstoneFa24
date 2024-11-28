@@ -48,7 +48,7 @@ namespace HealthTrackingManageAPI.Controllers
 
                 double? caloriesBurned = null; // Default for resistance exercises
 
-                if (exercise.IsCardio == true)
+                if (exercise.TypeExercise == 1)
                 {
 
                     caloriesBurned = newExerciseDetail.CaloriesBurned;

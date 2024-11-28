@@ -23,7 +23,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpGet("Get-all-exercises-for-member")]
         [Authorize]
-        public async Task<IActionResult> GetAllExercises([FromQuery] string? search, [FromQuery] bool? isCardioFilter)
+        public async Task<IActionResult> GetAllExercises([FromQuery] string? search, [FromQuery] int? isCardioFilter)
         {
             var exercises = await _exerciseRepository.GetAllExercisesForMemberAsync(search, isCardioFilter);
             return Ok(exercises);

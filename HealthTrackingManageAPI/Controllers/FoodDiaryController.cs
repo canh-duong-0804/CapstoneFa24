@@ -51,6 +51,7 @@ namespace HealthTrackingManageAPI.Controllers
          }*/
 
         [HttpPost("addFoodListToDiary")]
+        [Authorize]
         public async Task<IActionResult> AddFoodListToDiary([FromBody] FoodDiaryDetailRequestDTO request)
         {
             if (request == null)
@@ -68,20 +69,33 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete("deleteFoodListFromDiary/{id}")]
-        public async Task<IActionResult> DeleteFoodListFromDiary(int id)
+        [HttpDelete("deleteFoodListFromDiary")]
+        [Authorize]
+        public async Task<IActionResult> DeleteFoodListFromDiary(int foodDiaryDetailId)
         {
-
-
-
-
-            var result = await _foodDiaryRepository.DeleteFoodListToDiaryAsync(id);
-
-            if (!result)
+            
+            /*var currentUserId = User.FindFirstValue("Id");
+            if (string.IsNullOrEmpty(currentUserId))
             {
-                return NotFound($"Food item with ID {id} not found.");
+                return Unauthorized();
             }
 
+           
+            var isOwner = await _foodDiaryRepository.CheckFoodDiaryOwnership(
+                int.Parse(currentUserId),
+                foodDiaryDetailId
+            );
+
+            if (!isOwner)
+            {
+                return Forbid(); 
+            }*/
+
+            var result = await _foodDiaryRepository.DeleteFoodListToDiaryAsync(foodDiaryDetailId);
+            if (!result)
+            {
+                return NotFound($"Food item with ID {foodDiaryDetailId} not found.");
+            }
             return NoContent();
         }
 
