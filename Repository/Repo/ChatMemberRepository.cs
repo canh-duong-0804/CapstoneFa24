@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.MessageChatDetail;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -15,7 +16,7 @@ namespace Repository.Repo
 
 
 
-        public Task<MessageChat> GetMemberChatDetailsAsync(int memberId, int chatId) => ChatDAO.Instance.GetMemberChatDetailsAsync(memberId, chatId);
+        public Task<List<GetMessageChatDetailDTO>> GetMemberChatDetailsAsync(int memberId, int chatId) => ChatDAO.Instance.GetMemberChatDetailsAsync(memberId, chatId);
 
 
         public Task<List<MessageChat>> GetMemberChatsAsync(int memberId) => ChatDAO.Instance.GetMemberChatsAsync(memberId);

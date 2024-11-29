@@ -192,7 +192,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpDelete("delete-account-staff-by-admin/{id}")]
-        public async Task<IActionResult> DeleteFood(int id)
+        public async Task<IActionResult> DeleteAccountByStaffById(int id)
         {
 
             bool checkStatus = await _staffRepo.DeleteAccountStaffByIdAsync(id);
@@ -244,7 +244,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestStaffDTO staffRequest)
+        public async Task<IActionResult> LoginAdmin ([FromBody] LoginRequestStaffDTO staffRequest)
         {
             var mapper = MapperConfig.InitializeAutomapper();
 

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject.Models;
+using BusinessObject.Dto.MessageChatDetail;
+using AutoMapper.Execution;
 
 namespace DataAccess
 {
@@ -55,19 +57,24 @@ namespace DataAccess
             }
         }
 
-        public async Task<MessageChat> GetMemberChatDetailsAsync(int memberId, int chatId)
+        public async Task<List<GetMessageChatDetailDTO>> GetMemberChatDetailsAsync(int memberId, int chatId)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var chat = await context.MessageChats
-                        .FirstOrDefaultAsync(c => c.MemberId == memberId && c.MessageChatId == chatId);
+                    var messageChatDetails = context.MessageChatDetails.Where(d=>d.MessageChatId==chatId)
+                        .Select(detail => new GetMessageChatDetailDTO
+                        {
+                            MessageChatDetailsId = detail.MessageChatDetailsId,
+                            MessageContent = detail.MessageContent,
+                            SentAt = detail.SentAt,
+                            SenderType = detail.SenderType,
+                            
+                        })
+                        .ToList();
 
-                    if (chat == null)
-                        throw new Exception("Chat not found or unauthorized access.");
-
-                    return chat;
+                    return messageChatDetails;
                 }
             }
             catch (Exception ex)
@@ -75,6 +82,7 @@ namespace DataAccess
                 throw new Exception($"Error retrieving chat details: {ex.Message}", ex);
             }
         }
+
 
         public async Task<List<MessageChat>> GetMemberChatsAsync(int memberId)
         {
@@ -220,6 +228,73 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"Error sending message: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<GetMessageChatDetailDTO>> GetAllMessageForTrainerToAsign(int chatId, int staffId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var messageChatDetails = context.MessageChatDetails.Where(d => d.MessageChatId == chatId)
+                        .Select(detail => new GetMessageChatDetailDTO
+                        {
+                            MessageChatDetailsId = detail.MessageChatDetailsId,
+                            MessageContent = detail.MessageContent,
+                            SentAt = detail.SentAt,
+                            SenderType = detail.SenderType,
+
+                        })
+                        .ToList();
+
+                    return messageChatDetails;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving chat details: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<PagedResult<AllMessageChatDTO>> GetAllMessageChatForTrainerNeedAsign(int pageNumber, int pageSize)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var totalRecords = await context.MessageChats
+                        .Where(c => c.StaffId == null)
+                        .CountAsync();  
+
+                    var chats = await context.MessageChats
+                        .Where(c => c.StaffId == null)
+                        .OrderBy(c => c.CreateAt)
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .Select(c => new AllMessageChatDTO
+                        {
+                            MessageChatId = c.MessageChatId,
+                            MemberId = c.MemberId,
+                            CreateAt = c.CreateAt,
+                        })
+                        .ToListAsync();
+
+                    var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                    return new PagedResult<AllMessageChatDTO>
+                    {
+                        TotalRecords = totalRecords,
+                        TotalPages = totalPages,
+                        PageNumber = pageNumber,
+                        PageSize = pageSize,
+                        Data = chats
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving chats: {ex.Message}", ex);
             }
         }
 

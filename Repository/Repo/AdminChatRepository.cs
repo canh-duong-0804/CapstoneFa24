@@ -1,4 +1,6 @@
-﻿using DataAccess;
+﻿using BusinessObject.Dto.MessageChatDetail;
+using BusinessObject.Models;
+using DataAccess;
 using Repository.IRepo;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,11 @@ namespace Repository.Repo
     public class AdminChatRepository : IAdminChatRepository
     {
         public Task AssignStaffToChatAsync(int chatId, int staffId) => ChatDAO.Instance.AssignStaffToChatAsync(chatId, staffId);
+
+        public Task<PagedResult<AllMessageChatDTO>> GetAllMessageChatForTrainerNeedAsign(int pageNumber, int pageSize) => ChatDAO.Instance.GetAllMessageChatForTrainerNeedAsign(pageNumber,pageSize);
+
+
+        public Task<List<GetMessageChatDetailDTO>> GetAllMessageForTrainerToAsign(int chatId, int staffId) => ChatDAO.Instance.GetAllMessageForTrainerToAsign(chatId, staffId);
         
 
         public Task SendMessageAsync(int chatId, int staffId, string messageContent) => ChatDAO.Instance.SendMessageAsync(chatId, staffId, messageContent);

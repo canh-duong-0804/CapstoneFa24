@@ -18,7 +18,7 @@ namespace Repository.Repo
         public Task<bool> AddMealPlanDetailWithMealTypeDayToFoodDiary(AddMealPlanDetailMealTypeDayToFoodDiaryDetailRequestDTO addMealPlanDetail, int memberId) => MealPlanDAO.Instance.AddMealPlanDetailWithMealTypeDayToFoodDiary(addMealPlanDetail, memberId);
 
 
-        public Task<bool> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId, DateTime selectDate) => MealPlanDAO.Instance.AddMealPlanToFoodDiaryAsync(mealPlanId,memberId,selectDate);
+        public Task<int> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId, DateTime selectDate) => MealPlanDAO.Instance.AddMealPlanToFoodDiaryAsync(mealPlanId,memberId,selectDate);
 
        
 
@@ -30,17 +30,20 @@ namespace Repository.Repo
 
         public Task<MealPlanDetailResponseDTO> GetMealPlanDetailForMemberAsync(int mealPlanId, int day) => MealPlanDAO.Instance.GetMealPlanDetailForMemberAsync(mealPlanId,day);
 
-       /* public Task<int> GetTotalMealPlanAsync() => MealPlanDAO.Instance.GetTotalMealPlanAsync();
+        public Task<int> AddMealPlanToFoodDiaryAgainAsync(int mealPlanId, int memberId, DateTime selectDate) => MealPlanDAO.Instance.AddMealPlanToFoodDiaryAgainAsync(mealPlanId, memberId, selectDate);
 
 
-       
-        public Task<bool> UpdateMealPlanTrainerAsync(MealPlan mealPlanModel) => MealPlanDAO.Instance.UpdateMealPlanTrainerAsync(mealPlanModel);
-        public Task<bool> CreateMealPlanTrainerAsync(MealPlan mealPlanModel) => MealPlanDAO.Instance.CreateMealPlanTrainerAsync(mealPlanModel);
+        /* public Task<int> GetTotalMealPlanAsync() => MealPlanDAO.Instance.GetTotalMealPlanAsync();
 
-        public Task<bool> DeleteMealPlanAsync(int mealPlanId) => MealPlanDAO.Instance.DeleteMealPlanAsync(mealPlanId);
 
-        public Task<GetMealPlanResponseDTO> GetMealPlanAsync(int mealPlanId) => MealPlanDAO.Instance.GetMealPlanAsync(mealPlanId);
-        public Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlanForStaffsAsync(int currentPage, int currentPageSize) => MealPlanDAO.Instance.GetAllMealPlanForStaffsAsync(currentPage, currentPageSize);
-*/
+
+         public Task<bool> UpdateMealPlanTrainerAsync(MealPlan mealPlanModel) => MealPlanDAO.Instance.UpdateMealPlanTrainerAsync(mealPlanModel);
+         public Task<bool> CreateMealPlanTrainerAsync(MealPlan mealPlanModel) => MealPlanDAO.Instance.CreateMealPlanTrainerAsync(mealPlanModel);
+
+         public Task<bool> DeleteMealPlanAsync(int mealPlanId) => MealPlanDAO.Instance.DeleteMealPlanAsync(mealPlanId);
+
+         public Task<GetMealPlanResponseDTO> GetMealPlanAsync(int mealPlanId) => MealPlanDAO.Instance.GetMealPlanAsync(mealPlanId);
+         public Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlanForStaffsAsync(int currentPage, int currentPageSize) => MealPlanDAO.Instance.GetAllMealPlanForStaffsAsync(currentPage, currentPageSize);
+ */
     }
 }

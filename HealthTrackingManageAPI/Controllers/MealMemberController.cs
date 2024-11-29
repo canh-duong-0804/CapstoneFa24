@@ -83,7 +83,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [Authorize]
         [HttpPost("create-meal-plan-for-member")]
-        public async Task<IActionResult> CreateMealPlanForMember([FromForm] CreateMealMemberRequestDTO mealMemberDto, IFormFile? imageFile)
+        public async Task<IActionResult> CreateMealForMember([FromForm] CreateMealMemberRequestDTO mealMemberDto, IFormFile? imageFile)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -245,6 +245,16 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok();
 
         }
+
+
+
+
+
+
+
+
+
+
         [Authorize]
         [HttpGet("Copy-previous-meal")]
         public async Task<IActionResult> CopyPreviousMeal(int dirayId, int Mealtype)

@@ -13,7 +13,8 @@ namespace Repository.IRepo
     {
         Task<bool> AddMealPlanDetailWithDayToFoodDiaryAsync(AddMealPlanDetailDayToFoodDiaryDetailRequestDTO addMealPlanDetail, int memberId);
         Task<bool> AddMealPlanDetailWithMealTypeDayToFoodDiary(AddMealPlanDetailMealTypeDayToFoodDiaryDetailRequestDTO addMealPlanDetail, int memberId);
-        Task<bool> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId, DateTime selectDate);
+        Task<int> AddMealPlanToFoodDiaryAgainAsync(int mealPlanId, int memberId, DateTime selectDate);
+        Task<int> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId, DateTime selectDate);
         
         Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlansForMemberAsync();
        

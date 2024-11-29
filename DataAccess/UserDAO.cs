@@ -129,7 +129,7 @@ namespace DataAccess
 
                     registerationRequestDTO.PasswordHash = passwordHash;
                     registerationRequestDTO.PasswordSalt = passwordSalt;
-
+                   // registerationRequestDTO.Status = true;
 
                     context.Members.Add(registerationRequestDTO);
                     await context.SaveChangesAsync();

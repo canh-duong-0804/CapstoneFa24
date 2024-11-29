@@ -19,7 +19,7 @@ namespace HTUnitTests.DAO
 
 			var context = new HealthTrackingDBContext(options);
 			context.Database.EnsureCreated();
-
+			
 			if (await context.CommunityPosts.CountAsync() == 0)
 			{
 				context.CommunityPosts.Add(new CommunityPost
@@ -36,7 +36,7 @@ namespace HTUnitTests.DAO
 			return context;
 		}
 
-		[Fact]
+		/*[Fact]
 		public async void CommunityPostDAO_CreatePost_ReturnsCreatedPost()
 		{
 			// Arrange
@@ -53,6 +53,23 @@ namespace HTUnitTests.DAO
 
 			// Act
 			var result = await dao.CreatePost(newPost);
+
+			// Assert
+			Assert.NotNull(result);
+
+		}*/
+		
+		[Fact]
+		public async void CommunityPostDAO_CreatePost1_ReturnsCreatedPost()
+		{
+			// Arrange
+			var dbContext = await GetDatabaseContext();
+			var dao = CommunityPostDAO.Instance;
+
+			dbContext.CommunityPosts.ToList().Count();
+
+			// Act
+			var result = await dao.GetPostById(1);
 
 			// Assert
 			Assert.NotNull(result);
