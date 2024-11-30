@@ -583,12 +583,8 @@ namespace DataAccess
             using (var context = new HealthTrackingDBContext())
             {
                 var today = DateTime.Now.Date;
-
                 var startOfMonth = new DateTime(date.Year, date.Month, 1);
-
-
                 var endDate = today;
-
 
                 var foodDiaries = await context.FoodDiaries
                     .Where(fd => fd.MemberId == memberId &&
@@ -596,68 +592,45 @@ namespace DataAccess
                                  fd.Date.Day <= endDate.Day &&
                                  fd.Date.Year == startOfMonth.Year)
                     .OrderByDescending(fd => fd.Date)
-                    .Select(fd => new { fd.Date, fd.Calories })
+                    .Select(fd => new { fd.MemberId, fd.Date, fd.Calories })
                     .ToListAsync();
 
-
                 var streakDTO = new CalorieStreakDTO();
-                var currentStreak = 0;
+                int currentStreak = 0;
 
-
-                var hasEntryForDate = foodDiaries.Any() && foodDiaries.First().Date == endDate;
-
-
-                DateTime startDate = hasEntryForDate ? endDate : endDate.AddDays(-1);
-                DateTime? expectedDate = startDate;
+              
+                var currentDate = today;
 
                 foreach (var diary in foodDiaries)
                 {
-
-                    if (diary.Calories > 0)
+                    if(diary.Calories>0) streakDTO.Dates.Add(diary.Date.Date);
+                  
+                    if (diary.Date.Date == currentDate && diary.Calories > 0)
                     {
                         streakDTO.Dates.Add(diary.Date.Date);
+                        currentStreak++;
+                        currentDate = currentDate.AddDays(-1);
                     }
-
-                    if (diary.Date.Date == expectedDate)
+                    else if (diary.Date.Date == currentDate && diary.Calories <= 0)
                     {
-                        if (diary.Calories > 0)
-                        {
-                            currentStreak++;
-                        }
-                        else
-                        {
-
-                            currentStreak = 0;
-                        }
-                        streakDTO.StreakNumber = Math.Max(streakDTO.StreakNumber, currentStreak);
-                        expectedDate = expectedDate.Value.AddDays(-1);
-
-
-                        if (expectedDate < startOfMonth)
-                        {
-                            break;
-                        }
+                      
+                        break;
                     }
-                    else if (diary.Date.Date < expectedDate)
-                    {
-
-                        currentStreak = 0;
-                        if (diary.Calories > 0)
-                        {
-                            currentStreak = 1;
-                        }
-                        expectedDate = diary.Date.AddDays(-1);
-                    }
+                   
                 }
 
                 streakDTO.Dates = streakDTO.Dates
                     .Where(d => d >= startOfMonth && d <= endDate)
                     .OrderByDescending(d => d)
+                    .Distinct()
                     .ToList();
 
+                streakDTO.StreakNumber = currentStreak;
                 return streakDTO;
             }
         }
+
+
 
         public async Task<bool> AddFoodListToDiaryForWebsite(AddFoodDiaryDetailForWebsiteRequestDTO request, int memberId)
         {

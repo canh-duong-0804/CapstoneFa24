@@ -12,4 +12,5 @@ namespace BusinessObject.Dto.ResetPassword
         public string PhoneNumber { get; set; } 
         public string NewPassword { get; set; } 
     }
+   
 }

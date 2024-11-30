@@ -142,7 +142,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
             var user = await _userRepo.ResetPasswordAsync(request,memberId);
-            if (user == null)
+            if (user ==false)
             {
                 return BadRequest("Error while registering the user");
             }
@@ -158,7 +158,7 @@ namespace HealthTrackingManageAPI.Controllers
             var user = await _userRepo.ResetPasswordOtpAsync(request);
             if (user == null)
             {
-                return BadRequest("Error while registering the user");
+                return BadRequest("Error while change password the user");
             }
 
     
@@ -497,7 +497,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return Ok(new
                 {
                     message = "Profile updated successfully",
-                    imagePath = updatedProfile.ImageMember
+                    //imagePath = updatedProfile.ImageMember
                 });
             }
             catch (Exception ex)

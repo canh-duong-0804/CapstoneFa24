@@ -237,7 +237,7 @@ namespace DataAccess
 
                     existingMember.Username = user.Username;
                     existingMember.PhoneNumber = user.PhoneNumber;
-                    existingMember.ImageMember = user.ImageMember;
+                    //existingMember.ImageMember = user.ImageMember;
                     existingMember.Dob = user.Dob;
 
 
@@ -289,8 +289,7 @@ namespace DataAccess
                     {
                         throw new Exception("User not found.");
                     }
-                    if (!VerifyPasswordHash(request.NewPassword, user.PasswordHash, user.PasswordSalt))
-                        return false;
+                    
 
                     CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -299,7 +298,7 @@ namespace DataAccess
                     user.PasswordSalt = passwordSalt;
 
 
-                    context.Members.Update(user);
+                    //context.Members.Update(user);
                     await context.SaveChangesAsync();
 
                     return true;
@@ -330,7 +329,7 @@ namespace DataAccess
                     user.PasswordSalt = passwordSalt;
 
 
-                    context.Members.Update(user);
+                    //context.Members.Update(user);
                     await context.SaveChangesAsync();
 
                     return true;
