@@ -292,7 +292,7 @@ namespace DataAccess
                 {
                     ExercisePlanId = exercisePlanId,
                     Day = (byte)day,
-                    listExercise = exercises
+                    execriseInPlans = exercises
                 };
             }
             catch (Exception ex)
@@ -317,7 +317,7 @@ namespace DataAccess
                     _context.ExercisePlanDetails.RemoveRange(existingDetails);
 
                     // Thêm danh sách bài tập mới
-                    var newDetails = request.listExercise.Select(ex => new ExercisePlanDetail
+                    var newDetails = request.execriseInPlans.Select(ex => new ExercisePlanDetail
                     {
                         ExercisePlanId = request.ExercisePlanId,
                         Day = request.Day,
