@@ -51,6 +51,33 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
 
+        [HttpGet("get-all-exercise-plans")]
+        public async Task<IActionResult> GetAllExercisePlans([FromQuery] int page)
+        {
+            try
+            {
+                int pageSize = 10;
+                if (page <= 0 || pageSize <= 0)
+                {
+                    return BadRequest("Page and pageSize must be greater than zero.");
+                }
+
+                // Lấy danh sách phân trang từ repository
+                var pagedResult = await _exerciseRepository.GetAllExercisePlansAsync(page, pageSize);
+
+                if (pagedResult == null || !pagedResult.Data.Any())
+                {
+                    return NotFound("No exercise plans found.");
+                }
+
+                return Ok(pagedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
 
         [RoleLessThanOrEqualTo(1)]
         [HttpPut("upload-image-exercise")]

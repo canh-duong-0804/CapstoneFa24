@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
+using Repository.Repo;
 using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
@@ -20,7 +21,32 @@ namespace HealthTrackingManageAPI.Controllers
         {
             _exercisePlanRepo = exercisePlanRepo;
         }
+        [HttpGet("get-all-exercise-plans")]
+        public async Task<IActionResult> GetAllExercisePlans([FromQuery] int page)
+        {
+            try
+            {
+                int pageSize = 10;
+                if (page <= 0 || pageSize <= 0)
+                {
+                    return BadRequest("Page and pageSize must be greater than zero.");
+                }
 
+                // Lấy danh sách phân trang từ repository
+                var pagedResult = await _exercisePlanRepo.GetAllExercisePlansAsync(page, pageSize);
+
+                if (pagedResult == null || !pagedResult.Data.Any())
+                {
+                    return NotFound("No exercise plans found.");
+                }
+
+                return Ok(pagedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         [HttpPost("create-exercise-plan")]
         [RoleLessThanOrEqualTo(1)]
         [Authorize]

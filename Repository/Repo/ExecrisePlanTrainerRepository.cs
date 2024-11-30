@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.ExecrisePlan;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -11,7 +12,8 @@ namespace Repository.Repo
 {
     public class ExecrisePlanTrainerRepository : IExecrisePlanTrainerRepository
     {
-       public Task<bool> AddExercisePlanAsync(ExercisePlan exercisePlan) => ExercisePlanTrainerDAO.Instance.AddExercisePlanAsync(exercisePlan);
+        public Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize) => ExerciseTrainerDAO.Instance.GetAllExercisePlansAsync(page, pageSize);
+        public Task<bool> AddExercisePlanAsync(ExercisePlan exercisePlan) => ExercisePlanTrainerDAO.Instance.AddExercisePlanAsync(exercisePlan);
        public Task<ExercisePlan?> GetExercisePlanByIdAsync(int id) => ExercisePlanTrainerDAO.Instance.GetExercisePlanByIdAsync(id);
         public Task<List<ExercisePlan>> GetExercisePlansAsync() => ExercisePlanTrainerDAO.Instance.GetExercisePlansAsync();
         public Task<bool> UpdateExercisePlanAsync(ExercisePlan exercisePlan) => ExercisePlanTrainerDAO.Instance.UpdateExercisePlanAsync(exercisePlan);

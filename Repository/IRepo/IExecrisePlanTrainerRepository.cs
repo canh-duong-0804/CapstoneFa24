@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.ExecrisePlan;
+using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Repository.IRepo
 {
     public interface IExecrisePlanTrainerRepository
     {
+        Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize);
         Task<bool> AddExercisePlanAsync(ExercisePlan exercisePlan);
         Task<ExercisePlan?> GetExercisePlanByIdAsync(int id);
         Task<List<ExercisePlan>> GetExercisePlansAsync();

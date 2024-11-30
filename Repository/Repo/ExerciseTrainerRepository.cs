@@ -1,4 +1,6 @@
-﻿using BusinessObject.Dto.ExerciseTrainer;
+﻿using BusinessObject.Dto.ExecrisePlan;
+using BusinessObject.Dto.ExerciseTrainer;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -14,6 +16,8 @@ namespace Repository.Repo
         public Task<int> CreateExerciseTrainerAsync(CreateExerciseRequestDTO request, int memberId) => ExerciseTrainerDAO.Instance.CreateExerciseTrainerAsync(request,memberId);
 
         public Task<bool> DeleteExerciseAsync(int exerciseId) => ExerciseTrainerDAO.Instance.DeleteExerciseAsync(exerciseId);
+
+        public Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize) => ExerciseTrainerDAO.Instance.GetAllExercisePlansAsync(page, pageSize);
 
         public Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId) => ExerciseTrainerDAO.Instance.GetExerciseDetailAsync(exerciseId);
 
