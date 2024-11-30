@@ -75,7 +75,7 @@ namespace DataAccess
                         throw new Exception("Meal plan not found.");
                     }
 
-                    // Lấy tất cả FoodDiaries liên quan đến thành viên trong ngày bắt đầu và kiểm tra MealPlan
+                    /*// Lấy tất cả FoodDiaries liên quan đến thành viên trong ngày bắt đầu và kiểm tra MealPlan
                     var existingDiaryWithMealPlan = await context.FoodDiaries
                         .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == today && fd.MealPlanId == mealPlanId);
 
@@ -83,7 +83,7 @@ namespace DataAccess
                     {
                         // Nếu đã có MealPlan trong FoodDiary, trả về 3
                         if(existingDiaryWithMealPlan.MealPlanId!=null)   return 3;
-                    }
+                    }*/
 
                     // Lấy chi tiết của MealPlan
                     var mealPlanDetails = await context.MealPlanDetails
@@ -117,7 +117,14 @@ namespace DataAccess
                         }
                         else
                         {
+                            var existingDiaryWithMealPlan = await context.FoodDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == targetDate);
 
+                            if (existingDiaryWithMealPlan != null)
+                            {
+                                // Nếu đã có MealPlan trong FoodDiary, trả về 3
+                                if (existingDiaryWithMealPlan.MealPlanId != null) return 3;
+                            }
                             // Xóa các chi tiết cũ trong FoodDiary
                             var existingDetails = context.FoodDiaryDetails
                                 .Where(fdd => fdd.DiaryId == targetDiary.DiaryId);
