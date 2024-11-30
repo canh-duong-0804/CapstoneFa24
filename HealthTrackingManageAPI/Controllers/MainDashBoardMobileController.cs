@@ -61,6 +61,13 @@ namespace HealthTrackingManageAPI.Controllers
                 FullName = mainDashBoardInfo.UserName,
                 TargetDate = mainDashBoardInfo.TargetDate,
                 TargetWeight= mainDashBoardInfo.TargetWeight,
+                ImageMember=mainDashBoardInfo.ImageMember,
+                Height=mainDashBoardInfo.Height,
+                AgeMember=mainDashBoardInfo.AgeMember,
+                Gender=mainDashBoardInfo.Gender,
+                DiaryExerciseId=mainDashBoardInfo.DiaryExerciseId,
+                DiaryFoodId=mainDashBoardInfo.DiaryFoodId,
+                ExerciseLevel=mainDashBoardInfo.ExerciseLevel,
 
                 // Dữ liệu từ infoCalorinesMember
                 SelectDate = mainDashBoardInfo.DateMainDashBoard,
@@ -69,7 +76,8 @@ namespace HealthTrackingManageAPI.Controllers
                 ProteinIntake = infoCalorinesMember.Protein,
                 FatIntake = infoCalorinesMember.Fat,
                 CarbsIntake = infoCalorinesMember.Carbs,
-                streakNumber = infoCalorinesMember.streakNumber,
+                streakNumberFood = infoCalorinesMember.streakNumberFood,
+                streakNumberExercise = infoCalorinesMember.streakNumberExercise,
                 CaloriesBurn = 100
 
             };

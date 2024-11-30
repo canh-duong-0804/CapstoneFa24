@@ -17,10 +17,11 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("Get-all-diet")]
-        public async Task<IActionResult> GetAllExercises()
+        public async Task<IActionResult> GetAllDiet()
         {
-            var exercises = await _dietRepository.GetAllDietAsync();
-            return Ok(exercises);
+            var diets = await _dietRepository.GetAllDietAsync();
+           
+            return Ok(diets);
         }
     }
 }

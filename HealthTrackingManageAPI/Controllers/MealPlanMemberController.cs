@@ -59,10 +59,41 @@ namespace HealthTrackingManageAPI.Controllers
 
             var success = await _mealPlanRepository.AddMealPlanToFoodDiaryAsync(mealPlanId, memberId, selectDate);
 
-            if (!success)
+            if (success==2)
             {
                 return StatusCode(500);
             }
+            else if(success==3) return BadRequest();
+
+            return Ok("");
+        }
+        
+        [HttpPost("add-meal-plan-to-diary-again")]
+        [Authorize]
+        public async Task<IActionResult> AddMealPlanToDiaryÀgain(int mealPlanId, DateTime selectDate)
+        {
+            /* if (request == null || request.FoodDiaryDetails == null || !request.FoodDiaryDetails.Any())
+             {
+                 return BadRequest("Invalid request data.");
+             }*/
+
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest();
+            }
+
+            var success = await _mealPlanRepository.AddMealPlanToFoodDiaryAgainAsync(mealPlanId, memberId, selectDate);
+
+            if (success==2)
+            {
+                return StatusCode(500);
+            }
+            
 
             return Ok("");
         }

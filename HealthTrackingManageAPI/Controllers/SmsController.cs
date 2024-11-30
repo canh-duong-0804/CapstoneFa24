@@ -38,10 +38,10 @@ namespace HealthTrackingManageAPI.Controllers
 
                 if (string.IsNullOrEmpty(response))
                 {
-                    return BadRequest("Gửi SMS thất bại");
+                    return BadRequest("SMS sending failed");
                 }
 
-                return Ok(new { message = "Gửi SMS thành công", response });
+                return Ok(new { message = "SMS sent successfully", response });
             }
             catch (Exception ex)
             {

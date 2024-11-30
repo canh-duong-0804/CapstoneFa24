@@ -10,6 +10,8 @@ using BusinessObject.Dto.Recipe.CreateDTO;
 using DataAccess;
 using BusinessObject.Dto.Recipe;
 using BusinessObject.Dto.Recipe.UpdateDTO;
+using HealthTrackingManageAPI.Authorize;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -24,7 +26,8 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpGet("get-all-recipe-for-staff")]
-        public async Task<IActionResult> GetAllFoodsForStaff()
+        [RoleLessThanOrEqualTo(2)]
+        public async Task<IActionResult> GetAllRecipeForStaff()
         {
             var recipes = await _recipeRepository.GetAllRecipesForStaffAsync();
 
@@ -40,7 +43,8 @@ namespace HealthTrackingManageAPI.Controllers
         
         
         [HttpGet("get-all-recipes-for-member")]
-        public async Task<IActionResult> GetAllFoodsForMember()
+        [Authorize]
+        public async Task<IActionResult> GetAllRecipeForMember()
         {
             var recipes = await _recipeRepository.GetAllRecipesForMemberAsync();
 
@@ -56,6 +60,7 @@ namespace HealthTrackingManageAPI.Controllers
         
         
         [HttpGet("get-recipe-for-staff-by-id/{id}")]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> GetRecipeForStaffById(int id)
         {
             var recipeDetails = await _recipeRepository.GetRecipeForStaffByIdAsync(id);
@@ -72,7 +77,8 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpPost("create-recipe")]
-        public async Task<IActionResult> CreateFood([FromBody] CreateRecipeRequestDTO recipe)
+        [RoleLessThanOrEqualTo(2)]
+        public async Task<IActionResult> CreateRecipe([FromBody] CreateRecipeRequestDTO recipe)
         {
             if (recipe == null)
             {
@@ -93,6 +99,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpDelete("delete-recipe/{id}")]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> DeleteRecipe(int id)
         {
             var existingRecipe = await _recipeRepository.DeleteRecipeAsync(id);

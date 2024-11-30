@@ -59,7 +59,7 @@ namespace DataAccess
         }
 
 
-        public async Task<bool> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId, DateTime selectDate)
+        public async Task<int> AddMealPlanToFoodDiaryAsync(int mealPlanId, int memberId, DateTime selectDate)
         {
             try
             {
@@ -72,6 +72,7 @@ namespace DataAccess
                     {
                         throw new Exception("Meal plan not found.");
                     }
+                    if(mealPlan.MealPlanId!=null) return 3;
 
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(mpd => mpd.MealPlanId == mealPlanId)
@@ -150,13 +151,13 @@ namespace DataAccess
 
 
                     await context.SaveChangesAsync();
-                    return true;
+                    return 1;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating diary with meal plan: {ex.Message}");
-                return false;
+                return 2;
             }
         }
 
@@ -453,190 +454,292 @@ namespace DataAccess
             }
         }
 
-      /*  public async Task<bool> CreateMealPlanTrainerAsync(MealPlan mealPlanModel)
+        public async Task<int> AddMealPlanToFoodDiaryAgainAsync(int mealPlanId, int memberId, DateTime selectDate)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                    var today = selectDate;
 
-                    context.MealPlans.Add(mealPlanModel);
-                    context.SaveChanges();
-
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
-                
-            }
-            
-        }
-
-        public async Task<int> GetTotalMealPlanAsync()
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    return await context.staffs.CountAsync(s => s.Status == true);
-
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
-
-            }
-        }
-
-        public async Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlanForStaffsAsync(int page, int pageSize)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    var mealPlans = await context.MealPlans
-                         .Where(s => s.Status == true)
-                         .OrderBy(s => s.MealPlanId)
-                         .Skip((page - 1) * pageSize)
-                         .Take(pageSize)
-                         .Select(s => new GetAllMealPlanForMemberResponseDTO
-                         {
-                             MealPlanId = s.MealPlanId,
-                             MealPlanImage=s.MealPlanImage,
-                             ShortDescription = s.ShortDescription, 
-                             Name= s.Name,  
-                             TotalCalories = s.TotalCalories,   
-                            
-                         })
-                         .ToListAsync();
-
-                    return mealPlans;
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
-
-            }
-        }
-
-        public async Task<bool> UpdateMealPlanTrainerAsync(MealPlan mealPlanModel)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-
-                    var mealPlan = await context.MealPlans
-                                .Where(s => s.MealPlanId == mealPlanModel.MealPlanId && s.Status == true)
-                                 .FirstOrDefaultAsync();
-
-
+                    var mealPlan = await context.MealPlans.FirstOrDefaultAsync(mp => mp.MealPlanId == mealPlanId);
                     if (mealPlan == null)
                     {
-                        return false;
+                        throw new Exception("Meal plan not found.");
                     }
+                    
+
+                    var mealPlanDetails = await context.MealPlanDetails
+                        .Where(mpd => mpd.MealPlanId == mealPlanId)
+                        .ToListAsync();
 
 
-                    mealPlan.ShortDescription= mealPlanModel.ShortDescription;
-                    mealPlan.LongDescription = mealPlanModel.LongDescription;
-                    mealPlan.Name = mealPlanModel.Name;
-                    mealPlan.MealPlanImage= mealPlanModel.MealPlanImage;
-                    mealPlan.ChangeBy = mealPlanModel.ChangeBy;
-                    mealPlan.ChangeDate=mealPlanModel.ChangeDate;
+                    foreach (var detail in mealPlanDetails)
+                    {
+
+                        var targetDate = today.AddDays(detail.Day - 1);
+
+
+                        var targetDiary = await context.FoodDiaries
+                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == targetDate);
+
+                        if (targetDiary == null)
+                        {
+                            targetDiary = new FoodDiary
+                            {
+                                MemberId = memberId,
+                                Date = targetDate,
+                                MealPlanId = mealPlanId,
+                                GoalCalories = mealPlan.TotalCalories,
+                                Calories = 0,
+                                Protein = 0,
+                                Fat = 0,
+                                Carbs = 0
+                            };
+                            context.FoodDiaries.Add(targetDiary);
+                            await context.SaveChangesAsync();
+                        }
+                        else
+                        {
+
+                            targetDiary.MealPlanId = mealPlanId;
+
+
+                            var existingDetails = context.FoodDiaryDetails
+                                .Where(fdd => fdd.DiaryId == targetDiary.DiaryId);
+                            context.FoodDiaryDetails.RemoveRange(existingDetails);
+                        }
+
+                        var foodDiaryDetail = new FoodDiaryDetail
+                        {
+                            DiaryId = targetDiary.DiaryId,
+                            FoodId = detail.FoodId,
+                            Quantity = detail.Quantity,
+                            MealType = detail.MealType,
+
+                        };
+                        context.FoodDiaryDetails.Add(foodDiaryDetail);
+                    }
 
 
                     await context.SaveChangesAsync();
 
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating staff role: {ex.Message}", ex);
-            }
-        }
 
-        public async Task<bool> DeleteMealPlanAsync(int mealPlanId)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
+                    var diariesToUpdate = await context.FoodDiaries
+                        .Where(fd => fd.MemberId == memberId && fd.Date >= today && fd.Date < today.AddDays(7))
+                        .ToListAsync();
 
-                    var mealPlan = await context.MealPlans
-                                .Where(s => s.MealPlanId == mealPlanId && s.Status == true)
-                                 .FirstOrDefaultAsync();
-
-
-                    if (mealPlan == null)
+                    foreach (var diary in diariesToUpdate)
                     {
-                        return false;
+                        var diaryDetails = await context.FoodDiaryDetails
+                            .Where(fdd => fdd.DiaryId == diary.DiaryId)
+                            .ToListAsync();
+
+                        diary.Calories = diaryDetails.Sum(dd => dd.Quantity * (context.Foods.FirstOrDefault(f => f.FoodId == dd.FoodId)?.Calories ?? 0));
+                        diary.Protein = diaryDetails.Sum(dd => dd.Quantity * (context.Foods.FirstOrDefault(f => f.FoodId == dd.FoodId)?.Protein ?? 0));
+                        diary.Fat = diaryDetails.Sum(dd => dd.Quantity * (context.Foods.FirstOrDefault(f => f.FoodId == dd.FoodId)?.Fat ?? 0));
+                        diary.Carbs = diaryDetails.Sum(dd => dd.Quantity * (context.Foods.FirstOrDefault(f => f.FoodId == dd.FoodId)?.Carbs ?? 0));
+
+
+                        context.FoodDiaries.Update(diary);
                     }
 
 
-                 
-                    mealPlan.Status = false;
-
-
                     await context.SaveChangesAsync();
-
-                    return true;
+                    return 1;
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error updating staff role: {ex.Message}", ex);
+                Console.WriteLine($"Error updating diary with meal plan: {ex.Message}");
+                return 2;
             }
         }
 
-        public async Task<GetMealPlanResponseDTO> GetMealPlanAsync(int mealPlanId)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    *//*var mealPlans = await context.MealPlans
-                         .Where(s => s.MealPlanId == mealPlanId)
-                         .Select(s => new GetMealPlanResponseDTO
-                         {
-                             MealPlanId = s.MealPlanId,
-                             MealPlanImage = s.MealPlanImage,
-                             ShortDescription = s.ShortDescription,
-                             Name = s.Name,
-                             TotalCalories = s.TotalCalories,
+        /*  public async Task<bool> CreateMealPlanTrainerAsync(MealPlan mealPlanModel)
+          {
+              try
+              {
+                  using (var context = new HealthTrackingDBContext())
+                  {
 
-                         })
-                         .FirstOrDefault();*//*
-                    var mealPlans = await context.MealPlans
-                         .Where(s => s.MealPlanId == mealPlanId)
-                         .Select(s => new GetMealPlanResponseDTO
-                         {
-                            MealPlanId=s.MealPlanId,
-                            CreateBy=s.CreateByNavigation.FullName,
-                            MealPlanImage= s.MealPlanImage,
-                            ChangeDate=s.ChangeDate,
-                            ChangeBy=s.CreateByNavigation.FullName,
-                            
-                        })
-                        .FirstOrDefaultAsync();
-                    return mealPlans;
+                      context.MealPlans.Add(mealPlanModel);
+                      context.SaveChanges();
 
-                }
+                  }
+                  return true;
+              }
+              catch (Exception ex)
+              {
+                  throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
+              }
 
-            }
-        }*/
+          }
+
+          public async Task<int> GetTotalMealPlanAsync()
+          {
+              try
+              {
+                  using (var context = new HealthTrackingDBContext())
+                  {
+                      return await context.staffs.CountAsync(s => s.Status == true);
+
+                  }
+
+              }
+              catch (Exception ex)
+              {
+                  throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
+
+              }
+          }
+
+          public async Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlanForStaffsAsync(int page, int pageSize)
+          {
+              try
+              {
+                  using (var context = new HealthTrackingDBContext())
+                  {
+                      var mealPlans = await context.MealPlans
+                           .Where(s => s.Status == true)
+                           .OrderBy(s => s.MealPlanId)
+                           .Skip((page - 1) * pageSize)
+                           .Take(pageSize)
+                           .Select(s => new GetAllMealPlanForMemberResponseDTO
+                           {
+                               MealPlanId = s.MealPlanId,
+                               MealPlanImage=s.MealPlanImage,
+                               ShortDescription = s.ShortDescription, 
+                               Name= s.Name,  
+                               TotalCalories = s.TotalCalories,   
+
+                           })
+                           .ToListAsync();
+
+                      return mealPlans;
+
+                  }
+
+              }
+              catch (Exception ex)
+              {
+                  throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
+
+              }
+          }
+
+          public async Task<bool> UpdateMealPlanTrainerAsync(MealPlan mealPlanModel)
+          {
+              try
+              {
+                  using (var context = new HealthTrackingDBContext())
+                  {
+
+                      var mealPlan = await context.MealPlans
+                                  .Where(s => s.MealPlanId == mealPlanModel.MealPlanId && s.Status == true)
+                                   .FirstOrDefaultAsync();
+
+
+                      if (mealPlan == null)
+                      {
+                          return false;
+                      }
+
+
+                      mealPlan.ShortDescription= mealPlanModel.ShortDescription;
+                      mealPlan.LongDescription = mealPlanModel.LongDescription;
+                      mealPlan.Name = mealPlanModel.Name;
+                      mealPlan.MealPlanImage= mealPlanModel.MealPlanImage;
+                      mealPlan.ChangeBy = mealPlanModel.ChangeBy;
+                      mealPlan.ChangeDate=mealPlanModel.ChangeDate;
+
+
+                      await context.SaveChangesAsync();
+
+                      return true;
+                  }
+              }
+              catch (Exception ex)
+              {
+                  throw new Exception($"Error updating staff role: {ex.Message}", ex);
+              }
+          }
+
+          public async Task<bool> DeleteMealPlanAsync(int mealPlanId)
+          {
+              try
+              {
+                  using (var context = new HealthTrackingDBContext())
+                  {
+
+                      var mealPlan = await context.MealPlans
+                                  .Where(s => s.MealPlanId == mealPlanId && s.Status == true)
+                                   .FirstOrDefaultAsync();
+
+
+                      if (mealPlan == null)
+                      {
+                          return false;
+                      }
+
+
+
+                      mealPlan.Status = false;
+
+
+                      await context.SaveChangesAsync();
+
+                      return true;
+                  }
+              }
+              catch (Exception ex)
+              {
+                  throw new Exception($"Error updating staff role: {ex.Message}", ex);
+              }
+          }
+
+          public async Task<GetMealPlanResponseDTO> GetMealPlanAsync(int mealPlanId)
+          {
+              try
+              {
+                  using (var context = new HealthTrackingDBContext())
+                  {
+                      *//*var mealPlans = await context.MealPlans
+                           .Where(s => s.MealPlanId == mealPlanId)
+                           .Select(s => new GetMealPlanResponseDTO
+                           {
+                               MealPlanId = s.MealPlanId,
+                               MealPlanImage = s.MealPlanImage,
+                               ShortDescription = s.ShortDescription,
+                               Name = s.Name,
+                               TotalCalories = s.TotalCalories,
+
+                           })
+                           .FirstOrDefault();*//*
+                      var mealPlans = await context.MealPlans
+                           .Where(s => s.MealPlanId == mealPlanId)
+                           .Select(s => new GetMealPlanResponseDTO
+                           {
+                              MealPlanId=s.MealPlanId,
+                              CreateBy=s.CreateByNavigation.FullName,
+                              MealPlanImage= s.MealPlanImage,
+                              ChangeDate=s.ChangeDate,
+                              ChangeBy=s.CreateByNavigation.FullName,
+
+                          })
+                          .FirstOrDefaultAsync();
+                      return mealPlans;
+
+                  }
+
+              }
+              catch (Exception ex)
+              {
+                  throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
+
+              }
+          }*/
     }
 
 }

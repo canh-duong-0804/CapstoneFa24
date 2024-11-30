@@ -88,29 +88,6 @@ namespace HealthTrackingManageAPI.Controllers
             var mapper = MapperConfig.InitializeAutomapper();
 
             var model = mapper.Map<BusinessObject.Models.Member>(member);
-
-           /* bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
-            if (!ifUserNameUnique)
-            {
-                return BadRequest("Username already exists");
-            }
-
-
-            bool ifEmailUnique = _userRepo.IsUniqueEmail(model.Email);
-            if (!ifEmailUnique)
-            {
-                return BadRequest("Email already exists");
-            }
-
-
-            bool ifPhoneUnique = _userRepo.IsUniquePhonenumber(model.PhoneNumber);
-            if (!ifPhoneUnique)
-            {
-                return BadRequest("Phone number already exists");
-            }*/
-
-
-           // var user = await _userRepo.Register(model,member.Password,member.Weight);
             var user = await _userRepo.Register(model,member);
             if (user == null)
             {
@@ -530,8 +507,8 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
         [Authorize]
-        [HttpPut("upload-image-meal-plan")]
-        public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile)
+        [HttpPut("upload-image-avatar-member")]
+        public async Task<IActionResult> UploadImageAvatarMember(IFormFile? imageFile)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)

@@ -68,6 +68,85 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok();
         }
+        
+
+        
+        [HttpPost("addFoodListToDiaryForWebsite")]
+        [Authorize]
+        public async Task<IActionResult> addFoodListToDiaryForWebsite([FromBody] AddFoodDiaryDetailForWebsiteRequestDTO request)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                return Unauthorized("Member ID not found in claims.");
+            if (request == null)
+            {
+                return BadRequest("Invalid request: No food details provided.");
+            }
+
+            var result = await _foodDiaryRepository.addFoodListToDiaryForWebsite(request,memberId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("Get-Food-dairy-detail-website")]
+        public async Task<IActionResult> GetFoodDairyDetailWebsite(DateTime selectDate,int mealtype)
+        {
+
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var mainDashBoardInfo = await _foodDiaryRepository.GetFoodDairyDetailWebsite(memberId, selectDate,mealtype);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound(" not found.");
+            }
+            return Ok(mainDashBoardInfo);
+        }
+
+
+        [HttpGet("get-all-diaries-for-month-with-meal-types")]
+        public async Task<IActionResult> GetAllDiariesForMonthWithMealTypes([FromQuery] DateTime date)
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var diaries = await _foodDiaryRepository.GetAllDiariesForMonthWithMealTypesAsync(date,memberId);
+
+                if (diaries == null || !diaries.Any())
+                {
+                    return NotFound("No diaries found for the specified month.");
+                }
+
+                return Ok(diaries);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
 
         [HttpDelete("deleteFoodListFromDiary")]
         [Authorize]

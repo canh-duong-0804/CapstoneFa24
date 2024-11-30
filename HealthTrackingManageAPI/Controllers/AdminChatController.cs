@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using BusinessObject.Models;
 using Repository.IRepo;
 using HealthTrackingManageAPI.Authorize;
+using System.Security.Claims;
 
 namespace YourAPINamespace.Controllers
 {
-    
+
     [ApiController]
     [Route("api/admin/[controller]")]
     public class AdminChatController : ControllerBase
@@ -20,7 +21,7 @@ namespace YourAPINamespace.Controllers
             _adminChatRepository = adminChatRepository;
         }
 
-       
+
         [HttpPost("assign-staff")]
         [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> AssignStaffToChat([FromBody] AssignStaffRequest request)
@@ -39,12 +40,22 @@ namespace YourAPINamespace.Controllers
 
         [HttpGet("get-all-message-for-trainer-to-asign")]
         [RoleLessThanOrEqualTo(1)]
-        public async Task<IActionResult> GetAllMessageForTrainerToAsign([FromBody] AssignStaffRequest request)
+        public async Task<IActionResult> GetAllMessageForTrainerToAsign(int ChatId)
         {
             try
             {
-                //var getAllMessageForAdmin= await _adminChatRepository.GetAllMessageForTrainerToAsign(request.ChatId, request.StaffId);
-                return Ok(new { message = "Staff assigned to chat successfully." });
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
+
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var getAllMessageForAdmin = await _adminChatRepository.GetAllMessageForTrainerToAsign(ChatId, StaffId);
+                return Ok(getAllMessageForAdmin);
             }
             catch (Exception ex)
             {
@@ -53,13 +64,83 @@ namespace YourAPINamespace.Controllers
         }
 
 
+
+        [HttpGet("get-all-message-chat-for-trainer-Asign")]
+        [RoleLessThanOrEqualTo(2)]
+        public async Task<IActionResult> GetAllMessageChatForTrainerToAsign(int ChatId)
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
+
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var getAllMessageForAdmin = await _adminChatRepository.GetAllMessageForTrainerToAsign(ChatId, StaffId);
+                return Ok(getAllMessageForAdmin);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        [HttpGet("get-all-message-chat-for-trainer-need-assign")]
+        [RoleLessThanOrEqualTo(2)]
+        public async Task<IActionResult> GetAllMessageChatForTrainerNeedAsign(int pageNumber)
+        {
+            try
+            {
+                int pageSize = 5;
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
+
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+
+                // Gọi phương thức repository với các tham số phân trang
+                var getAllMessageForAdmin = await _adminChatRepository.GetAllMessageChatForTrainerNeedAsign(pageNumber, pageSize);
+
+                // Trả về kết quả thành công
+                return Ok(getAllMessageForAdmin);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+
         [HttpPost("send-message")]
         [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> SendMessage([FromBody] SendMessageRequest request)
         {
             try
             {
-                await _adminChatRepository.SendMessageAsync(request.ChatId, request.StaffId, request.MessageContent);
+
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest();
+                }
+                await _adminChatRepository.SendMessageAsync(request.ChatId, StaffId, request.MessageContent);
                 return Ok(new { message = "Message sent successfully." });
             }
             catch (Exception ex)
@@ -69,17 +150,23 @@ namespace YourAPINamespace.Controllers
         }
     }
 
-    
+
     public class AssignStaffRequest
     {
         public int ChatId { get; set; }
         public int StaffId { get; set; }
     }
 
+    public class GetMessageForStaffRequest
+    {
+        public int ChatId { get; set; }
+        // public int StaffId { get; set; }
+    }
+
     public class SendMessageRequest
     {
         public int ChatId { get; set; }
-        public int StaffId { get; set; }
+        // public int StaffId { get; set; }
         public string MessageContent { get; set; }
     }
 }
