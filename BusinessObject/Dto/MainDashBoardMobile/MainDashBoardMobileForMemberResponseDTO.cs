@@ -11,6 +11,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
         public string DateMainDashBoard {  get; set; }
         public double DailyCalories { get; set; }
         public double BMI { get; set; }
+        public string? ImageMember { get; set; }
         public double ProteinInGrams { get; set; }
         public double CarbsInGrams { get; set; }
         public double FatInGrams { get; set; }

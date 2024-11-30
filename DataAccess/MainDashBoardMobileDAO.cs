@@ -166,6 +166,7 @@ namespace DataAccess
                         //TargetDate = targetDate,
                         TargetWeight=weightGoal.TargetValue,
                         Weight = currentWeight,
+                        ImageMember=member.ImageMember
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
                         BMI = Math.Round(bmi.Value, 0),
@@ -247,6 +248,7 @@ namespace DataAccess
 
 
                     var streakDTO = await FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId, date);
+                    var streakExerciseDTO = await FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId, date);
                    
                     var response = new MainDashBoardCaloInOfMemberResponseDTO
                     {
@@ -256,7 +258,8 @@ namespace DataAccess
                         Fat = foodDiary.Fat,
                         AmountWater = waterLog.Amount,
                         Carbs = foodDiary.Carbs,
-                        streakNumber= streakDTO.StreakNumber
+                        streakNumberFood= streakDTO.StreakNumber,
+                        streakNumberExercise= streakDTO.StreakNumber
 
                     };
 
