@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace Repository.Repo
 {
@@ -43,5 +44,11 @@ namespace Repository.Repo
 
         public Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId,date);
 
+        public Task<bool> addFoodListToDiaryForWebsite(AddFoodDiaryDetailForWebsiteRequestDTO request,int memberId) => FoodDiaryDAO.Instance.AddFoodListToDiaryForWebsite(request,memberId);
+
+        public Task<AddFoodDiaryDetailForWebsiteRequestDTO> GetFoodDairyDetailWebsite(int memberId, DateTime selectDate, int mealtype) => FoodDiaryDAO.Instance.GetFoodDairyDetailWebsite(memberId, selectDate,mealtype);
+
+        public Task<List<FoodDiaryWithMealTypeDTO>> GetAllDiariesForMonthWithMealTypesAsync(DateTime date, int memberId) => FoodDiaryDAO.Instance.GetAllDiariesForMonthWithMealTypesAsync(date, memberId);
+        
     }
 }

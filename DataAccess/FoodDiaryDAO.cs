@@ -594,7 +594,7 @@ namespace DataAccess
                     .Where(fd => fd.MemberId == memberId &&
                                  fd.Date.Month == startOfMonth.Month &&
                                  fd.Date.Day <= endDate.Day &&
-                                 fd.Date.Year == startOfMonth.Year)  
+                                 fd.Date.Year == startOfMonth.Year)
                     .OrderByDescending(fd => fd.Date)
                     .Select(fd => new { fd.Date, fd.Calories })
                     .ToListAsync();
@@ -659,6 +659,155 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> AddFoodListToDiaryForWebsite(AddFoodDiaryDetailForWebsiteRequestDTO request, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    
+                    var foodDiary = await context.FoodDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId
+                                                   && fd.Date.Date == request.selectDate.Date);
+
+                   
+                    if (foodDiary == null)
+                    {
+                        await GetOrCreateFoodDiaryAsync(memberId, request.selectDate.Date);
+                        foodDiary = await context.FoodDiaries
+                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == request.selectDate.Date);
+                    }
+
+                    
+                    foreach (var foodItem in request.ListFoodIdToAdd)
+                    {
+                        
+                        var existingDetail = await context.FoodDiaryDetails
+                            .FirstOrDefaultAsync(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.FoodId == foodItem.FoodId &&fdd.MealType==request.MealType);
+
+                        if (existingDetail != null)
+                        {
+                            
+                            existingDetail.Quantity += foodItem.Quantity;
+                        }
+                        else
+                        {
+                           
+                            var newDetail = new FoodDiaryDetail
+                            {
+                                DiaryId = foodDiary.DiaryId,
+                                FoodId = foodItem.FoodId,
+                                Quantity = foodItem.Quantity,
+                                MealType=request.MealType
+                            };
+                            await context.FoodDiaryDetails.AddAsync(newDetail);
+                        }
+                    }
+
+                    await context.SaveChangesAsync();
+
+                    
+                    var foodDiaryDetails = await context.FoodDiaryDetails
+                        .Include(fdd => fdd.Food)
+                        .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                        .ToListAsync();
+
+                    foodDiary.Calories = Math.Round(foodDiaryDetails.Sum(d => d.Food.Calories * d.Quantity), 1);
+                    foodDiary.Protein = Math.Round(foodDiaryDetails.Sum(d => d.Food.Protein * d.Quantity), 1);
+                    foodDiary.Fat = Math.Round(foodDiaryDetails.Sum(d => d.Food.Fat * d.Quantity), 1);
+                    foodDiary.Carbs = Math.Round(foodDiaryDetails.Sum(d => d.Food.Carbs * d.Quantity), 1);
+
+                    await context.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding food list to diary: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<AddFoodDiaryDetailForWebsiteRequestDTO> GetFoodDairyDetailWebsite(int memberId, DateTime selectDate, int mealType)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    
+                    var foodDiary = await context.FoodDiaries
+                        .Include(fd => fd.FoodDiaryDetails)
+                        .ThenInclude(fdd => fdd.Food)
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == selectDate.Date);
+
+                  
+                    if (foodDiary == null || !foodDiary.FoodDiaryDetails.Any())
+                    {
+                        return new AddFoodDiaryDetailForWebsiteRequestDTO
+                        {
+                            MealType = mealType,
+                            selectDate = selectDate,
+                            ListFoodIdToAdd = new List<FoodDiaryDetailForWebisteRequestDTO>()
+                        };
+                    }
+
+                   
+                    var filteredDetails = foodDiary.FoodDiaryDetails
+                        .Where(fdd => fdd.MealType == mealType)
+                        .Select(fdd => new FoodDiaryDetailForWebisteRequestDTO
+                        {
+                            FoodId = fdd.FoodId,
+                            Quantity = fdd.Quantity
+                        })
+                        .ToList();
+
+                   
+                    return new AddFoodDiaryDetailForWebsiteRequestDTO
+                    {
+                        MealType = mealType,
+                        selectDate = selectDate,
+                        ListFoodIdToAdd = filteredDetails
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching food diary details: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<FoodDiaryWithMealTypeDTO>> GetAllDiariesForMonthWithMealTypesAsync(DateTime date, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    
+                    var startOfMonth = new DateTime(date.Year, date.Month, 1);
+                    var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+                    
+                    var diaries = await context.FoodDiaries
+                        .Where(fd => fd.Date >= startOfMonth && fd.Date <= endOfMonth && fd.MemberId==memberId)
+                        .Select(fd => new FoodDiaryWithMealTypeDTO
+                        {
+                            Date = fd.Date,
+                            DiaryId = fd.DiaryId,
+                            HasBreakfast = fd.FoodDiaryDetails.Any(detail => detail.MealType == 1),
+                            HasLunch = fd.FoodDiaryDetails.Any(detail => detail.MealType == 2),
+                            HasDinner = fd.FoodDiaryDetails.Any(detail => detail.MealType == 3),
+                            HasSnack = fd.FoodDiaryDetails.Any(detail => detail.MealType == 4)
+                        })
+                        .ToListAsync();
+
+                    return diaries;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching food diaries for the month: {ex.Message}", ex);
+            }
+        }
 
     }
 }
