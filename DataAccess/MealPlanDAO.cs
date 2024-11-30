@@ -68,35 +68,39 @@ namespace DataAccess
                 {
                     var today = selectDate;
 
+                    // Kiểm tra xem MealPlan có tồn tại hay không
                     var mealPlan = await context.MealPlans.FirstOrDefaultAsync(mp => mp.MealPlanId == mealPlanId);
                     if (mealPlan == null)
                     {
                         throw new Exception("Meal plan not found.");
                     }
-                    /*var getMealPlanId = context.FoodDiaries.Where(mp => mp.MemberId == memberId && mp.Date==selectDate.Date).FirstOrDefault();
 
-                    if (getMealPlanId.MealPlanId != null) return 3;*/
+                    // Lấy tất cả FoodDiaries liên quan đến thành viên trong ngày bắt đầu và kiểm tra MealPlan
+                    var existingDiaryWithMealPlan = await context.FoodDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == today && fd.MealPlanId == mealPlanId);
 
+                    if (existingDiaryWithMealPlan != null)
+                    {
+                        // Nếu đã có MealPlan trong FoodDiary, trả về 3
+                        if(existingDiaryWithMealPlan.MealPlanId!=null)   return 3;
+                    }
+
+                    // Lấy chi tiết của MealPlan
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(mpd => mpd.MealPlanId == mealPlanId)
                         .ToListAsync();
 
-
                     foreach (var detail in mealPlanDetails)
                     {
-
                         var targetDate = today.AddDays(detail.Day - 1);
 
-
+                        // Tìm hoặc tạo mới FoodDiary cho ngày tương ứng
                         var targetDiary = await context.FoodDiaries
                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == targetDate);
 
-                       
-
-                    
-
                         if (targetDiary == null)
                         {
+                            // Tạo mới FoodDiary nếu chưa tồn tại
                             targetDiary = new FoodDiary
                             {
                                 MemberId = memberId,
@@ -113,30 +117,25 @@ namespace DataAccess
                         }
                         else
                         {
-                            
 
-
+                            // Xóa các chi tiết cũ trong FoodDiary
                             var existingDetails = context.FoodDiaryDetails
                                 .Where(fdd => fdd.DiaryId == targetDiary.DiaryId);
                             context.FoodDiaryDetails.RemoveRange(existingDetails);
                         }
 
+                        // Thêm chi tiết mới vào FoodDiary
                         var foodDiaryDetail = new FoodDiaryDetail
                         {
                             DiaryId = targetDiary.DiaryId,
                             FoodId = detail.FoodId,
                             Quantity = detail.Quantity,
-                            MealType = detail.MealType,
-
+                            MealType = detail.MealType
                         };
                         context.FoodDiaryDetails.Add(foodDiaryDetail);
                     }
 
-
-                    await context.SaveChangesAsync();
-
-
-
+                    // Cập nhật giá trị Calories, Protein, Fat và Carbs trong FoodDiary
                     var diariesToUpdate = await context.FoodDiaries
                         .Where(fd => fd.MemberId == memberId && fd.Date >= today && fd.Date < today.AddDays(7))
                         .ToListAsync();
@@ -152,21 +151,20 @@ namespace DataAccess
                         diary.Fat = diaryDetails.Sum(dd => dd.Quantity * (context.Foods.FirstOrDefault(f => f.FoodId == dd.FoodId)?.Fat ?? 0));
                         diary.Carbs = diaryDetails.Sum(dd => dd.Quantity * (context.Foods.FirstOrDefault(f => f.FoodId == dd.FoodId)?.Carbs ?? 0));
 
-
                         context.FoodDiaries.Update(diary);
                     }
 
-
                     await context.SaveChangesAsync();
-                    return 1;
+                    return 1; // Thành công
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating diary with meal plan: {ex.Message}");
-                return 2;
+                return 2; // Lỗi
             }
         }
+
 
         public async Task<MealPlanDetailResponseDTO> GetMealPlanDetailForMemberAsync(int mealPlanId, int day)
         {
@@ -510,9 +508,9 @@ namespace DataAccess
                         {
 
                             targetDiary.MealPlanId = mealPlanId;
+                            await context.SaveChangesAsync();   
 
-
-                            var existingDetails = context.FoodDiaryDetails
+                           var existingDetails = context.FoodDiaryDetails
                                 .Where(fdd => fdd.DiaryId == targetDiary.DiaryId);
                             context.FoodDiaryDetails.RemoveRange(existingDetails);
                         }
