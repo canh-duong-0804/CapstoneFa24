@@ -22,5 +22,12 @@ namespace BusinessObject.Dto.MainDashBoardMobile
         public string GoalType { get; set; }
         public string UserName { get; set; }
         public double WeightDifference { get; set; }
+
+        public double? Height { get; set; }
+        public string Gender { get; set; }
+        public int? ExerciseLevel { get; set; }
+        public int AgeMember { get; set; }
+        public int DiaryExerciseId { get; set; }
+        public int DiaryFoodId { get; set; }
     }
 }

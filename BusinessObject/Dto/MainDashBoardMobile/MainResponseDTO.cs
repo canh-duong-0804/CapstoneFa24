@@ -19,6 +19,17 @@ namespace BusinessObject.Dto.MainDashBoardMobile
         public int streakNumberFood { get; set; }
         public int streakNumberExercise { get; set; }
         public double CaloriesBurn { get; set; }
+
+
+        public double? Height { get; set; }
+        public string Gender { get; set; }
+        public int? ExerciseLevel { get; set; }
+        public int AgeMember { get; set; }
+        public int DiaryExerciseId { get; set; }
+        public int DiaryFoodId { get; set; }
+
+
+
         public string? ImageMember { get; set; }
         public string TargetDate { get; set; }
 

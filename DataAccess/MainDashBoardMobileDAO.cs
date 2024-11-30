@@ -153,6 +153,28 @@ namespace DataAccess
 
                     var getIdDiary = await context.FoodDiaries
                    .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == date.Date);
+                    
+                    
+                    var getIdExercise = await context.ExerciseDiaries
+                   .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == date.Date);
+                    if (getIdExercise==null)
+                    {
+                        getIdExercise = new ExerciseDiary
+                        {
+                            MemberId = memberId,
+                            Date = date,
+                            
+                            TotalCaloriesBurned=0,
+                            TotalDuration=0
+                        };
+
+
+                        context.ExerciseDiaries.Add(getIdExercise);
+                        await context.SaveChangesAsync();
+
+                    }
+                    var IdExercise = await context.ExerciseDiaries
+                   .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == date.Date);
 
 
                     return new MainDashBoardMobileForMemberResponseDTO
@@ -166,12 +188,24 @@ namespace DataAccess
                         //TargetDate = targetDate,
                         TargetWeight=weightGoal.TargetValue,
                         Weight = currentWeight,
-                        ImageMember=member.ImageMember
+                        ImageMember=member.ImageMember,
                         GoalType = goalType,
                         WeightDifference = Math.Round(weightDifference, 1),
                         BMI = Math.Round(bmi.Value, 0),
                         UserName = member.Username,
                         TargetDate = weightGoal.TargetDate.ToString("dd/MM/yyyy"),
+                        
+
+
+                        Height=member.Height,
+                        AgeMember= age,
+                        DiaryExerciseId= IdExercise.ExerciseDiaryId,
+                        DiaryFoodId=getIdDiary.DiaryId,
+                        Gender = member.Gender.HasValue ? "Male" : "Female",
+                        ExerciseLevel=member.ExerciseLevel
+
+
+
                     };
 
 

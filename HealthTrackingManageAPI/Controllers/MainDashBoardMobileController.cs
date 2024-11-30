@@ -62,6 +62,12 @@ namespace HealthTrackingManageAPI.Controllers
                 TargetDate = mainDashBoardInfo.TargetDate,
                 TargetWeight= mainDashBoardInfo.TargetWeight,
                 ImageMember=mainDashBoardInfo.ImageMember,
+                Height=mainDashBoardInfo.Height,
+                AgeMember=mainDashBoardInfo.AgeMember,
+                Gender=mainDashBoardInfo.Gender,
+                DiaryExerciseId=mainDashBoardInfo.DiaryExerciseId,
+                DiaryFoodId=mainDashBoardInfo.DiaryFoodId,
+                ExerciseLevel=mainDashBoardInfo.ExerciseLevel,
 
                 // Dữ liệu từ infoCalorinesMember
                 SelectDate = mainDashBoardInfo.DateMainDashBoard,
