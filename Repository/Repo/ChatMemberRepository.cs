@@ -14,6 +14,7 @@ namespace Repository.Repo
     {
         public Task CreateChatAsync(int memberId)=> ChatDAO.Instance.CreateChatAsync(memberId);
 
+        public Task<bool> EndChatsAsync(int memberId) => ChatDAO.Instance.EndChatsAsync(memberId);
 
 
         public Task<List<GetMessageChatDetailDTO>> GetMemberChatDetailsAsync(int memberId, int chatId) => ChatDAO.Instance.GetMemberChatDetailsAsync(memberId, chatId);

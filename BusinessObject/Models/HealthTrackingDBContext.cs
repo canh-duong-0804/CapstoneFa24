@@ -64,10 +64,6 @@ namespace BusinessObject.Models
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("server =.; database =HealthTrackingDB;uid=sa;pwd=123;TrustServerCertificate=true");
             }
-            /*if (!optionsBuilder.IsConfigured)
-            {
-				optionsBuilder.UseInMemoryDatabase("HealthTrackingTestDB");
-			}*/
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -1174,6 +1170,10 @@ namespace BusinessObject.Models
                 entity.Property(e => e.RateStar).HasColumnName("rate_star");
 
                 entity.Property(e => e.StaffId).HasColumnName("staff_id");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasDefaultValueSql("((1))");
 
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.MessageChats)
