@@ -128,7 +128,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpPut("reset-password")]
         [Authorize]
-        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestForAccountDTO request)
+        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestDTO request)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
