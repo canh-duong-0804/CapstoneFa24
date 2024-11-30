@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.ExecrisePlan;
+using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -223,5 +224,44 @@ namespace DataAccess
             }
         }
 
+        public async Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+                // Tính tổng số bản ghi
+                var totalRecords = await context.ExercisePlans.CountAsync();
+
+                // Lấy danh sách bài tập theo trang
+                var exercisePlans = await context.ExercisePlans
+
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(ep => new ExercisePlanDTO
+                    {
+                        ExercisePlanId = ep.ExercisePlanId,
+                        Name = ep.Name,
+                        TotalCaloriesBurned = ep.TotalCaloriesBurned,
+                        ExercisePlanImage = ep.ExercisePlanImage,
+                    })
+                    .ToListAsync();
+
+                // Tạo phản hồi
+                return new GetExercisePlanResponseForTrainerDTO
+                {
+                    Data = exercisePlans, // Đây là List<ExercisePlanDTO>
+                    TotalRecords = totalRecords,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize)
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching exercise plans: {ex.Message}", ex);
+            }
+
+        }
     }
 }

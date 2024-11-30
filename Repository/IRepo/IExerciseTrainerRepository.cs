@@ -12,7 +12,7 @@ namespace Repository.IRepo
     {
         Task<int> CreateExerciseTrainerAsync(CreateExerciseRequestDTO request, int memberId);
         Task<bool> DeleteExerciseAsync(int exerciseId);
-        Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize);
+        Task<GetExerciseResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize);
         Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId);
         Task<ExerciseRequestDTO> UpdateExerciseAsync(int exerciseId, ExerciseRequestDTO updateRequest);
         Task<bool> UploadImageForMealMember(string v, int exerciseId);

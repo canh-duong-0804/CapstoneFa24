@@ -12,7 +12,7 @@ namespace Repository.Repo
 {
     public class ExecrisePlanTrainerRepository : IExecrisePlanTrainerRepository
     {
-        public Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize) => ExerciseTrainerDAO.Instance.GetAllExercisePlansAsync(page, pageSize);
+        public Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize) => ExercisePlanTrainerDAO.Instance.GetAllExercisePlansAsync(page, pageSize);
         public Task<bool> AddExercisePlanAsync(ExercisePlan exercisePlan) => ExercisePlanTrainerDAO.Instance.AddExercisePlanAsync(exercisePlan);
        public Task<ExercisePlan?> GetExercisePlanByIdAsync(int id) => ExercisePlanTrainerDAO.Instance.GetExercisePlanByIdAsync(id);
         public Task<List<ExercisePlan>> GetExercisePlansAsync() => ExercisePlanTrainerDAO.Instance.GetExercisePlansAsync();

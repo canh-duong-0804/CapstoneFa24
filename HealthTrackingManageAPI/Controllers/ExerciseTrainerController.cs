@@ -51,7 +51,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
 
-        [HttpGet("get-all-exercise-plans")]
+        [HttpGet("get-all-exercises")]
         public async Task<IActionResult> GetAllExercisePlans([FromQuery] int page)
         {
             try

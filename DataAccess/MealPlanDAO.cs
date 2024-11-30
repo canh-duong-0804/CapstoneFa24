@@ -73,7 +73,9 @@ namespace DataAccess
                     {
                         throw new Exception("Meal plan not found.");
                     }
-                    if(mealPlan.MealPlanId!=null) return 3;
+                    /*var getMealPlanId = context.FoodDiaries.Where(mp => mp.MemberId == memberId && mp.Date==selectDate.Date).FirstOrDefault();
+
+                    if (getMealPlanId.MealPlanId != null) return 3;*/
 
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(mpd => mpd.MealPlanId == mealPlanId)
@@ -88,6 +90,10 @@ namespace DataAccess
 
                         var targetDiary = await context.FoodDiaries
                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == targetDate);
+
+                       
+
+                    
 
                         if (targetDiary == null)
                         {
@@ -107,8 +113,7 @@ namespace DataAccess
                         }
                         else
                         {
-
-                            targetDiary.MealPlanId = mealPlanId;
+                            
 
 
                             var existingDetails = context.FoodDiaryDetails
@@ -129,6 +134,7 @@ namespace DataAccess
 
 
                     await context.SaveChangesAsync();
+
 
 
                     var diariesToUpdate = await context.FoodDiaries

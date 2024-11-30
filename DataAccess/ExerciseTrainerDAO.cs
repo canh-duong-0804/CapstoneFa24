@@ -317,31 +317,40 @@ namespace DataAccess
             }
         }
 
-        public async Task<GetExercisePlanResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize)
+        public async Task<GetExerciseResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize)
         {
             try
             {
                 using var context = new HealthTrackingDBContext();
 
                 // Tính tổng số bản ghi
-                var totalRecords = await context.ExercisePlans.CountAsync();
+                var totalRecords = await context.Exercises.CountAsync();
+                var exerciseTypes = new Dictionary<int?, string>
+{
+    { 1, "Cardio" },
+    { 2, "Strength" },
+    { 3, "Flexibility" }
+};
 
+              
                 // Lấy danh sách bài tập theo trang
-                var exercisePlans = await context.ExercisePlans
-                   
+                var exercisePlans = await context.Exercises
+
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
-                    .Select(ep => new ExercisePlanDTO
+                    .Select(ep => new GetExerciseResponseDTO
                     {
-                        ExercisePlanId = ep.ExercisePlanId,
-                        Name = ep.Name,
-                      TotalCaloriesBurned = ep.TotalCaloriesBurned,
-                        ExercisePlanImage=ep.ExercisePlanImage,
+                        ExerciseId = ep.ExerciseId,
+                        Description = ep.Description,
+                        ExerciseImage = ep.ExerciseImage,
+                        ExerciseName = ep.ExerciseName,
+                        MetValue = ep.MetValue,
+                        TypeExercise = exerciseTypes[ep.TypeExercise],
                     })
                     .ToListAsync();
 
                 // Tạo phản hồi
-                return new GetExercisePlanResponseForTrainerDTO
+                return new GetExerciseResponseForTrainerDTO
                 {
                     Data = exercisePlans, // Đây là List<ExercisePlanDTO>
                     TotalRecords = totalRecords,
