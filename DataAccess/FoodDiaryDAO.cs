@@ -588,14 +588,38 @@ namespace DataAccess
             using (var context = new HealthTrackingDBContext())
             {
                 var today = DateTime.Now.Date;
-                var startOfMonth = new DateTime(date.Year, date.Month, 1);
-                var endDate = today;
+
+                
+                DateTime startOfMonth, endDate;
+
+                if (date.Year < today.Year ||
+                    (date.Year == today.Year && date.Month < today.Month))
+                {
+                    
+                    startOfMonth = new DateTime(date.Year, date.Month, 1);
+                    endDate = new DateTime(date.Year, date.Month,
+                        DateTime.DaysInMonth(date.Year, date.Month));
+                }
+                else if (date.Year == today.Year && date.Month == today.Month)
+                {
+                   
+                    startOfMonth = new DateTime(date.Year, date.Month, 1);
+
+                   
+                    endDate = date.Day < today.Day ? today : date;
+                }
+                else
+                {
+                    
+                    startOfMonth = new DateTime(date.Year, date.Month, 1);
+                    endDate = date;
+                }
 
                 var foodDiaries = await context.FoodDiaries
                     .Where(fd => fd.MemberId == memberId &&
                                  fd.Date.Month == startOfMonth.Month &&
-                                 fd.Date.Day <= endDate.Day &&
-                                 fd.Date.Year == startOfMonth.Year)
+                                 fd.Date.Year == startOfMonth.Year &&
+                                 fd.Date.Date <= endDate.Date)
                     .OrderByDescending(fd => fd.Date)
                     .Select(fd => new { fd.MemberId, fd.Date, fd.Calories })
                     .ToListAsync();
@@ -603,25 +627,20 @@ namespace DataAccess
                 var streakDTO = new CalorieStreakDTO();
                 int currentStreak = 0;
 
-              
-                var currentDate = today;
-
+                var currentDate = endDate;
                 foreach (var diary in foodDiaries)
                 {
-                    if(diary.Calories>0) streakDTO.Dates.Add(diary.Date.Date);
-                  
+                    if (diary.Calories > 0) streakDTO.Dates.Add(diary.Date.Date);
+
                     if (diary.Date.Date == currentDate && diary.Calories > 0)
                     {
-                        streakDTO.Dates.Add(diary.Date.Date);
                         currentStreak++;
                         currentDate = currentDate.AddDays(-1);
                     }
                     else if (diary.Date.Date == currentDate && diary.Calories <= 0)
                     {
-                      
                         break;
                     }
-                   
                 }
 
                 streakDTO.Dates = streakDTO.Dates
