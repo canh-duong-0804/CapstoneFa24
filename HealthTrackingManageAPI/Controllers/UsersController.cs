@@ -128,7 +128,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpPut("reset-password")]
         [Authorize]
-        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestDTO request)
+        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestForAccountDTO request)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -142,7 +142,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
             var user = await _userRepo.ResetPasswordAsync(request,memberId);
-            if (user == null)
+            if (user ==false)
             {
                 return BadRequest("Error while registering the user");
             }
@@ -158,7 +158,7 @@ namespace HealthTrackingManageAPI.Controllers
             var user = await _userRepo.ResetPasswordOtpAsync(request);
             if (user == null)
             {
-                return BadRequest("Error while registering the user");
+                return BadRequest("Error while change password the user");
             }
 
     

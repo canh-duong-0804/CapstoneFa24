@@ -41,7 +41,7 @@ namespace Repository.Repo
 
         public Task<BusinessObject.Models.Member> Register(BusinessObject.Models.Member registerationRequestDTO, RegisterationMobileRequestDTO member) => UserDAO.Instance.Register(registerationRequestDTO, member);
 
-        public Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request,int memberId) => UserDAO.Instance.ResetPasswordAsync(request,memberId);
+        public Task<bool> ResetPasswordAsync(ChangePasswordRequestForAccountDTO request,int memberId) => UserDAO.Instance.ResetPasswordAsync(request,memberId);
 
         public Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request) => UserDAO.Instance.ResetPasswordOtpAsync(request);
 

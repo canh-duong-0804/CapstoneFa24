@@ -276,7 +276,7 @@ namespace DataAccess
         }
 
 
-        public async Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request, int memberId)
+        public async Task<bool> ResetPasswordAsync(ChangePasswordRequestForAccountDTO request, int memberId)
         {
 
             try
@@ -289,7 +289,7 @@ namespace DataAccess
                     {
                         throw new Exception("User not found.");
                     }
-                    if (!VerifyPasswordHash(request.NewPassword, user.PasswordHash, user.PasswordSalt))
+                    if (!VerifyPasswordHash(request.OldPassword, user.PasswordHash, user.PasswordSalt))
                         return false;
 
                     CreatePasswordHash(request.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
@@ -299,7 +299,7 @@ namespace DataAccess
                     user.PasswordSalt = passwordSalt;
 
 
-                    context.Members.Update(user);
+                    //context.Members.Update(user);
                     await context.SaveChangesAsync();
 
                     return true;
@@ -330,7 +330,7 @@ namespace DataAccess
                     user.PasswordSalt = passwordSalt;
 
 
-                    context.Members.Update(user);
+                    //context.Members.Update(user);
                     await context.SaveChangesAsync();
 
                     return true;
