@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Dto.ExerciseTrainer;
 using HealthTrackingManageAPI.Authorize;
+using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace HealthTrackingManageAPI.Controllers
     [ApiController]
     public class ExerciseTrainerController : ControllerBase
     {
+        private readonly CloudinaryService _cloudinaryService;
         private readonly IExerciseTrainerRepository _exerciseRepository;
-        public ExerciseTrainerController(IExerciseTrainerRepository exerciseRepository)
+        public ExerciseTrainerController(IExerciseTrainerRepository exerciseRepository, CloudinaryService cloudinaryService)
         {
             _exerciseRepository = exerciseRepository;
+            _cloudinaryService = cloudinaryService;
         }
 
         [RoleLessThanOrEqualTo(1)]
@@ -46,6 +49,26 @@ namespace HealthTrackingManageAPI.Controllers
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
+        }
+
+
+        [RoleLessThanOrEqualTo(1)]
+        [HttpPut("upload-image-exercise")]
+        public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile, [FromForm] int exerciseId)
+        {
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var uploadResult = await _cloudinaryService.UploadImageAsync(
+                    imageFile,
+                    "user_uploads"
+                );
+                var check = await _exerciseRepository.UploadImageForMealMember(uploadResult.Url.ToString(), exerciseId);
+
+
+                if (check) return Ok();
+
+            }
+            return BadRequest();
         }
 
         [HttpDelete("delete-exercise/{exerciseId}")]

@@ -13,5 +13,6 @@ namespace Repository.IRepo
         Task<bool> DeleteExerciseAsync(int exerciseId);
         Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId);
         Task<ExerciseRequestDTO> UpdateExerciseAsync(int exerciseId, ExerciseRequestDTO updateRequest);
+        Task<bool> UploadImageForMealMember(string v, int exerciseId);
     }
 }

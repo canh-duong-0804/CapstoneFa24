@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.ExerciseTrainer;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.ExerciseTrainer;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -43,6 +44,7 @@ namespace DataAccess
                         CreateDate = DateTime.UtcNow,
                         ExerciseImage = request.ExerciseImage,
                         TypeExercise = request.TypeExercise,
+                        MetValue = request.MetValue,
                         Status = true
                     };
 
@@ -61,13 +63,20 @@ namespace DataAccess
                         var cardioDetail = new ExerciseCardio
                         {
                             ExerciseId = exercise.ExerciseId,
+                            Calories1=request.CardioMetrics.Calories1,
+                            Calories2 = request.CardioMetrics.Calories2,
+                            Calories3 = request.CardioMetrics.Calories3,
+                            Minutes1 = request.CardioMetrics.Minutes1,
+                            Minutes2 = request.CardioMetrics.Minutes2,
+                            Minutes3 = request.CardioMetrics.Minutes3,
+
                            // MetricsCardio = request.CardioMetrics.MetricsCardio,
                            // MetValue = request.CardioMetrics.MetValue
                         };
 
                         context.ExerciseCardios.Add(cardioDetail);
                     }
-                    else
+                    else if(request.TypeExercise == 2)  
                     {
 
                         if (request.ResistanceMetrics == null)
@@ -78,6 +87,15 @@ namespace DataAccess
                         var resistanceDetail = new ExerciseResistance
                         {
                             ExerciseId = exercise.ExerciseId,
+                            Reps1 = request.ResistanceMetrics.Reps1,
+                            Reps2 = request.ResistanceMetrics.Reps2,
+                            Reps3 = request.ResistanceMetrics.Reps3,
+                            Sets1 = request.ResistanceMetrics.Sets1,
+                            Sets2 = request.ResistanceMetrics.Sets2,
+                            Sets3 = request.ResistanceMetrics.Sets3,
+                            Minutes3 = request.ResistanceMetrics.Minutes3,
+                            Minutes2= request.ResistanceMetrics.Minutes2,
+                            Minutes1= request.ResistanceMetrics.Minutes1,
                             //MetricsResistance = request.ResistanceMetrics.MetricsResistance
                         };
 
@@ -218,6 +236,7 @@ namespace DataAccess
                     //exercise.TypeExercise = updateRequest.IsCardio ?? exercise.IsCardio;
                     exercise.ChangeDate = DateTime.UtcNow;
                     exercise.ChangeBy = memberId;
+                    exercise.MetValue= updateRequest.MetValue;
 
                     if (exercise.TypeExercise == 1 && updateRequest.CardioMetrics != null)
                     {
@@ -225,6 +244,13 @@ namespace DataAccess
                         var cardioDetail = exercise.ExerciseCardios.FirstOrDefault();
                         if (cardioDetail != null)
                         {
+                            cardioDetail.Minutes1=updateRequest.CardioMetrics.Minutes1;
+                            cardioDetail.Minutes2=updateRequest.CardioMetrics.Minutes2;
+                            cardioDetail.Minutes3=updateRequest.CardioMetrics.Minutes3;
+                            cardioDetail.Calories1=updateRequest.CardioMetrics.Calories1;
+                            cardioDetail.Calories2=updateRequest.CardioMetrics.Calories2;
+                            cardioDetail.Calories3=updateRequest.CardioMetrics.Calories3;
+
                           //  cardioDetail.MetricsCardio = updateRequest.CardioMetrics.MetricsCardio ?? cardioDetail.MetricsCardio;
                          //   cardioDetail.MetValue = updateRequest.CardioMetrics.MetValue ?? cardioDetail.MetValue;
                         }
@@ -235,6 +261,16 @@ namespace DataAccess
                         var resistanceDetail = exercise.ExerciseResistances.FirstOrDefault();
                         if (resistanceDetail != null)
                         {
+                            resistanceDetail.Reps1=updateRequest.ResistanceMetrics.Reps1;
+                            resistanceDetail.Reps2=updateRequest.ResistanceMetrics.Reps2;
+                            resistanceDetail.Reps3=updateRequest.ResistanceMetrics.Reps3;
+                            resistanceDetail.Sets1=updateRequest.ResistanceMetrics.Sets1;
+                            resistanceDetail.Sets2=updateRequest.ResistanceMetrics.Sets2;
+                            resistanceDetail.Sets3=updateRequest.ResistanceMetrics.Sets3;
+                            resistanceDetail.Minutes1=updateRequest.ResistanceMetrics.Minutes1;
+                            resistanceDetail.Minutes2=updateRequest.ResistanceMetrics.Minutes2;
+                            resistanceDetail.Minutes3=updateRequest.ResistanceMetrics.Minutes3;
+
                           //  resistanceDetail.MetricsResistance = updateRequest.ResistanceMetrics.MetricsResistance ?? resistanceDetail.MetricsResistance;
                         }
                     }
@@ -251,6 +287,34 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> UploadImageForMealMember(string urlImage, int exerciseId)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+
+                var exercise = await context.Exercises
+                    .FirstOrDefaultAsync(m => m.ExerciseId == exerciseId);
+
+                if (exercise == null)
+                {
+                    throw new Exception("MealMember not found.");
+                }
+
+
+                exercise.ExerciseImage = urlImage;
+
+
+                await context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error uploading image for meal member: {ex.Message}", ex);
+            }
+        }
     }
 }
 

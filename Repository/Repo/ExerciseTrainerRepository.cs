@@ -20,5 +20,7 @@ namespace Repository.Repo
 
         public Task<ExerciseRequestDTO> UpdateExerciseAsync(int exerciseId, ExerciseRequestDTO updateRequest) => ExerciseTrainerDAO.Instance.UpdateExerciseAsync(exerciseId, updateRequest);
 
+        public Task<bool> UploadImageForMealMember(string urlImage, int exerciseId) => ExerciseTrainerDAO.Instance.UploadImageForMealMember(urlImage, exerciseId);
+
     }
 }

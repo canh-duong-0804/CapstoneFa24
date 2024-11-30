@@ -437,15 +437,15 @@ namespace DataAccess
             {
                 using var context = new HealthTrackingDBContext();
 
-                const int maxAttempts = 3;
+                const int maxAttempts = 5;
                 int attempts = 0;
                 var foodDetails = new List<AllFoodForMemberResponseDTO>();
+                var seenFoodIds = new HashSet<int>(); 
                 var lastDate = DateTime.Now;
 
                 do
                 {
                     attempts++;
-
 
                     var foodDiary = await context.FoodDiaries
                         .OrderByDescending(fd => fd.Date)
@@ -458,16 +458,14 @@ namespace DataAccess
 
                     lastDate = foodDiary.Date;
 
-
                     var foodIds = await context.FoodDiaryDetails
                         .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
                         .Select(fdd => fdd.FoodId)
                         .Distinct()
                         .ToListAsync();
 
-
                     var currentFoodDetails = await context.Foods
-                        .Where(f => foodIds.Contains(f.FoodId))
+                        .Where(f => foodIds.Contains(f.FoodId) && !seenFoodIds.Contains(f.FoodId)) // Loại trừ FoodId đã thêm
                         .Include(f => f.Diet)
                         .Select(f => new AllFoodForMemberResponseDTO
                         {
@@ -480,13 +478,19 @@ namespace DataAccess
                             Fat = f.Fat,
                             DietName = f.Diet.DietName
                         })
-                        .Take(3)
+                        .Take(5)
                         .ToListAsync();
 
+                    // Thêm FoodId vào tập hợp và chi tiết thực phẩm vào danh sách
+                    foreach (var food in currentFoodDetails)
+                    {
+                        if (seenFoodIds.Add(food.FoodId)) 
+                        {
+                            foodDetails.Add(food);
+                        }
+                    }
 
-                    foodDetails.AddRange(currentFoodDetails);
-
-
+                   
                     if (foodDetails.Count >= 3 || attempts >= maxAttempts)
                     {
                         break;
@@ -501,6 +505,7 @@ namespace DataAccess
                 throw new Exception($"Unexpected error fetching food history: {ex.Message}");
             }
         }
+
 
 
         public async Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestAsync(int memberId)
