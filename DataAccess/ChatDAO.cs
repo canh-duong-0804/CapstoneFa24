@@ -63,14 +63,14 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var messageChatDetails = context.MessageChatDetails.Where(d=>d.MessageChatId==chatId)
+                    var messageChatDetails = context.MessageChatDetails.Where(d => d.MessageChatId == chatId)
                         .Select(detail => new GetMessageChatDetailDTO
                         {
                             MessageChatDetailsId = detail.MessageChatDetailsId,
                             MessageContent = detail.MessageContent,
                             SentAt = detail.SentAt,
                             SenderType = detail.SenderType,
-                            
+
                         })
                         .ToList();
 
@@ -91,7 +91,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     var chats = await context.MessageChats
-                        .Where(c => c.MemberId == memberId)
+                        .Where(c => c.MemberId == memberId && c.Status == true)
                         .OrderByDescending(c => c.CreateAt)
                         .ToListAsync();
 
@@ -201,7 +201,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     var chat = await context.MessageChats
                         .FirstOrDefaultAsync(c => c.MessageChatId == chatId && c.MemberId == memberId);
 
@@ -210,17 +210,17 @@ namespace DataAccess
                         throw new Exception("Chat not found or unauthorized.");
                     }
 
-                   
+
                     var message = new MessageChatDetail
                     {
-                        MessageChatId = chatId, 
-                        SenderType = "1", 
-                        
+                        MessageChatId = chatId,
+                        SenderType = "1",
+
                         MessageContent = messageContent,
-                        SentAt = DateTime.UtcNow 
+                        SentAt = DateTime.UtcNow
                     };
 
-                    
+
                     context.MessageChatDetails.Add(message);
                     await context.SaveChangesAsync();
                 }
@@ -265,7 +265,7 @@ namespace DataAccess
                 {
                     var totalRecords = await context.MessageChats
                         .Where(c => c.StaffId == null)
-                        .CountAsync();  
+                        .CountAsync();
 
                     var chats = await context.MessageChats
                         .Where(c => c.StaffId == null)
@@ -298,5 +298,25 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> EndChatsAsync(int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var getChat = context.MessageChats.Where(c => c.MemberId == memberId && c.Status == true).FirstOrDefault();
+                    if (getChat == null) return false;
+
+
+                    getChat.Status = false;
+                   await context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving chats: {ex.Message}", ex);
+            }
+        }
     }
 }

@@ -102,6 +102,32 @@ namespace YourAPINamespace.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        
+        [HttpGet("end-chats")]
+        public async Task<ActionResult> EndChats()
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest();
+                }
+
+                var chats = await _chatRepository.EndChatsAsync(memberId);
+                if(chats ==false)return BadRequest();
+                return Ok(chats);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
 
         [HttpGet("chat-details/{chatId}")]

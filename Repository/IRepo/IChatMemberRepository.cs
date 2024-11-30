@@ -15,5 +15,6 @@ namespace Repository.IRepo
         Task<List<GetMessageChatDetailDTO>> GetMemberChatDetailsAsync(int memberId, int chatId);
         Task RateChatAsync(int memberId, int chatId, double rating);
         Task SendMessageMemberAsync(int memberId, int chatId, string messageContent);
+        Task<bool> EndChatsAsync(int memberId);
     }
 }

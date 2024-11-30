@@ -15,6 +15,7 @@ namespace BusinessObject.Models
         public int? MemberId { get; set; }
         public double? RateStar { get; set; }
         public DateTime? CreateAt { get; set; }
+        public bool? Status { get; set; }
 
         public virtual Member? Member { get; set; }
         public virtual staff? Staff { get; set; }
