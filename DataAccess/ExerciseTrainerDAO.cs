@@ -1,4 +1,6 @@
-﻿using BusinessObject.Dto.ExerciseTrainer;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.ExecrisePlan;
+using BusinessObject.Dto.ExerciseTrainer;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -43,6 +45,7 @@ namespace DataAccess
                         CreateDate = DateTime.UtcNow,
                         ExerciseImage = request.ExerciseImage,
                         TypeExercise = request.TypeExercise,
+                        MetValue = request.MetValue,
                         Status = true
                     };
 
@@ -61,13 +64,20 @@ namespace DataAccess
                         var cardioDetail = new ExerciseCardio
                         {
                             ExerciseId = exercise.ExerciseId,
-                           // MetricsCardio = request.CardioMetrics.MetricsCardio,
-                           // MetValue = request.CardioMetrics.MetValue
+                            Calories1 = request.CardioMetrics.Calories1,
+                            Calories2 = request.CardioMetrics.Calories2,
+                            Calories3 = request.CardioMetrics.Calories3,
+                            Minutes1 = request.CardioMetrics.Minutes1,
+                            Minutes2 = request.CardioMetrics.Minutes2,
+                            Minutes3 = request.CardioMetrics.Minutes3,
+
+                            // MetricsCardio = request.CardioMetrics.MetricsCardio,
+                            // MetValue = request.CardioMetrics.MetValue
                         };
 
                         context.ExerciseCardios.Add(cardioDetail);
                     }
-                    else
+                    else if (request.TypeExercise == 2)
                     {
 
                         if (request.ResistanceMetrics == null)
@@ -78,6 +88,15 @@ namespace DataAccess
                         var resistanceDetail = new ExerciseResistance
                         {
                             ExerciseId = exercise.ExerciseId,
+                            Reps1 = request.ResistanceMetrics.Reps1,
+                            Reps2 = request.ResistanceMetrics.Reps2,
+                            Reps3 = request.ResistanceMetrics.Reps3,
+                            Sets1 = request.ResistanceMetrics.Sets1,
+                            Sets2 = request.ResistanceMetrics.Sets2,
+                            Sets3 = request.ResistanceMetrics.Sets3,
+                            Minutes3 = request.ResistanceMetrics.Minutes3,
+                            Minutes2 = request.ResistanceMetrics.Minutes2,
+                            Minutes1 = request.ResistanceMetrics.Minutes1,
                             //MetricsResistance = request.ResistanceMetrics.MetricsResistance
                         };
 
@@ -110,7 +129,7 @@ namespace DataAccess
                         return false;
 
                     exercise.Status = false;
-                   
+
                     await context.SaveChangesAsync();
 
                     return true;
@@ -130,39 +149,39 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                  
+
                     var exercise = await context.Exercises
-                        .Where(e => e.ExerciseId == exerciseId && e.Status == true) 
-                        .Include(e => e.ExerciseCardios) 
+                        .Where(e => e.ExerciseId == exerciseId && e.Status == true)
+                        .Include(e => e.ExerciseCardios)
                         .Include(e => e.ExerciseResistances)
                         .FirstOrDefaultAsync();
 
                     if (exercise == null)
                         throw new Exception("Exercise not found.");
 
-                    
+
                     var exerciseDto = new ExerciseRequestDTO
                     {
-                        ExerciseId=exerciseId,
+                        ExerciseId = exerciseId,
                         ExerciseName = exercise.ExerciseName,
                         Description = exercise.Description,
                         ExerciseImage = exercise.ExerciseImage,
-                        MetValue=exercise.MetValue,
-                       
-                        
-                        TypeExercise=exercise.TypeExercise,
+                        MetValue = exercise.MetValue,
+
+
+                        TypeExercise = exercise.TypeExercise,
                         CardioMetrics = exercise.TypeExercise == 1
                             ? exercise.ExerciseCardios.Select(c => new UpdateExerciseCardioDTO
                             {
                                 //MetricsCardio = c.MetricsCardio,
-                               //MetValue = c.MetValue
-                               Calories1 = c.Calories1,
-                               Calories2 = c.Calories2,
-                               Calories3 = c.Calories3, 
-                               Minutes1 = c.Minutes1,
-                               Minutes2 = c.Minutes2,   
-                               Minutes3 = c.Minutes3,   
-                               
+                                //MetValue = c.MetValue
+                                Calories1 = c.Calories1,
+                                Calories2 = c.Calories2,
+                                Calories3 = c.Calories3,
+                                Minutes1 = c.Minutes1,
+                                Minutes2 = c.Minutes2,
+                                Minutes3 = c.Minutes3,
+
 
 
                             }).FirstOrDefault()
@@ -177,11 +196,11 @@ namespace DataAccess
                                 Sets1 = r.Sets1,
                                 Sets2 = r.Sets2,
                                 Sets3 = r.Sets3,
-                                Minutes1= r.Minutes1,
+                                Minutes1 = r.Minutes1,
                                 Minutes2 = r.Minutes2,
                                 Minutes3 = r.Minutes3,
 
-                            //    MetricsResistance = r.MetricsResistance
+                                //    MetricsResistance = r.MetricsResistance
                             }).FirstOrDefault()
                             : null,
 
@@ -211,35 +230,53 @@ namespace DataAccess
                     if (exercise == null || exercise.Status == false)
                         throw new Exception("Exercise not found or inactive.");
 
-                   
+
                     exercise.ExerciseName = updateRequest.ExerciseName ?? exercise.ExerciseName;
                     exercise.Description = updateRequest.Description ?? exercise.Description;
                     exercise.ExerciseImage = updateRequest.ExerciseImage ?? exercise.ExerciseImage;
                     //exercise.TypeExercise = updateRequest.IsCardio ?? exercise.IsCardio;
                     exercise.ChangeDate = DateTime.UtcNow;
                     exercise.ChangeBy = memberId;
+                    exercise.MetValue = updateRequest.MetValue;
 
                     if (exercise.TypeExercise == 1 && updateRequest.CardioMetrics != null)
                     {
-                       
+
                         var cardioDetail = exercise.ExerciseCardios.FirstOrDefault();
                         if (cardioDetail != null)
                         {
-                          //  cardioDetail.MetricsCardio = updateRequest.CardioMetrics.MetricsCardio ?? cardioDetail.MetricsCardio;
-                         //   cardioDetail.MetValue = updateRequest.CardioMetrics.MetValue ?? cardioDetail.MetValue;
+                            cardioDetail.Minutes1 = updateRequest.CardioMetrics.Minutes1;
+                            cardioDetail.Minutes2 = updateRequest.CardioMetrics.Minutes2;
+                            cardioDetail.Minutes3 = updateRequest.CardioMetrics.Minutes3;
+                            cardioDetail.Calories1 = updateRequest.CardioMetrics.Calories1;
+                            cardioDetail.Calories2 = updateRequest.CardioMetrics.Calories2;
+                            cardioDetail.Calories3 = updateRequest.CardioMetrics.Calories3;
+
+                            //  cardioDetail.MetricsCardio = updateRequest.CardioMetrics.MetricsCardio ?? cardioDetail.MetricsCardio;
+                            //   cardioDetail.MetValue = updateRequest.CardioMetrics.MetValue ?? cardioDetail.MetValue;
                         }
                     }
                     else if (exercise.TypeExercise == 2 && updateRequest.ResistanceMetrics != null)
                     {
-                        
+
                         var resistanceDetail = exercise.ExerciseResistances.FirstOrDefault();
                         if (resistanceDetail != null)
                         {
-                          //  resistanceDetail.MetricsResistance = updateRequest.ResistanceMetrics.MetricsResistance ?? resistanceDetail.MetricsResistance;
+                            resistanceDetail.Reps1 = updateRequest.ResistanceMetrics.Reps1;
+                            resistanceDetail.Reps2 = updateRequest.ResistanceMetrics.Reps2;
+                            resistanceDetail.Reps3 = updateRequest.ResistanceMetrics.Reps3;
+                            resistanceDetail.Sets1 = updateRequest.ResistanceMetrics.Sets1;
+                            resistanceDetail.Sets2 = updateRequest.ResistanceMetrics.Sets2;
+                            resistanceDetail.Sets3 = updateRequest.ResistanceMetrics.Sets3;
+                            resistanceDetail.Minutes1 = updateRequest.ResistanceMetrics.Minutes1;
+                            resistanceDetail.Minutes2 = updateRequest.ResistanceMetrics.Minutes2;
+                            resistanceDetail.Minutes3 = updateRequest.ResistanceMetrics.Minutes3;
+
+                            //  resistanceDetail.MetricsResistance = updateRequest.ResistanceMetrics.MetricsResistance ?? resistanceDetail.MetricsResistance;
                         }
                     }
 
-                   
+
                     await context.SaveChangesAsync();
 
                     return updateRequest;
@@ -251,6 +288,87 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> UploadImageForMealMember(string urlImage, int exerciseId)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+
+                var exercise = await context.Exercises
+                    .FirstOrDefaultAsync(m => m.ExerciseId == exerciseId);
+
+                if (exercise == null)
+                {
+                    throw new Exception("MealMember not found.");
+                }
+
+
+                exercise.ExerciseImage = urlImage;
+
+
+                await context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error uploading image for meal member: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<GetExerciseResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+                // Tính tổng số bản ghi
+                var totalRecords = await context.Exercises.CountAsync();
+                
+
+              
+                // Lấy danh sách bài tập theo trang
+                var exercisePlans = await context.Exercises
+
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(ep => new GetExerciseResponseDTO
+                    {
+                        ExerciseId = ep.ExerciseId,
+                        Description = ep.Description,
+                        ExerciseImage = ep.ExerciseImage,
+                        ExerciseName = ep.ExerciseName,
+                        MetValue = ep.MetValue,
+                        TypeExercise = GetExerciseType(ep.TypeExercise)
+                    })
+                    .ToListAsync();
+
+                // Tạo phản hồi
+                return new GetExerciseResponseForTrainerDTO
+                {
+                    Data = exercisePlans, // Đây là List<ExercisePlanDTO>
+                    TotalRecords = totalRecords,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize)
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching exercise plans: {ex.Message}", ex);
+            }
+        }
+        private static string GetExerciseType(int? typeExercise)
+        {
+            return typeExercise switch
+            {
+                1 => "Cardio",
+                2 => "Strength",
+                3 => "Flexibility",
+                _ => "Unknown"
+            };
+        }
     }
 }
 

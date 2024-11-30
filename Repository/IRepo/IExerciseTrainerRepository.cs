@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.ExerciseTrainer;
+﻿using BusinessObject.Dto.ExecrisePlan;
+using BusinessObject.Dto.ExerciseTrainer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,9 @@ namespace Repository.IRepo
     {
         Task<int> CreateExerciseTrainerAsync(CreateExerciseRequestDTO request, int memberId);
         Task<bool> DeleteExerciseAsync(int exerciseId);
+        Task<GetExerciseResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize);
         Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId);
         Task<ExerciseRequestDTO> UpdateExerciseAsync(int exerciseId, ExerciseRequestDTO updateRequest);
+        Task<bool> UploadImageForMealMember(string v, int exerciseId);
     }
 }

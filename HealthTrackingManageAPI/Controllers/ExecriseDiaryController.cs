@@ -79,7 +79,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
-      [Authorize]
+        [Authorize]
         [HttpGet("member/exercise_diary_by_date")]
         public async Task<IActionResult> GetDiaryByDate(DateTime date)
         {
@@ -136,8 +136,8 @@ namespace HealthTrackingManageAPI.Controllers
                         ExerciseId = ed.ExerciseId,
                         Duration = ed.Duration,
                         CaloriesBurned = ed.CaloriesBurned,
-                        ExerciseName  = ed.Exercise.ExerciseName,
-                        ExerciseImage = ed.Exercise.ExerciseImage   
+                        ExerciseName = ed.Exercise.ExerciseName,
+                        ExerciseImage = ed.Exercise.ExerciseImage
                     }).ToList()
                 };
 
@@ -174,7 +174,7 @@ namespace HealthTrackingManageAPI.Controllers
                     return NotFound("Exercise detail not found.");
                 }
 
-               
+
 
                 // Update the IsPractice field
                 exerciseDetail.IsPractice = request.IsPractice;

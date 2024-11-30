@@ -70,7 +70,7 @@ namespace HealthTrackingManageAPI.Controllers
         
         [HttpPost("add-meal-plan-to-diary-again")]
         [Authorize]
-        public async Task<IActionResult> AddMealPlanToDiaryÀgain(int mealPlanId, DateTime selectDate)
+        public async Task<IActionResult> AddMealPlanToDiaryAgain(int mealPlanId, DateTime selectDate)
         {
             /* if (request == null || request.FoodDiaryDetails == null || !request.FoodDiaryDetails.Any())
              {
