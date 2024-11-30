@@ -237,7 +237,7 @@ namespace DataAccess
 
                     existingMember.Username = user.Username;
                     existingMember.PhoneNumber = user.PhoneNumber;
-                    existingMember.ImageMember = user.ImageMember;
+                    //existingMember.ImageMember = user.ImageMember;
                     existingMember.Dob = user.Dob;
 
 

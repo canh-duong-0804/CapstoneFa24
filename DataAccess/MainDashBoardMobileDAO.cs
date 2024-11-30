@@ -202,7 +202,8 @@ namespace DataAccess
                         DiaryExerciseId= IdExercise.ExerciseDiaryId,
                         DiaryFoodId=getIdDiary.DiaryId,
                         Gender = member.Gender.HasValue ? "Male" : "Female",
-                        ExerciseLevel=member.ExerciseLevel
+                        ExerciseLevel=member.ExerciseLevel,
+                        CaloriesBurn=IdExercise.TotalCaloriesBurned,
 
 
 
@@ -282,7 +283,7 @@ namespace DataAccess
 
 
                     var streakDTO = await FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId, date);
-                    var streakExerciseDTO = await FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId, date);
+                    var streakExerciseDTO = await ExerciseDiaryDAO.Instance.GetExerciseDiaryStreakWithDates(memberId);
                    
                     var response = new MainDashBoardCaloInOfMemberResponseDTO
                     {
@@ -293,7 +294,7 @@ namespace DataAccess
                         AmountWater = waterLog.Amount,
                         Carbs = foodDiary.Carbs,
                         streakNumberFood= streakDTO.StreakNumber,
-                        streakNumberExercise= streakDTO.StreakNumber
+                        streakNumberExercise= streakExerciseDTO.StreakCount,
 
                     };
 

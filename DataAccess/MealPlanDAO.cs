@@ -39,7 +39,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return await context.MealPlans
+                    return await context.MealPlans.Include(mp=>mp.Diet)
                     .Select(mp => new GetAllMealPlanForMemberResponseDTO
                     {
                         MealPlanId = mp.MealPlanId,
@@ -47,6 +47,7 @@ namespace DataAccess
                         ShortDescription = mp.ShortDescription,
                         MealPlanImage = mp.MealPlanImage,
                         TotalCalories = mp.TotalCalories,
+                        DietName=mp.Diet.DietName
 
                     })
                     .ToListAsync();

@@ -497,7 +497,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return Ok(new
                 {
                     message = "Profile updated successfully",
-                    imagePath = updatedProfile.ImageMember
+                    //imagePath = updatedProfile.ImageMember
                 });
             }
             catch (Exception ex)

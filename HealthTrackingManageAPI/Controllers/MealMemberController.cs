@@ -83,7 +83,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [Authorize]
         [HttpPost("create-meal-plan-for-member")]
-        public async Task<IActionResult> CreateMealForMember([FromForm] CreateMealMemberRequestDTO mealMemberDto, IFormFile? imageFile)
+        public async Task<IActionResult> CreateMealForMember([FromBody] CreateMealMemberRequestDTO mealMemberDto)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
