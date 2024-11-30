@@ -10,7 +10,7 @@ namespace BusinessObject.Dto.ExecrisePlan
     {
         public int ExercisePlanId { get; set; }
         public byte Day { get; set; }
-        public List<DayExerciseDTO> listExercise { get; set; } = new List<DayExerciseDTO>();
+        public List<DayExerciseDTO> execriseInPlans { get; set; } = new List<DayExerciseDTO>();
     }
 
     public class DayExerciseDTO
