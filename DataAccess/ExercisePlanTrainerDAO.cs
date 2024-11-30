@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace DataAccess
 {
@@ -262,6 +263,84 @@ namespace DataAccess
                 throw new Exception($"Error fetching exercise plans: {ex.Message}", ex);
             }
 
+        }
+
+        public async Task<GetExercisePlanDetailDTO> GetExercisePlanDetailAsync(int exercisePlanId, int day)
+        {
+            try
+            {
+                using var context = new HealthTrackingDBContext();
+
+
+                var exercises = await context.ExercisePlanDetails
+                    .Where(epd => epd.ExercisePlanId == exercisePlanId && epd.Day == day)
+                    .Select(epd => new DayExerciseDTO
+                    {
+                        ExerciseId = epd.ExerciseId,
+                        ExerciseName = epd.Exercise.ExerciseName,
+                        Duration = epd.Duration,
+                    })
+                    .ToListAsync();
+
+                if (!exercises.Any())
+                {
+                    return null;
+                }
+
+                // Tạo phản hồi DTO
+                return new GetExercisePlanDetailDTO
+                {
+                    ExercisePlanId = exercisePlanId,
+                    Day = (byte)day,
+                    listExercise = exercises
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching exercise plans: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> UpdateExercisePlanDetailOfTrainerAsync(GetExercisePlanDetailDTO request)
+        {
+            try
+            {
+                using var _context = new HealthTrackingDBContext();
+
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    // Xóa danh sách bài tập cũ
+                    var existingDetails = _context.ExercisePlanDetails
+                    .Where(epd => epd.ExercisePlanId == request.ExercisePlanId && epd.Day == request.Day);
+
+                    _context.ExercisePlanDetails.RemoveRange(existingDetails);
+
+                    // Thêm danh sách bài tập mới
+                    var newDetails = request.listExercise.Select(ex => new ExercisePlanDetail
+                    {
+                        ExercisePlanId = request.ExercisePlanId,
+                        Day = request.Day,
+                        ExerciseId = ex.ExerciseId,
+                        Duration = ex.Duration
+                    });
+
+                    await _context.ExercisePlanDetails.AddRangeAsync(newDetails);
+                    await _context.SaveChangesAsync();
+
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating exercise plan details: {ex.Message}", ex);
+            }
         }
     }
 }

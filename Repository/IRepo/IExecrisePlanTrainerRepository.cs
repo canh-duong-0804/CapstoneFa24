@@ -18,11 +18,11 @@ namespace Repository.IRepo
         Task<bool> SoftDeleteExercisePlanAsync(int planId);
         Task<bool> AddExercisePlanDetailAsync(List<ExercisePlanDetail> details);
         Task<List<ExercisePlanDetail>> GetExercisePlanDetailsAsync(int planId);
-        Task<bool> UpdateExercisePlanDetailAsync(ExercisePlanDetail detail);
+        Task<bool> UpdateExercisePlanDetailAsync(GetExercisePlanDetailDTO detail);
 
         Task<bool> DeleteExercisePlanDetailAsync(int detailId);
 
         Task<ExercisePlanDetail?> GetExercisePlanDetailByIdAsync(int detailId);
-
+        Task<GetExercisePlanDetailDTO> GetExercisePlanDetailAsync(int exercisePlanId, int day);
     }
 }

@@ -325,12 +325,7 @@ namespace DataAccess
 
                 // Tính tổng số bản ghi
                 var totalRecords = await context.Exercises.CountAsync();
-                var exerciseTypes = new Dictionary<int?, string>
-{
-    { 1, "Cardio" },
-    { 2, "Strength" },
-    { 3, "Flexibility" }
-};
+                
 
               
                 // Lấy danh sách bài tập theo trang
@@ -345,7 +340,7 @@ namespace DataAccess
                         ExerciseImage = ep.ExerciseImage,
                         ExerciseName = ep.ExerciseName,
                         MetValue = ep.MetValue,
-                        TypeExercise = exerciseTypes[ep.TypeExercise],
+                        TypeExercise = GetExerciseType(ep.TypeExercise)
                     })
                     .ToListAsync();
 
@@ -364,7 +359,16 @@ namespace DataAccess
                 throw new Exception($"Error fetching exercise plans: {ex.Message}", ex);
             }
         }
-
+        private static string GetExerciseType(int? typeExercise)
+        {
+            return typeExercise switch
+            {
+                1 => "Cardio",
+                2 => "Strength",
+                3 => "Flexibility",
+                _ => "Unknown"
+            };
+        }
     }
 }
 

@@ -102,6 +102,38 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(new { Message = "Exercise plan updated successfully." });
         }
 
+
+
+        [HttpGet("get-exercise-plan-detail")]
+        [RoleLessThanOrEqualTo(1)]
+        [Authorize]
+        public async Task<IActionResult> GetExercisePlanDetail([FromQuery] int exercisePlanId, [FromQuery] int day)
+        {
+            try
+            {
+                if (exercisePlanId <= 0 || day <= 0)
+                {
+                    return BadRequest("Invalid exercise plan ID or day.");
+                }
+
+                // Lấy chi tiết kế hoạch bài tập từ repository
+                var exercisePlanDetail = await _exercisePlanRepo.GetExercisePlanDetailAsync(exercisePlanId, day);
+
+                if (exercisePlanDetail == null)
+                {
+                    return NotFound("Exercise plan detail not found.");
+                }
+
+                return Ok(exercisePlanDetail);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+
+
         [HttpDelete("delete-exercise-plan/{planId}")]
         [RoleLessThanOrEqualTo(1)]
         [Authorize]
@@ -133,7 +165,7 @@ namespace HealthTrackingManageAPI.Controllers
                 {
                     ExercisePlanId = request.ExercisePlanId,
                     ExerciseId = exerciseInPlan.ExerciseId,
-                    Day = exerciseInPlan.Day,
+                    Day = request.Day,
                     Duration = exerciseInPlan.Duration
                 };
 
@@ -151,26 +183,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-        [HttpPut("update-exercise-plan-detail")]
-        [RoleLessThanOrEqualTo(1)]
-        [Authorize]
-        public async Task<IActionResult> UpdateExercisePlanDetail([FromBody] UpdateExercisePlanDetailRequestDTO request)
-        {
-            var existingDetail = await _exercisePlanRepo.GetExercisePlanDetailByIdAsync(request.ExercisePlanDetailId);
-            if (existingDetail == null)
-                return NotFound("Exercise plan detail not found.");
-
-            existingDetail.ExerciseId = request.ExerciseId;
-            existingDetail.Day = request.Day;
-            existingDetail.Duration = request.Duration;
-
-            var success = await _exercisePlanRepo.UpdateExercisePlanDetailAsync(existingDetail);
-
-            if (!success)
-                return StatusCode(500, "Failed to update exercise plan detail.");
-
-            return Ok(new { Message = "Exercise plan detail updated successfully." });
-        }
+        
 
         
         [HttpDelete("delete-exercise-plan-detail/{detailId}")]
@@ -184,6 +197,31 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(new { Message = "Exercise plan detail deleted successfully." });
         }
+
+
+        [HttpPut("update-exercise-plan-detail")]
+        public async Task<IActionResult> UpdateExercisePlanDetail([FromBody] GetExercisePlanDetailDTO request)
+        {
+            try
+            {
+               
+
+                var result = await _exercisePlanRepo.UpdateExercisePlanDetailAsync(request);
+
+                if (!result)
+                {
+                    return NotFound("Failed to update exercise plan detail. The provided data may not exist.");
+                }
+
+                return Ok("Exercise plan detail updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+
 
     }
 }
