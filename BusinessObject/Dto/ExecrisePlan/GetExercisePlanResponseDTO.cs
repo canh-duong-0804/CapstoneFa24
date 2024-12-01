@@ -40,7 +40,7 @@ namespace BusinessObject.Dto.ExecrisePlan
     {
         public int ExerciseId { get; set; }
       
-        public string? TypeExercise { get; set; }
+        public int? TypeExercise { get; set; }
         public string? ExerciseImage { get; set; }
       
         public string ExerciseName { get; set; } = null!;

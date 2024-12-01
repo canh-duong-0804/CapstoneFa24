@@ -21,6 +21,8 @@ namespace Repository.Repo
 
         public Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId) => ExerciseTrainerDAO.Instance.GetExerciseDetailAsync(exerciseId);
 
+        public Task<int> GetTotalExercisesAsync() => ExerciseTrainerDAO.Instance.GetTotalExercisesAsync();
+       
 
         public Task<ExerciseRequestDTO> UpdateExerciseAsync(int exerciseId, ExerciseRequestDTO updateRequest) => ExerciseTrainerDAO.Instance.UpdateExerciseAsync(exerciseId, updateRequest);
 

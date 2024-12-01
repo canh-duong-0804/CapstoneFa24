@@ -51,12 +51,13 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
 
-        [HttpGet("get-all-exercises")]
+        /*[HttpGet("get-all-exercises-trainer")]
+        [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetAllExercisePlans([FromQuery] int page)
         {
             try
             {
-                int pageSize = 10;
+                int pageSize = 5;
                 if (page <= 0 || pageSize <= 0)
                 {
                     return BadRequest("Page and pageSize must be greater than zero.");
@@ -75,6 +76,62 @@ namespace HealthTrackingManageAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+*/
+
+        [HttpGet("get-all-exercises-trainer")]
+        [RoleLessThanOrEqualTo(1)]
+        public async Task<IActionResult> GetAllExercisePlans([FromQuery] int? page)
+        {
+            try
+            {
+                int pageSize = 5; // Default page size
+
+                if (page.HasValue && page <= 0)
+                {
+                    return BadRequest("Page number must be greater than zero.");
+                }
+
+                int currentPage = page ?? 1; // Default to page 1 if not provided
+
+                // Retrieve the total count of exercise plans
+                int totalExercisePlans = await _exerciseRepository.GetTotalExercisesAsync();
+                if (totalExercisePlans == 0)
+                {
+                    return NotFound("No exercise plans found.");
+                }
+
+                // Calculate the total number of pages
+                int totalPages = (int)Math.Ceiling(totalExercisePlans / (double)pageSize);
+
+                // Adjust the current page if it exceeds total pages
+                if (currentPage > totalPages && totalPages > 0)
+                {
+                    currentPage = totalPages;
+                }
+
+                // Fetch paginated data
+                var exercisePlans = await _exerciseRepository.GetAllExercisePlansAsync(currentPage, pageSize);
+
+                if (exercisePlans == null )
+                {
+                    return NotFound("No exercise plans found.");
+                }
+
+                // Prepare the response
+                return Ok(new
+                {
+                    ExercisePlans = exercisePlans,
+                    TotalPages = totalPages,
+                    CurrentPage = currentPage,
+                    PageSize = pageSize,
+                    TotalExercisePlans = totalExercisePlans
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An internal server error occurred: {ex.Message}");
             }
         }
 

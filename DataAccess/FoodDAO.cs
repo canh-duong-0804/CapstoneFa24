@@ -81,16 +81,22 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync()
+        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int currentPage,int pageSize)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                    // Calculate total count of foods
+                    /* int totalCount = await context.Foods
+                         .Where(food => food.Status == true)
+                         .CountAsync();*/
 
+                    // Get paginated foods
                     var foods = await (from food in context.Foods
                                        join diet in context.Diets on food.DietId equals diet.DietId
                                        where food.Status == true
+                                       orderby food.FoodId descending// Ensure consistent ordering
                                        select new AllFoodForStaffResponseDTO
                                        {
                                            FoodId = food.FoodId,
@@ -105,14 +111,17 @@ namespace DataAccess
                                            FoodImage = food.FoodImage,
                                            Calories = food.Calories,
                                            DietName = food.Diet.DietName,
-                                       }).ToListAsync();
+                                       })
+                                       .Skip((currentPage - 1) * pageSize) // Skip items for previous pages
+                                       .Take(pageSize) // Take items for the current page
+                                       .ToListAsync();
 
                     return foods;
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
+                throw new Exception($"Error retrieving foods: {ex.Message}", ex);
             }
         }
 
@@ -273,6 +282,10 @@ namespace DataAccess
             }
         }
 
+
+        
+
+
         public async Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int FoodId, DateTime SelectDate, int memberId)
         {
             try
@@ -421,7 +434,22 @@ namespace DataAccess
 
                     if (!foods.Any())
                     {
-                        return await GetAllFoodsForMemberAsync();
+                        /*return await GetAllFoodsForMemberAsync();*/
+
+                        foods = await(from food in context.Foods
+                                       join diet in context.Diets on food.DietId equals diet.DietId
+                                       where food.Status == true
+                                       select new AllFoodForMemberResponseDTO
+                                       {
+                                           FoodId = food.FoodId,
+                                           FoodName = food.FoodName,
+                                           FoodImage = food.FoodImage,
+                                           Calories = food.Calories,
+                                           Fat = food.Fat,
+                                           Carbs = food.Carbs,
+                                           Protein = food.Protein,
+                                           DietName = food.Diet.DietName,
+                                       }).ToListAsync();
                     }
 
                     return foods;
@@ -459,6 +487,14 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"Error uploading image for meal member: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<int> GetTotalFoodsForStaffAsync()
+        {
+            using (var context = new HealthTrackingDBContext())
+            {
+                return await context.Foods.CountAsync();
             }
         }
     }

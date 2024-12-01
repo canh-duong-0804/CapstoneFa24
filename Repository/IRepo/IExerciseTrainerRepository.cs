@@ -14,6 +14,7 @@ namespace Repository.IRepo
         Task<bool> DeleteExerciseAsync(int exerciseId);
         Task<GetExerciseResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize);
         Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId);
+        Task<int> GetTotalExercisesAsync();
         Task<ExerciseRequestDTO> UpdateExerciseAsync(int exerciseId, ExerciseRequestDTO updateRequest);
         Task<bool> UploadImageForMealMember(string v, int exerciseId);
     }

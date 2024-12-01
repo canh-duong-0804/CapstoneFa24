@@ -323,14 +323,21 @@ namespace DataAccess
             {
                 using var context = new HealthTrackingDBContext();
 
-                // Tính tổng số bản ghi
-                var totalRecords = await context.Exercises.CountAsync();
                 
+                var totalRecords = await context.Exercises.CountAsync();
 
-              
-                // Lấy danh sách bài tập theo trang
+                // Calculate total pages
+                var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                // Adjust page if it exceeds the total pages
+                if (page > totalPages && totalPages > 0)
+                {
+                    page = totalPages;
+                }
+
+                // Fetch the paginated exercise plans
                 var exercisePlans = await context.Exercises
-
+                    .OrderByDescending(ep => ep.ExerciseId) // Ensure consistent ordering
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .Select(ep => new GetExerciseResponseDTO
@@ -340,34 +347,38 @@ namespace DataAccess
                         ExerciseImage = ep.ExerciseImage,
                         ExerciseName = ep.ExerciseName,
                         MetValue = ep.MetValue,
-                        TypeExercise = GetExerciseType(ep.TypeExercise)
+                        TypeExercise = ep.TypeExercise // Method to map exercise type
                     })
                     .ToListAsync();
 
-                // Tạo phản hồi
+                // Create response object
                 return new GetExerciseResponseForTrainerDTO
                 {
-                    Data = exercisePlans, // Đây là List<ExercisePlanDTO>
+                    Data = exercisePlans,
                     TotalRecords = totalRecords,
                     Page = page,
                     PageSize = pageSize,
-                    TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize)
+                    TotalPages = totalPages
                 };
+            }
+            catch (ArgumentException argEx)
+            {
+                throw new ArgumentException($"Invalid argument: {argEx.Message}", argEx);
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error fetching exercise plans: {ex.Message}", ex);
             }
         }
-        private static string GetExerciseType(int? typeExercise)
+
+        
+
+        public async Task<int> GetTotalExercisesAsync()
         {
-            return typeExercise switch
+            using (var context = new HealthTrackingDBContext())
             {
-                1 => "Cardio",
-                2 => "Strength",
-                3 => "Flexibility",
-                _ => "Unknown"
-            };
+                return await context.ExercisePlans.CountAsync();
+            }
         }
     }
 }
