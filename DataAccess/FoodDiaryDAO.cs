@@ -589,28 +589,21 @@ namespace DataAccess
             {
                 var today = DateTime.Now.Date;
 
-                
                 DateTime startOfMonth, endDate;
-
                 if (date.Year < today.Year ||
                     (date.Year == today.Year && date.Month < today.Month))
                 {
-                    
                     startOfMonth = new DateTime(date.Year, date.Month, 1);
                     endDate = new DateTime(date.Year, date.Month,
                         DateTime.DaysInMonth(date.Year, date.Month));
                 }
                 else if (date.Year == today.Year && date.Month == today.Month)
                 {
-                   
                     startOfMonth = new DateTime(date.Year, date.Month, 1);
-
-                   
                     endDate = date.Day < today.Day ? today : date;
                 }
                 else
                 {
-                    
                     startOfMonth = new DateTime(date.Year, date.Month, 1);
                     endDate = date;
                 }
@@ -626,8 +619,21 @@ namespace DataAccess
 
                 var streakDTO = new CalorieStreakDTO();
                 int currentStreak = 0;
-
                 var currentDate = endDate;
+
+                var todayDiary = foodDiaries.FirstOrDefault(fd => fd.Date.Date == today);
+
+                // If today has calories > 0, start streak calculation from today
+                // If today has calories = 0, start streak calculation from yesterday
+                if (todayDiary != null && todayDiary.Calories > 0)
+                {
+                    currentDate = today;
+                }
+                else if (todayDiary != null && todayDiary.Calories == 0)
+                {
+                    currentDate = today.AddDays(-1);
+                }
+
                 foreach (var diary in foodDiaries)
                 {
                     if (diary.Calories > 0) streakDTO.Dates.Add(diary.Date.Date);

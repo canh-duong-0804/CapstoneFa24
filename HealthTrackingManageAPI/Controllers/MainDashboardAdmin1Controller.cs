@@ -7,11 +7,11 @@ namespace HealthTrackingManageAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MainDashboardAdminController : ControllerBase
+    public class MainDashboardForAdminController : ControllerBase
     {
 
-        private readonly IMainDashboardAdminRepository _mainDashBoardAdminRepository;
-        public MainDashboardAdminController(IMainDashboardAdminRepository mainDashBoardAdminRepository)
+        private readonly IMainDashboardAdmin1Repository _mainDashBoardAdminRepository;
+        public MainDashboardForAdminController(IMainDashboardAdmin1Repository mainDashBoardAdminRepository)
         {
             _mainDashBoardAdminRepository = mainDashBoardAdminRepository;
         }

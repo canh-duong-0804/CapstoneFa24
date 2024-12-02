@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace DataAccess
 {
-    public class MainDashboardTrainerDAO
+    public class MainDashboardAdminDAO
     {
-        private static MainDashboardTrainerDAO instance = null;
+        private static MainDashboardAdminDAO instance = null;
         private static readonly object instanceLock = new object();
 
-        public static MainDashboardTrainerDAO Instance
+        public static MainDashboardAdminDAO Instance
         {
             get
             {
@@ -22,7 +22,7 @@ namespace DataAccess
                 {
                     if (instance == null)
                     {
-                        instance = new MainDashboardTrainerDAO();
+                        instance = new MainDashboardAdminDAO();
                     }
                     return instance;
                 }

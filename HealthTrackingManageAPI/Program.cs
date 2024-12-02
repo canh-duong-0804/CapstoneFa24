@@ -65,7 +65,7 @@ builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<INutrientRepository, NutrientRepository>();
 builder.Services.AddScoped<ICaloriesRepository, CaloriesRepository>();
 builder.Services.AddScoped<IMacroRepository, MacroRepository>();
-builder.Services.AddScoped<IMainDashboardTrainerRepository, MainDashboardTrainerRepository>();
+builder.Services.AddScoped<IMainDashboardAdminRepository, MainDashboardAdminRepository>();
 
 builder.Services.AddScoped<SpeedSMSService>();
 
