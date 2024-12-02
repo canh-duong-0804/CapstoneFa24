@@ -374,7 +374,8 @@ namespace DataAccess
                                        {
                                            Value = food.FoodId,
                                            Label = food.FoodName,
-                                           Calories=food.Calories
+                                           Calories=food.Calories,
+                                           Portion = food.Portion,
 
 
                                        }).ToListAsync();

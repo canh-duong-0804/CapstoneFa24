@@ -10,5 +10,6 @@ namespace BusinessObject.Dto.Food
     public class FoodListBoxResponseDTO : ListBoxResponseDTO
     {
         public double Calories { get; set; }
+        public string Portion { get; set; } = null!;
     }
 }
