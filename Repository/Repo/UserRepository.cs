@@ -45,7 +45,7 @@ namespace Repository.Repo
 
         public Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request) => UserDAO.Instance.ResetPasswordOtpAsync(request);
 
-        public Task<bool> DeleteAccount(BusinessObject.Models.Member model, string password) => UserDAO.Instance.DeleteAccount(model, password);
+        public Task<bool> DeleteAccount(int memberId) => UserDAO.Instance.DeleteAccount(memberId);
 
         public Task<bool> UploadImageForMember(string urlImage, int memberId) => UserDAO.Instance.UploadImageForMember(urlImage, memberId);
         

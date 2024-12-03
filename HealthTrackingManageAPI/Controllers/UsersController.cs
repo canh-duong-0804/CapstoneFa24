@@ -199,14 +199,15 @@ namespace HealthTrackingManageAPI.Controllers
         }
         
         
-        [HttpPost("Delete-Account")]
-        public async Task<IActionResult> DeleteAccount([FromBody] LoginRequestDTO member)
+        [HttpDelete("Delete-Account/{memberId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteAccount(int memberId)
         {
             var mapper = MapperConfig.InitializeAutomapper();
 
-            var model = mapper.Map<BusinessObject.Models.Member>(member);
-            model.PhoneNumber = member.Email;
-            var user = await _userRepo.DeleteAccount(model, member.Password);
+            //var model = mapper.Map<BusinessObject.Models.Member>(memberId);
+            //model.PhoneNumber = member.Email;
+            var user = await _userRepo.DeleteAccount(memberId);
 
             if (user == null)
             {
