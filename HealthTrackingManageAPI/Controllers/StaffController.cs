@@ -19,6 +19,7 @@ using Repository.Repo;
 using System.Security.Principal;
 using BusinessObject.Dto.Staff;
 using Microsoft.AspNetCore.Authorization;
+using HealthTrackingManageAPI.Authorize;
 
 namespace HealthTrackingManageAPI.Controllers
 {
@@ -201,6 +202,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPut("update-role-account-by-admin")]
+        [RoleLessThanOrEqualTo(0)]
         public async Task<IActionResult> UpdateRoleAccountStaffById([FromBody] UpdateRoleStaffRequestDTO staffRole)
         {
             var staff = await _staffRepo.UpdateRoleAccountStaffByIdAsync(staffRole);

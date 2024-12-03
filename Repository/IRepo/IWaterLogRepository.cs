@@ -8,7 +8,7 @@ namespace Repository.IRepo
 {
     public interface IWaterLogRepository
     {
-        Task<bool> AddOneLiterAsync(int memberId, DateTime date);
+        Task<bool> Add200mlAsync(int memberId, DateTime date);
         Task<bool> SubtractWaterIntakeAsync(int memberId, DateTime date);
     }
 }

@@ -1,4 +1,4 @@
-﻿using HealthTrackingManageAPI.NewFolder.Image;
+﻿/*using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,3 +70,4 @@ namespace HealthTrackingManageAPI.Controllers
         }
     }
 }
+*/
