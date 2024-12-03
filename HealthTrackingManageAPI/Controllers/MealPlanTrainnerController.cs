@@ -151,58 +151,71 @@ namespace HealthTrackingManageAPI.Controllers
         [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetAllMealPlanForStaff([FromQuery] int? page)
         {
-
-
-            var memberIdClaim = User.FindFirstValue("Id");
-            if (memberIdClaim == null)
+            try
             {
-                return Unauthorized();
+                // Validate the page parameter
+                if (page.HasValue && page < 1)
+                {
+                    return BadRequest("Page number must be greater than or equal to 1.");
+                }
+
+                int currentPage = page ?? 1; // Default to page 1 if not provided
+                int pageSize = 5; // Number of items per page
+
+                // Get total number of meal plans for staff
+                int totalMealPlans = await _mealPlanRepository.GetTotalMealPlanAsync();
+
+                if (totalMealPlans == 0)
+                {
+                    return NotFound("No meal plans found.");
+                }
+
+                // Calculate total pages
+                int totalPages = (int)Math.Ceiling(totalMealPlans / (double)pageSize);
+
+                // Adjust the current page if it exceeds the total pages
+                if (currentPage > totalPages && totalPages > 0)
+                {
+                    currentPage = totalPages;
+                }
+
+                // Retrieve meal plans for the current page
+                var mealPlans = await _mealPlanRepository.GetAllMealPlanForStaffsAsync(currentPage, pageSize);
+
+                if (mealPlans == null || !mealPlans.Any())
+                {
+                    return NotFound("No meal plans found.");
+                }
+
+                // Return paginated results
+                return Ok(new
+                {
+                    MealPlans = mealPlans,
+                    TotalPages = totalPages,
+                    CurrentPage = currentPage,
+                    PageSize = pageSize,
+                    TotalMealPlans = totalMealPlans
+                });
             }
-            if (!int.TryParse(memberIdClaim, out int memberId))
+            catch (UnauthorizedAccessException)
             {
-                return BadRequest();
+                // Handle unauthorized access
+                return StatusCode(403, "Access denied.");
             }
-            var role = User.FindFirstValue(ClaimTypes.Role);
-
-            if (page.HasValue && page < 1)
+            catch (KeyNotFoundException)
             {
-                return BadRequest("Page number must be greater than or equal to 1.");
+                // Handle case where data is not found
+                return NotFound("No meal plans found.");
             }
-
-            int currentPage = page ?? 1;
-            int currentPageSize = 5;
-
-            int totalMealPlan = await _mealPlanRepository.GetTotalMealPlanAsync();
-
-            if (totalMealPlan == 0)
+            catch (Exception ex)
             {
-                return NotFound("No staff found.");
+                // Handle unexpected errors
+                return StatusCode(500, new { Error = "An internal server error occurred.", Details = ex.Message });
             }
-
-            int totalPages = (int)Math.Ceiling(totalMealPlan / (double)currentPageSize);
-
-
-            if (totalMealPlan < currentPageSize) currentPageSize = totalMealPlan;
-
-
-            if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
-
-
-            var mealPlans = await _mealPlanRepository.GetAllMealPlanForStaffsAsync(currentPage, currentPageSize);
-
-            if (mealPlans == null || !mealPlans.Any())
-            {
-                return NotFound("No staff found.");
-            }
-
-            return Ok(new
-            {
-                mealPlans,
-                TotalPages = totalPages,
-                CurrentPage = currentPage,
-                PageSize = currentPageSize
-            });
         }
+
+
+
 
         [HttpPost("create-meal-plan-detail")]
         [RoleLessThanOrEqualTo(1)]

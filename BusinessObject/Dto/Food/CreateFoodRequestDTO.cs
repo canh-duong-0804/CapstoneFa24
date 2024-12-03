@@ -13,7 +13,7 @@ namespace BusinessObject.Dto.Food
         public string Portion { get; set; } = null!;
         public string dietname { get; set; } = null!;
         public double Calories { get; set; }
-        public int CreateBy { get; set; }    
+       // public int CreateBy { get; set; }    
         public string? FoodImage { get; set; }
         public double Protein { get; set; }
         public double Carbs { get; set; }

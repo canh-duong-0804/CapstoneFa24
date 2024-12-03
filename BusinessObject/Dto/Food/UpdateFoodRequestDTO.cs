@@ -14,8 +14,8 @@ namespace BusinessObject.Dto.Food
         public double Calories { get; set; }
       
      
-        public int? ChangeBy { get; set; }
-        public DateTime? ChangeDate { get; set; }
+        //public int? ChangeBy { get; set; }
+        //public DateTime? ChangeDate { get; set; }
         public string? FoodImage { get; set; }
         public double Protein { get; set; }
         public double Carbs { get; set; }

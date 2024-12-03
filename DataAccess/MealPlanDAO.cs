@@ -75,16 +75,7 @@ namespace DataAccess
                         throw new Exception("Meal plan not found.");
                     }
 
-                    /*// Lấy tất cả FoodDiaries liên quan đến thành viên trong ngày bắt đầu và kiểm tra MealPlan
-                    var existingDiaryWithMealPlan = await context.FoodDiaries
-                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == today && fd.MealPlanId == mealPlanId);
-
-                    if (existingDiaryWithMealPlan != null)
-                    {
-                        // Nếu đã có MealPlan trong FoodDiary, trả về 3
-                        if(existingDiaryWithMealPlan.MealPlanId!=null)   return 3;
-                    }*/
-
+                   
                     // Lấy chi tiết của MealPlan
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(mpd => mpd.MealPlanId == mealPlanId)
@@ -93,11 +84,13 @@ namespace DataAccess
                     foreach (var detail in mealPlanDetails)
                     {
                         var targetDate = today.AddDays(detail.Day - 1);
+                        var targetDate1 = selectDate.AddDays(detail.Day );
+
 
                         // Tìm hoặc tạo mới FoodDiary cho ngày tương ứng
                         var targetDiary = await context.FoodDiaries
                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == targetDate);
-
+                      
                         if (targetDiary == null)
                         {
                             // Tạo mới FoodDiary nếu chưa tồn tại
@@ -115,15 +108,23 @@ namespace DataAccess
                             context.FoodDiaries.Add(targetDiary);
                             await context.SaveChangesAsync();
                         }
+                        
                         else
                         {
+
                             var existingDiaryWithMealPlan = await context.FoodDiaries
-                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == targetDate);
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date == targetDate1);
 
                             if (existingDiaryWithMealPlan != null)
                             {
                                 // Nếu đã có MealPlan trong FoodDiary, trả về 3
                                 if (existingDiaryWithMealPlan.MealPlanId != null) return 3;
+                            }
+                            if (targetDiary.MealPlanId != null)
+                            {
+                                
+                                return 3;
+
                             }
                             // Xóa các chi tiết cũ trong FoodDiary
                             var existingDetails = context.FoodDiaryDetails

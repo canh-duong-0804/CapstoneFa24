@@ -57,7 +57,7 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return await context.staffs.CountAsync(s => s.Status == true);
+                    return await context.MealPlans.CountAsync(s => s.Status == true);
 
                 }
 
@@ -71,40 +71,26 @@ namespace DataAccess
 
         public async Task<IEnumerable<GetAllMealPlanForMemberResponseDTO>> GetAllMealPlanForStaffsAsync(int page, int pageSize)
         {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
+            using var context = new HealthTrackingDBContext();
+            return await context.MealPlans
+                .Include(s => s.Diet)
+                .Where(s => s.Status == true) // Chỉ lấy MealPlans có trạng thái `true`
+                .OrderByDescending(s => s.MealPlanId)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(s => new GetAllMealPlanForMemberResponseDTO
                 {
-                    var mealPlans = await context.MealPlans
-                        .Include(s => s.Diet)
-                         .Where(s => s.Status == true)
-                         .OrderBy(s => s.MealPlanId)
-                         .Skip((page - 1) * pageSize)
-                         .Take(pageSize)
-                         .Select(s => new GetAllMealPlanForMemberResponseDTO
-                         {
-                             MealPlanId = s.MealPlanId,
-                             MealPlanImage = s.MealPlanImage,
-                             ShortDescription = s.ShortDescription,
-                             Name = s.Name,
-                             TotalCalories = s.TotalCalories,
-                             DietName = s.Diet.DietName,
-
-
-                         })
-                         .ToListAsync();
-
-                    return mealPlans;
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while adding meal plan details with meal type to food diary: {ex.Message}");
-
-            }
+                    MealPlanId = s.MealPlanId,
+                    MealPlanImage = s.MealPlanImage,
+                    ShortDescription = s.ShortDescription,
+                    Name = s.Name,
+                    TotalCalories = s.TotalCalories,
+                    DietName = s.Diet.DietName,
+                })
+                .ToListAsync();
         }
+
+
 
         public async Task<bool> UpdateMealPlanTrainerAsync(MealPlan mealPlanModel)
         {

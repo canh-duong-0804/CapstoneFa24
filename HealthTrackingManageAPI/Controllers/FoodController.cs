@@ -1,6 +1,7 @@
 ﻿using BusinessObject;
 using BusinessObject.Dto.Food;
 using BusinessObject.Models;
+using HealthTrackingManageAPI.Authorize;
 using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +24,8 @@ namespace HealthTrackingManageAPI.Controllers
             _cloudinaryService = cloudinaryService;
         }
 
-        [HttpGet("get-all-foods-for-staff")]
+        /*[HttpGet("get-all-foods-for-staff")]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> GetAllFoodsForStaff()
         {
             var foods = await _foodRepository.GetAllFoodsForStaffAsync();
@@ -36,10 +38,79 @@ namespace HealthTrackingManageAPI.Controllers
 
 
             return Ok(foods);
+        }*/
+
+        [HttpGet("get-all-foods-for-staff")]
+        [RoleLessThanOrEqualTo(2)]
+        public async Task<IActionResult> GetAllFoodsForStaff([FromQuery] int? page)
+        {
+            try
+            {
+                // Validate the page parameter
+                if (page.HasValue && page < 1)
+                {
+                    return BadRequest("Page number must be greater than or equal to 1.");
+                }
+
+                int currentPage = page ?? 1; // Default to page 1 if not provided
+                int pageSize = 5; // Number of items per page
+
+                // Get total number of foods
+                int totalFoods = await _foodRepository.GetTotalFoodsForStaffAsync();
+
+                if (totalFoods == 0)
+                {
+                    return NotFound("No foods found.");
+                }
+
+                // Calculate total pages
+                int totalPages = (int)Math.Ceiling(totalFoods / (double)pageSize);
+
+                // Adjust the current page if it exceeds the total pages
+                if (currentPage > totalPages && totalPages > 0)
+                {
+                    currentPage = totalPages;
+                }
+
+                // Retrieve foods for the current page
+                var foods = await _foodRepository.GetAllFoodsForStaffAsync(currentPage, pageSize);
+
+                if (foods == null || !foods.Any())
+                {
+                    return NotFound("No foods found.");
+                }
+
+                // Return paginated results
+                return Ok(new
+                {
+                    Foods = foods,
+                    TotalPages = totalPages,
+                    CurrentPage = currentPage,
+                    PageSize = pageSize,
+                    TotalFoods = totalFoods
+                });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Handle unauthorized access
+                return StatusCode(403, "Access denied.");
+            }
+            catch (KeyNotFoundException)
+            {
+                // Handle case where data is not found
+                return NotFound("No foods found.");
+            }
+            catch (Exception ex)
+            {
+                // Handle unexpected errors
+                return StatusCode(500, new { Error = "An internal server error occurred.", Details = ex.Message });
+            }
         }
 
 
+
         [HttpGet("get-all-foods-for-member")]
+       
         public async Task<IActionResult> GetAllFoodsForMember()
         {
             var foods = await _foodRepository.GetAllFoodsForMemberAsync();
@@ -81,14 +152,26 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPost("create-food")]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> CreateFood([FromBody] CreateFoodRequestDTO food)
         {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
             if (food == null)
             {
                 return BadRequest("Food object is null.");
             }
             var mapper = MapperConfig.InitializeAutomapper();
             var foodModel = mapper.Map<BusinessObject.Models.Food>(food);
+            foodModel.CreateBy = memberId;
 
 
             var createdFood = await _foodRepository.CreateFoodAsync(foodModel);
@@ -117,10 +200,24 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpPut("update-food")]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> UpdateFoodStatus([FromBody] UpdateFoodRequestDTO food)
         {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
             var mapper = MapperConfig.InitializeAutomapper();
             var foodModel = mapper.Map<BusinessObject.Models.Food>(food);
+            foodModel.ChangeDate = DateTime.Now;
+            foodModel.ChangeBy = memberId;
+               
             await _foodRepository.UpdateFoodAsync(foodModel);
 
             return NoContent();
@@ -145,6 +242,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
         [HttpGet("get-food-for-staff-by-id/{id}")]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> GetFoodById(int id)
         {
             var food = await _foodRepository.GetFoodForStaffByIdAsync(id);
