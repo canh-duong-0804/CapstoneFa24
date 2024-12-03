@@ -593,18 +593,18 @@ namespace DataAccess
                 if (date.Year < today.Year ||
                     (date.Year == today.Year && date.Month < today.Month))
                 {
-                    startOfMonth = new DateTime(date.Year, date.Month, 1);
+                    startOfMonth = new DateTime(date.Year, 1, 1);
                     endDate = new DateTime(date.Year, date.Month,
                         DateTime.DaysInMonth(date.Year, date.Month));
                 }
                 else if (date.Year == today.Year && date.Month == today.Month)
                 {
-                    startOfMonth = new DateTime(date.Year, date.Month, 1);
+                    startOfMonth = new DateTime(date.Year, 1, 1);
                     endDate = date.Day < today.Day ? today : date;
                 }
                 else
                 {
-                    startOfMonth = new DateTime(date.Year, date.Month, 1);
+                    startOfMonth = new DateTime(date.Year, 1, 1);
                     endDate = date;
                 }
 
