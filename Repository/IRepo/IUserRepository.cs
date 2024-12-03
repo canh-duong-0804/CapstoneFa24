@@ -25,7 +25,7 @@ namespace Repository.IRepo
         Task UpdateMemberProfileAsync(Member user, double weight);
         Task<bool> ResetPasswordAsync(ChangePasswordRequestDTO request,int memberId);
         Task<bool> ResetPasswordOtpAsync(ChangePasswordRequestDTO request);
-        Task<bool> DeleteAccount(Member model, string password);
+        Task<bool> DeleteAccount(int memberid);
         Task<bool> UploadImageForMember(string v, int memberId);
     }
 }

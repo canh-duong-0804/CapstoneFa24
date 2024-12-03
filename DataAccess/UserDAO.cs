@@ -341,7 +341,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<bool> DeleteAccount(Member loginRequestDTO, string password)
+        public async Task<bool> DeleteAccount(int memberId)
         {
             try
             {
@@ -349,16 +349,20 @@ namespace DataAccess
                 {
                     
                     var user = await context.Members
-                        .FirstOrDefaultAsync(x => x.PhoneNumber == loginRequestDTO.PhoneNumber);
+                        .FirstOrDefaultAsync(x => x.MemberId == memberId);
 
-                    if (user == null)
-                        return false; 
+                    /* if (user == null)
+                         return false; 
 
-                    
-                    if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                        return false;
 
-                    
+                     if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                         return false;*/
+                    var refreshTokens = await context.RefreshTokensMembers
+                 .Where(rt => rt.MemberId == memberId)
+                 .ToListAsync();
+
+                    context.RefreshTokensMembers.RemoveRange(refreshTokens);
+
                     var foodDiaries = await context.FoodDiaries
                         .Where(fd => fd.MemberId == user.MemberId)
                         .ToListAsync();
