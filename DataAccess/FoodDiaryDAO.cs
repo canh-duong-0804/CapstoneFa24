@@ -610,7 +610,7 @@ namespace DataAccess
 
                 var foodDiaries = await context.FoodDiaries
                     .Where(fd => fd.MemberId == memberId &&
-                                 fd.Date.Month == startOfMonth.Month &&
+                                 fd.Date.Month >= startOfMonth.Month &&
                                  fd.Date.Year == startOfMonth.Year &&
                                  fd.Date.Date <= endDate.Date)
                     .OrderByDescending(fd => fd.Date)
