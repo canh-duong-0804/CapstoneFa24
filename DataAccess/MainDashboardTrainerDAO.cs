@@ -79,10 +79,10 @@ namespace DataAccess
                     // Total food diary entries
                     var totalEntries = await context.FoodDiaryDetails.CountAsync();
 
-                    if (totalEntries == 0)
+                   /* if (totalEntries == 0)
                     {
                         throw new Exception("No food diary details found.");
-                    }
+                    }*/
 
                     // Group and order foods by usage
                     var groupedFoods = await context.FoodDiaryDetails
@@ -120,10 +120,10 @@ namespace DataAccess
                     // Total food diary entries
                     var totalEntriesExercise = await context.ExerciseDiaryDetails.CountAsync();
 
-                    if (totalEntriesExercise == 0)
+                    /*if (totalEntriesExercise == 0)
                     {
                         throw new Exception("No food diary details found.");
-                    }
+                    }*/
 
                     // Group and order foods by usage
                     var groupedExercises = await context.ExerciseDiaryDetails
