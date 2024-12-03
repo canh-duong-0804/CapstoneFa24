@@ -1,27 +1,24 @@
 ﻿using HealthTrackingManageAPI.Authorize;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
-using Repository.Repo;
 using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MainDashboardForAdminManageController : ControllerBase
+    public class MainDashboardForTrainerManageController : ControllerBase
     {
-
-        private readonly IMainDashboardAdminManageRepository _mainDashBoardTrainerRepository;
-        public MainDashboardForAdminManageController(IMainDashboardAdminManageRepository mainDashBoardTrainerRepository)
+        private readonly IMainDashboardTrainerManageRepository _mainDashBoardTrainerRepository;
+        public MainDashboardForTrainerManageController(IMainDashboardTrainerManageRepository mainDashBoardTrainerRepository)
         {
             _mainDashBoardTrainerRepository = mainDashBoardTrainerRepository;
         }
 
         [RoleLessThanOrEqualTo(1)]
-        [HttpGet("Get-main-dashboard-for-Admin")]
-        public async Task<IActionResult> GetMainDashBoardForMemberById1(DateTime SelectDate)
+        [HttpGet("Get-main-dashboard-for-Main-Trainer")]
+        public async Task<IActionResult> GetMainDashBoardForMemberById(DateTime SelectDate)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)

@@ -264,6 +264,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     var totalRecords = await context.MessageChats
+                        .OrderBy(d => d.MessageChatId)
                         .Where(c => c.StaffId == null)
                         .CountAsync();
 
