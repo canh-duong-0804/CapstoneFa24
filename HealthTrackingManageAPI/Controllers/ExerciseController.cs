@@ -64,5 +64,23 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok(exercises);
         }
+        
+        
+        [HttpGet("Get-exercise-other-detail-for-member/{ExerciseId}")]
+        [Authorize]
+        public async Task<IActionResult> GetExercisesOtherDetailForMember(int ExerciseId)
+        {
+
+            var exercises = await _exerciseRepository.GetExercisesOtherDetailForMemberAsync(ExerciseId);
+
+
+            if (exercises == null)
+            {
+                return NotFound("No exercises found for the member.");
+            }
+
+
+            return Ok(exercises);
+        }
     }
 }

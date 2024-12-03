@@ -15,8 +15,9 @@ namespace BusinessObject.Dto.Exericse
         public string CategoryExercise { get; set; }
         public string ExerciseName { get; set; } = null!;
         public string? Description { get; set; }
-        public string? MetricsResistance { get; set; }
-        /*public int? Reps1 { get; set; }
+        //public string? MetricsResistance { get; set; }
+        public double? MetValue { get; set; }
+        public int? Reps1 { get; set; }
         public int? Reps2 { get; set; }
         public int? Reps3 { get; set; }
         public int? Sets1 { get; set; }
@@ -24,7 +25,7 @@ namespace BusinessObject.Dto.Exericse
         public int? Sets3 { get; set; }
         public int? Minutes1 { get; set; }
         public int? Minutes2 { get; set; }
-        public int? Minutes3 { get; set; }*/
+        public int? Minutes3 { get; set; }
 
     }
 }

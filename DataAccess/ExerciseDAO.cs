@@ -90,34 +90,46 @@ namespace DataAccess
                     var cardio = await context.ExerciseCardios
                            .Where(c => c.ExerciseId == exerciseId)
                            .FirstOrDefaultAsync();
-                    if (exercise == null || exercise.TypeExercise == 2) return null;
+                    if (exercise == null ) return null;
 
 
-
-                    var result = new GetExerciseDetailOfCardiorResponseDTO
+                    if (exercise.TypeExercise == 1)
                     {
-                        ExerciseId = exercise.ExerciseId,
-                        TypeExercise = exercise.TypeExercise,
-                        CategoryExercise = exercise.TypeExercise switch
+                        var result = new GetExerciseDetailOfCardiorResponseDTO
                         {
-                            1 => "Cardio",
-                            2 => "Kháng lực",
-                            3 => "Các bài tập khác",
-                            _ => "Không xác định"
-                        },
-                        ExerciseImage = exercise.ExerciseImage,
-                        ExerciseName = exercise.ExerciseName,
-                        Description = exercise.Description,
-                        //MetricsCardio=cardio.MetricsCardio
-                    };
+                            ExerciseId = exercise.ExerciseId,
+                            TypeExercise = exercise.TypeExercise,
+                            CategoryExercise = exercise.TypeExercise switch
+                            {
+                                1 => "Cardio",
+                                2 => "Kháng lực",
+                                3 => "Các bài tập khác",
+                                _ => "Không xác định"
+                            },
+                            ExerciseImage = exercise.ExerciseImage,
+                            ExerciseName = exercise.ExerciseName,
+                            Description = exercise.Description,
+                            MetValue = exercise.MetValue,
+                            Calories1 = cardio.Calories1,
+                            Calories2 = cardio.Calories2,
+                            Calories3 = cardio.Calories3,
+                            Minutes1 = cardio.Minutes1,
+                            Minutes2 = cardio.Minutes2,
+                            Minutes3 = cardio.Minutes3,
+                            
+
+                            //MetricsCardio=cardio.MetricsCardio
+                        };
 
 
-                   
-                       
 
-                        
-                    
-                    return result;
+
+
+
+
+                        return result;
+                    }
+                    return null;
                 }
             }
 
@@ -141,26 +153,89 @@ namespace DataAccess
                     var resistance = await context.ExerciseResistances
                                                 .Where(r => r.ExerciseId == exerciseId)
                                                 .FirstOrDefaultAsync();
-                    if (exercise == null || exercise.TypeExercise == 1) return null;
+                    if (exercise == null ) return null;
 
-
-                    var result = new GetExerciseDetailOfResitanceResponseDTO
+                    if (exercise.TypeExercise == 2)
                     {
-                        ExerciseId = exercise.ExerciseId,
-                        TypeExercise = exercise.TypeExercise,
-                        CategoryExercise = exercise.TypeExercise switch
+                        var result = new GetExerciseDetailOfResitanceResponseDTO
                         {
-                            1 => "Cardio",      
-                            2 => "Kháng lực",    
-                            3 => "Các bài tập khác", 
-                            _ => "Không xác định" 
-                        },
-                        ExerciseImage = exercise.ExerciseImage,
-                        ExerciseName = exercise.ExerciseName,
-                        Description = exercise.Description,
-                        //MetricsResistance= resistance.MetricsResistance
-                    };
-                    return result;
+                            ExerciseId = exercise.ExerciseId,
+                            TypeExercise = exercise.TypeExercise,
+                            CategoryExercise = exercise.TypeExercise switch
+                            {
+                                1 => "Cardio",
+                                2 => "Kháng lực",
+                                3 => "Các bài tập khác",
+                                _ => "Không xác định"
+                            },
+                            ExerciseImage = exercise.ExerciseImage,
+                            ExerciseName = exercise.ExerciseName,
+                            Description = exercise.Description,
+                           
+                            Minutes1 = resistance.Minutes1,
+                            Minutes2 = resistance.Minutes2,
+                            Minutes3 = resistance.Minutes3,
+                            Reps1 = resistance.Reps1,
+                            Reps2 = resistance.Reps2,
+                            Reps3 = resistance.Reps3,
+                            Sets1 = resistance.Sets1,
+                            Sets2 = resistance.Sets2,
+                            Sets3 = resistance.Sets3,
+                            MetValue=exercise.MetValue,
+
+                            //MetricsResistance= resistance.MetricsResistance
+                        };
+                        return result;
+                    }
+                    return null;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception("An unexpected error occurred while fetching exercise details.", ex);
+            }
+        }
+
+        public async Task<GetExerciseDetailOfOtherResponseDTO> GetExercisesOtherDetailForMemberAsync(int exerciseId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var exercise = await context.Exercises
+                .Where(e => e.ExerciseId == exerciseId)
+                .FirstOrDefaultAsync();
+                    var resistance = await context.ExerciseResistances
+                                                .Where(r => r.ExerciseId == exerciseId)
+                                                .FirstOrDefaultAsync();
+                    if (exercise == null ) return null;
+
+                    if (exercise.TypeExercise == 3)
+                    {
+                        var result = new GetExerciseDetailOfOtherResponseDTO
+                        {
+                            ExerciseId = exercise.ExerciseId,
+                            TypeExercise = exercise.TypeExercise,
+                            CategoryExercise = exercise.TypeExercise switch
+                            {
+                                1 => "Cardio",
+                                2 => "Kháng lực",
+                                3 => "Các bài tập khác",
+                                _ => "Không xác định"
+                            },
+                            ExerciseImage = exercise.ExerciseImage,
+                            ExerciseName = exercise.ExerciseName,
+                            Description = exercise.Description,
+                            MetValue=exercise.MetValue,
+
+
+
+                            //MetricsResistance= resistance.MetricsResistance
+                        };
+                        return result;
+                    }
+                    return null;
                 }
             }
 
