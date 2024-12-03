@@ -643,7 +643,7 @@ namespace DataAccess
                         currentStreak++;
                         currentDate = currentDate.AddDays(-1);
                     }
-                    else if (diary.Date.Date == currentDate && diary.Calories <= 0)
+                    else if (startOfMonth.Date.Date == currentDate.Date )
                     {
                         break;
                     }

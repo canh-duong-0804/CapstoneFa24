@@ -10,7 +10,7 @@ namespace Repository.Repo
 {
     public class WaterLogRepository : IWaterLogRepository
     {
-        public Task<bool> AddOneLiterAsync(int memberId, DateTime date) => WaterLogDAO.Instance.Add200mlWaterIntakeAsync(memberId, date);
+        public Task<bool> Add200mlAsync(int memberId, DateTime date) => WaterLogDAO.Instance.Add200mlWaterIntakeAsync(memberId, date);
 
         public Task<bool> SubtractWaterIntakeAsync(int memberId, DateTime date) => WaterLogDAO.Instance.Subtract200mlWaterIntakeAsync(memberId, date);
 

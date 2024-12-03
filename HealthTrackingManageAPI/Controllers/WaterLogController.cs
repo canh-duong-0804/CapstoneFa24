@@ -19,7 +19,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPost("Add-200-ml-water")]
-        public async Task<IActionResult> AddOneLiter()
+        public async Task<IActionResult> Add200ml()
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -32,7 +32,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return BadRequest("Invalid member ID.");
             }
             DateTime date = DateTime.Now;
-            bool success = await _waterLogRepository.AddOneLiterAsync(memberId, date);
+            bool success = await _waterLogRepository.Add200mlAsync(memberId, date);
             if (success)
             {
                 return Ok();

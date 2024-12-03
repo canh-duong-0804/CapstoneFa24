@@ -341,30 +341,87 @@ namespace DataAccess
             }
         }
 
-        public async Task<Member> DeleteAccount(Member loginRequestDTO, string password)
+        public async Task<bool> DeleteAccount(Member loginRequestDTO, string password)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-
-                    var user = await context.Members.FirstOrDefaultAsync(x => x.PhoneNumber == loginRequestDTO.PhoneNumber);
+                    
+                    var user = await context.Members
+                        .FirstOrDefaultAsync(x => x.PhoneNumber == loginRequestDTO.PhoneNumber);
 
                     if (user == null)
-                        return null;
+                        return false; 
 
-
+                    
                     if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                        return null;
+                        return false;
 
-                    return user;
+                    
+                    var foodDiaries = await context.FoodDiaries
+                        .Where(fd => fd.MemberId == user.MemberId)
+                        .ToListAsync();
+
+                    var foodDiaryIds = foodDiaries.Select(fd => fd.DiaryId).ToList();
+
+                    var foodDiaryDetails = await context.FoodDiaryDetails
+                        .Where(fdd => foodDiaryIds.Contains(fdd.DiaryId))
+                        .ToListAsync();
+
+                    context.FoodDiaryDetails.RemoveRange(foodDiaryDetails);
+                    context.FoodDiaries.RemoveRange(foodDiaries);
+
+                    
+                    var exerciseDiaries = await context.ExerciseDiaries
+                        .Where(ed => ed.MemberId == user.MemberId)
+                        .ToListAsync();
+
+                    var exerciseDiaryIds = exerciseDiaries.Select(ed => ed.ExerciseDiaryId).ToList();
+
+                    var exerciseDiaryDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => exerciseDiaryIds.Contains(edd.ExerciseDiaryDetailsId))
+                        .ToListAsync();
+
+                    context.ExerciseDiaryDetails.RemoveRange(exerciseDiaryDetails);
+                    context.ExerciseDiaries.RemoveRange(exerciseDiaries);
+
+                    
+                    var bodyMeasureChanges = await context.BodyMeasureChanges
+                        .Where(bmc => bmc.MemberId == user.MemberId)
+                        .ToListAsync();
+
+                    context.BodyMeasureChanges.RemoveRange(bodyMeasureChanges);
+
+                    
+                    var goals = await context.Goals
+                        .Where(g => g.MemberId == user.MemberId)
+                        .ToListAsync();
+
+                    context.Goals.RemoveRange(goals);
+
+                    
+                    var mealMembers = await context.MealMembers
+                        .Where(mm => mm.MemberId == user.MemberId)
+                        .ToListAsync();
+
+                    context.MealMembers.RemoveRange(mealMembers);
+
+                    
+                    context.Members.Remove(user);
+
+                   
+                    await context.SaveChangesAsync();
+
+                    return true;
                 }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception($"Error deleting account: {e.Message}", e);
             }
         }
+
 
         public async Task<bool> UploadImageForMember(string urlImage, int memberId)
         {
