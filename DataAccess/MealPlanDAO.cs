@@ -517,9 +517,9 @@ namespace DataAccess
                             targetDiary.MealPlanId = mealPlanId;
                             await context.SaveChangesAsync();   
 
-                           var existingDetails = context.FoodDiaryDetails
-                                .Where(fdd => fdd.DiaryId == targetDiary.DiaryId);
-                            context.FoodDiaryDetails.RemoveRange(existingDetails);
+                           //var existingDetails = context.FoodDiaryDetails
+                           //     .Where(fdd => fdd.DiaryId == targetDiary.DiaryId);
+                           // context.FoodDiaryDetails.RemoveRange(existingDetails);
                         }
 
                         var foodDiaryDetail = new FoodDiaryDetail
@@ -531,10 +531,11 @@ namespace DataAccess
 
                         };
                         context.FoodDiaryDetails.Add(foodDiaryDetail);
+                        await context.SaveChangesAsync();
                     }
 
 
-                    await context.SaveChangesAsync();
+                    
 
 
                     var diariesToUpdate = await context.FoodDiaries
