@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject.Dto.Streak;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,50 +10,50 @@ using Twilio.TwiML.Messaging;
 
 namespace DataAccess
 {
-	public class ExerciseDiaryDAO
-	{
-		private static ExerciseDiaryDAO instance = null;
-		private static readonly object instanceLock = new object();
+    public class ExerciseDiaryDAO
+    {
+        private static ExerciseDiaryDAO instance = null;
+        private static readonly object instanceLock = new object();
 
-		public static ExerciseDiaryDAO Instance
-		{
-			get
-			{
-				lock (instanceLock)
-				{
-					if (instance == null)
-					{
-						instance = new ExerciseDiaryDAO();
-					}
-					return instance;
-				}
-			}
-		}
+        public static ExerciseDiaryDAO Instance
+        {
+            get
+            {
+                lock (instanceLock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new ExerciseDiaryDAO();
+                    }
+                    return instance;
+                }
+            }
+        }
 
-		//create method to get exercise diary by member id
-		public async Task<List<ExerciseDiary>> GetExerciseDiaryByMemberId(int memberId)
-		{
-			try
-			{
-				using (var context = new HealthTrackingDBContext())
-				{
-					// Include related navigation properties
-					var exerciseDiaries = await context.ExerciseDiaries
-						.Include(ed => ed.ExerciseDiaryDetails) // Assuming Exercise is the related entity
-						.Include(ed => ed.ExercisePlan) // Assuming ExercisePlan is the related entity
-						.Include(ed => ed.Member) // Assuming Member is the related entity
-						.Where(ed => ed.MemberId == memberId) // Filter by MemberId
-						.ToListAsync();
+        //create method to get exercise diary by member id
+        public async Task<List<ExerciseDiary>> GetExerciseDiaryByMemberId(int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    // Include related navigation properties
+                    var exerciseDiaries = await context.ExerciseDiaries
+                        .Include(ed => ed.ExerciseDiaryDetails) // Assuming Exercise is the related entity
+                        .Include(ed => ed.ExercisePlan) // Assuming ExercisePlan is the related entity
+                        .Include(ed => ed.Member) // Assuming Member is the related entity
+                        .Where(ed => ed.MemberId == memberId) // Filter by MemberId
+                        .ToListAsync();
 
-					return exerciseDiaries;
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-		/*public async Task<ExerciseDiary> GetTodayExerciseDiaryByMemberId(int memberId, DateTime today)
+                    return exerciseDiaries;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /*public async Task<ExerciseDiary> GetTodayExerciseDiaryByMemberId(int memberId, DateTime today)
 		{
 			return await _context.ExerciseDiaries
 				.FirstOrDefaultAsync(d => d.MemberId == memberId && d.Date == today);
@@ -64,97 +65,97 @@ namespace DataAccess
 			await _context.SaveChangesAsync();
 		}*/
 
-		// rewrite using try catch block like above
-		public async Task<ExerciseDiary> GetTodayExerciseDiaryByMemberId(int memberId, DateTime today)
-		{
-			try
-			{
-				using (var context = new HealthTrackingDBContext())
-				{
-					return await context.ExerciseDiaries
-				.FirstOrDefaultAsync(d => d.MemberId == memberId && d.Date == today);
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-		public async Task AddExerciseDiaryAsync(ExerciseDiary exerciseDiary)
-		{
-			try
-			{
-				using (var context = new HealthTrackingDBContext())
-				{
-					await context.ExerciseDiaries.AddAsync(exerciseDiary);
-					await context.SaveChangesAsync();
+        // rewrite using try catch block like above
+        public async Task<ExerciseDiary> GetTodayExerciseDiaryByMemberId(int memberId, DateTime today)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    return await context.ExerciseDiaries
+                .FirstOrDefaultAsync(d => d.MemberId == memberId && d.Date == today);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task AddExerciseDiaryAsync(ExerciseDiary exerciseDiary)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    await context.ExerciseDiaries.AddAsync(exerciseDiary);
+                    await context.SaveChangesAsync();
 
 
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-		
 
-		public async Task UpdateTotalDurationAndCaloriesAsync(int exerciseDiaryId)
-		{
-			try
-			{
-				using (var context = new HealthTrackingDBContext())
-				{
-					// Fetch the exercise diary and related details
-					var exerciseDiary = await context.ExerciseDiaries
-						.Include(ed => ed.ExerciseDiaryDetails)
-						.FirstOrDefaultAsync(e => e.ExerciseDiaryId == exerciseDiaryId);
 
-					if (exerciseDiary == null)
-					{
-						throw new Exception("Exercise diary not found.");
-					}
+        public async Task UpdateTotalDurationAndCaloriesAsync(int exerciseDiaryId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    // Fetch the exercise diary and related details
+                    var exerciseDiary = await context.ExerciseDiaries
+                        .Include(ed => ed.ExerciseDiaryDetails)
+                        .FirstOrDefaultAsync(e => e.ExerciseDiaryId == exerciseDiaryId);
 
-					// Filter only practiced exercises
-					var practicedExercises = exerciseDiary.ExerciseDiaryDetails
-				.Where(detail => detail.IsPractice == true)
-				.ToList();
+                    if (exerciseDiary == null)
+                    {
+                        throw new Exception("Exercise diary not found.");
+                    }
 
-					// Calculate totals
-					double totalCaloriesBurned = practicedExercises.Sum(detail => detail.CaloriesBurned ?? 0);
-					int totalDuration = practicedExercises.Sum(detail => detail.Duration ?? 0);
+                    // Filter only practiced exercises
+                    var practicedExercises = exerciseDiary.ExerciseDiaryDetails
+                .Where(detail => detail.IsPractice == true)
+                .ToList();
 
-					// Update the exercise diary totals
-					exerciseDiary.TotalCaloriesBurned = totalCaloriesBurned;
-					exerciseDiary.TotalDuration = totalDuration;
+                    // Calculate totals
+                    double totalCaloriesBurned = practicedExercises.Sum(detail => detail.CaloriesBurned ?? 0);
+                    int totalDuration = practicedExercises.Sum(detail => detail.Duration ?? 0);
 
-					// Save changes
-					await context.SaveChangesAsync();
-				}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Error updating totals: {ex.Message}");
-				throw;
-			}
-		}
+                    // Update the exercise diary totals
+                    exerciseDiary.TotalCaloriesBurned = totalCaloriesBurned;
+                    exerciseDiary.TotalDuration = totalDuration;
 
-		public async Task<ExerciseDiary> GetExerciseDiaryById(int exerciseDiaryId)
-		{
-			try
-			{
-				using (var context = new HealthTrackingDBContext())
-				{
-					return await context.ExerciseDiaries.Include(e => e.ExerciseDiaryDetails)
-				.FirstOrDefaultAsync(d => d.ExerciseDiaryId == exerciseDiaryId);
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
+                    // Save changes
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating totals: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<ExerciseDiary> GetExerciseDiaryById(int exerciseDiaryId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    return await context.ExerciseDiaries.Include(e => e.ExerciseDiaryDetails)
+                .FirstOrDefaultAsync(d => d.ExerciseDiaryId == exerciseDiaryId);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public async Task<ExerciseDiary?> GetExerciseDiaryByDate(int memberId, DateTime date)
         {
@@ -174,56 +175,87 @@ namespace DataAccess
             }
         }
 
-        public async Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId)
+        public async Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId, DateTime date)
         {
             try
             {
+       
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var today = DateTime.Today;
 
-                    // Fetch exercise diaries for the member, sorted by date descending
-                    var diaries = await context.ExerciseDiaries
-                        .Where(d => d.MemberId == memberId && d.Date <= today)
-                        .OrderByDescending(d => d.Date)
-                        .Select(d => new { d.Date, d.TotalDuration })
+
+                    var today = DateTime.Now.Date;
+                  
+
+                    DateTime startOfMonth, endDate;
+                    if (date.Year < today.Year ||
+                        (date.Year == today.Year && date.Month < today.Month))
+                    {
+                        startOfMonth = new DateTime(date.Year, 1, 1);
+                        endDate = new DateTime(date.Year, date.Month,
+                            DateTime.DaysInMonth(date.Year, date.Month));
+                    }
+                    else if (date.Year == today.Year && date.Month == today.Month)
+                    {
+                        startOfMonth = new DateTime(date.Year, 1, 1);
+                        endDate = date.Day < today.Day ? today : date;
+                    }
+                    else
+                    {
+                        startOfMonth = new DateTime(date.Year, 1, 1);
+                        endDate = date;
+                    }
+
+                    var foodDiaries = await context.ExerciseDiaries
+                        .Where(fd => fd.MemberId == memberId &&
+                                     fd.Date.Value.Month >= startOfMonth.Month &&
+                                     fd.Date.Value.Year == startOfMonth.Year &&
+                                     fd.Date.Value.Date <= endDate.Date)
+                        .OrderByDescending(fd => fd.Date)
+                        .Select(fd => new { fd.MemberId, fd.Date, fd.TotalDuration })
                         .ToListAsync();
 
-                    var streakDates = new List<DateTime>();
-                    int streakCount = 0;
+                    var streakDTO = new CalorieStreakDTO();
+                    int currentStreak = 0;
+                    var currentDate = endDate;
 
-                    if (!diaries.Any())
-                        return (streakCount, streakDates);
+                    var todayDiary = foodDiaries.FirstOrDefault(fd => fd.Date.Value.Date == today);
 
-                    // Start checking for streaks from the most recent date
-                    DateTime? expectedDate = today;
-
-                    foreach (var diary in diaries)
+                    // If today has calories > 0, start streak calculation from today
+                    // If today has calories = 0, start streak calculation from yesterday
+                    if (todayDiary != null && todayDiary.TotalDuration > 0)
                     {
-                        if (diary.Date == expectedDate) // If diary matches the current date in streak
+                        currentDate = today;
+                    }
+                    else if (todayDiary != null && todayDiary.TotalDuration == 0)
+                    {
+                        currentDate = today.AddDays(-1);
+                    }
+
+                    foreach (var diary in foodDiaries)
+                    {
+                        if (diary.TotalDuration > 0) streakDTO.Dates.Add(diary.Date.Value.Date);
+
+                        if (diary.Date.Value.Date == currentDate && diary.TotalDuration > 0)
                         {
-                            if (diary.TotalDuration > 0)
-                            {
-                                streakCount++;
-                                streakDates.Add(diary.Date.Value); // Add to streak dates
-                            }
-                            else
-                            {
-                                break; // Streak is broken
-                            }
-                            expectedDate = expectedDate.Value.AddDays(-1);
+                            currentStreak++;
+                            currentDate = currentDate.AddDays(-1);
                         }
-                        else if (diary.Date < expectedDate) // Missing a day in the streak
+                        else if (startOfMonth.Date.Date == currentDate.Date)
                         {
-                            break; // Streak ends
+                            break;
                         }
                     }
 
-                    streakDates = streakDates
-                        .OrderByDescending(d => d) // Ensure dates are in descending order
+                    streakDTO.Dates = streakDTO.Dates
+                        .Where(d => d >= startOfMonth && d <= endDate)
+                        .OrderByDescending(d => d)
+                        .Distinct()
                         .ToList();
 
-                    return (streakCount, streakDates);
+                    streakDTO.StreakNumber = currentStreak;
+                    //return new { streakDTO.StreakNumber, streakDTO.Dates };
+                    return (streakDTO.StreakNumber, streakDTO.Dates);
                 }
             }
             catch (Exception ex)
@@ -231,11 +263,5 @@ namespace DataAccess
                 throw new Exception("Error calculating exercise diary streak", ex);
             }
         }
-
-
-
-
-
-
     }
 }

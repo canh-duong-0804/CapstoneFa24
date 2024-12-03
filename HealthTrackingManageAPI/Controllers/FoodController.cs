@@ -6,6 +6,7 @@ using HealthTrackingManageAPI.NewFolder.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Repository.IRepo;
 using System.Reflection.Metadata;
 using System.Security.Claims;
@@ -172,6 +173,14 @@ namespace HealthTrackingManageAPI.Controllers
             var mapper = MapperConfig.InitializeAutomapper();
             var foodModel = mapper.Map<BusinessObject.Models.Food>(food);
             foodModel.CreateBy = memberId;
+            if (!food.Serving.IsNullOrEmpty())
+            {
+                foodModel.Portion = food.Portion + " (" + food.Serving + ")";
+            }
+            else
+            {
+                foodModel.Portion = food.Portion;
+            }
 
 
             var createdFood = await _foodRepository.CreateFoodAsync(foodModel);
@@ -217,7 +226,17 @@ namespace HealthTrackingManageAPI.Controllers
             var foodModel = mapper.Map<BusinessObject.Models.Food>(food);
             foodModel.ChangeDate = DateTime.Now;
             foodModel.ChangeBy = memberId;
-               
+            foodModel.CreateBy = memberId;
+            if (!food.Serving.IsNullOrEmpty())
+            {
+                foodModel.Portion = food.Portion + " (" + food.Serving + ")";
+            }
+            else
+            {
+                foodModel.Portion = food.Portion;
+            }
+
+
             await _foodRepository.UpdateFoodAsync(foodModel);
 
             return NoContent();

@@ -200,7 +200,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [Authorize]
         [HttpGet("member/exercise_diary_streak")]
-        public async Task<IActionResult> GetExerciseDiaryStreak()
+        public async Task<IActionResult> GetExerciseDiaryStreak(DateTime SelectDate)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
@@ -208,7 +208,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             try
             {
-                var (streakCount, streakDates) = await _exerciseDiaryRepo.GetExerciseDiaryStreakWithDates(memberId);
+                var (streakCount, streakDates) = await _exerciseDiaryRepo.GetExerciseDiaryStreakWithDates(memberId, SelectDate);
 
                 return Ok(new
                 {

@@ -436,6 +436,7 @@ namespace DataAccess
                             {
                                 MealType = d.MealType,
                                 FoodId = d.FoodId,
+                                Portion=d.Food.Portion,
                                 FoodName = d.Food.FoodName,
                                 Quantity = d.Quantity,
                                 Calories = d.Food.Calories,

@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.MainDashBoardTrainer;
+﻿using BusinessObject.Dto.MainDashBoardAdmin;
+using BusinessObject.Dto.MainDashBoardTrainer;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -42,10 +43,10 @@ namespace DataAccess
                     var totalExercises = await context.Exercises.CountAsync();
 
                     // Total users
-                    //var totalUsers = await context.Members.CountAsync();
+                    var totalUsers = await context.Members.CountAsync();
 
                     // New users registered this month
-                    /*var newUsersThisMonth = await context.Members
+                    var newUsersThisMonth = await context.Members
                         .CountAsync(m => m.CreatedAt.Month == selectDate.Month && m.CreatedAt.Year == selectDate.Year);
 
                     // User registrations grouped by month
@@ -73,10 +74,10 @@ namespace DataAccess
                                 UserCount = regGroup.FirstOrDefault()?.UserCount ?? 0 // Use 0 if no data for the month
                             })
                         .OrderBy(stat => stat.Month)
-                        .ToList();*/
+                        .ToList();
 
                     // Total food diary entries
-                    /*var totalEntries = await context.FoodDiaryDetails.CountAsync();
+                    var totalEntries = await context.FoodDiaryDetails.CountAsync();
 
                     if (totalEntries == 0)
                     {
@@ -112,7 +113,50 @@ namespace DataAccess
                             UsagePercentage = Math.Round((f.Count / (double)totalTop5Usage) * 100, 2)
                         })
                         .ToList();
-*/
+
+
+
+                    /////
+                    // Total food diary entries
+                    var totalEntriesExercise = await context.ExerciseDiaryDetails.CountAsync();
+
+                    if (totalEntriesExercise == 0)
+                    {
+                        throw new Exception("No food diary details found.");
+                    }
+
+                    // Group and order foods by usage
+                    var groupedExercises = await context.ExerciseDiaryDetails
+                        .Include(fdd => fdd.Exercise) // Include the related Food entity
+                        .GroupBy(fdd => new { fdd.ExerciseId, fdd.Exercise.ExerciseName }) // Group by FoodId and FoodName
+                        .Select(group => new
+                        {
+                            ExerciseId = group.Key.ExerciseId,
+                            ExerciseName = group.Key.ExerciseName, // Include FoodName in the result
+                            Count = group.Count()
+                        })
+                        .OrderByDescending(f => f.Count)
+                        .ToListAsync();
+
+                    // Get the top 5 foods
+                    var topExericses = groupedExercises.Take(5).ToList();
+
+                    // Calculate total usage of top 5 foods
+                    var totalTop5ExerciseUsage = topExericses.Sum(f => f.Count);
+
+                    // Calculate the usage percentage relative to the top 5 foods
+                    var topExeriseStatistics = topExericses
+                        .Select(f => new TopExeriseStatisticsDTO
+                        {
+                            ExerciseId = f.ExerciseId,
+                            ExerciseName = f.ExerciseName, // Map the FoodName
+                            UsageCount = f.Count,
+                            UsagePercentage = Math.Round((f.Count / (double)totalTop5ExerciseUsage) * 100, 2)
+                        })
+                        .ToList();
+
+                    ////
+
                     // Calculate counts for each diet type
                     var totalMemberUseEatClean = await context.Members.CountAsync(m => m.DietId == 4);
                     var totalMemberUseVegetarian = await context.Members.CountAsync(m => m.DietId == 3);
@@ -129,10 +173,11 @@ namespace DataAccess
                         {
                             TotalFoods = totalFoods,
                             TotalExercises = totalExercises,
-                            //TotalUsers = totalUsers,
-                           // TopFoodStatistics = topFoodStatistics,
-                            //UserRegistrationStatistics = completeUserRegistrations,
-                            //NewUsersThisMonth = newUsersThisMonth,
+                            TotalUsers = totalUsers,
+                            TopFoodStatistics = topFoodStatistics,
+                            TopExerciseStatistics= topExeriseStatistics,
+                            UserRegistrationStatistics = completeUserRegistrations,
+                            NewUsersThisMonth = newUsersThisMonth,
 
                             TotalMemberUseEatClean = 0,
                             TotalMemberUseVegetarian = 0,
@@ -157,10 +202,11 @@ namespace DataAccess
                     {
                         TotalFoods = totalFoods,
                         TotalExercises = totalExercises,
-                        //TotalUsers = totalUsers,
-                       // TopFoodStatistics = topFoodStatistics,
-                        //UserRegistrationStatistics = completeUserRegistrations,
-                        //NewUsersThisMonth = newUsersThisMonth,
+                        TotalUsers = totalUsers,
+                       TopFoodStatistics = topFoodStatistics,
+                       TopExerciseStatistics=topExeriseStatistics,
+                        UserRegistrationStatistics = completeUserRegistrations,
+                        NewUsersThisMonth = newUsersThisMonth,
 
                         TotalMemberUseEatClean = totalMemberUseEatClean,
                         TotalMemberUseVegetarian = totalMemberUseVegetarian,

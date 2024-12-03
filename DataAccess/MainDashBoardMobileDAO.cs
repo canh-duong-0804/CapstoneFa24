@@ -283,7 +283,7 @@ namespace DataAccess
 
 
                     var streakDTO = await FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId, date);
-                    var streakExerciseDTO = await ExerciseDiaryDAO.Instance.GetExerciseDiaryStreakWithDates(memberId);
+                    var streakExerciseDTO = await ExerciseDiaryDAO.Instance.GetExerciseDiaryStreakWithDates(memberId,date);
                    
                     var response = new MainDashBoardCaloInOfMemberResponseDTO
                     {

@@ -129,39 +129,68 @@ namespace DataAccess
         {
             try
             {
-
                 using (var context = new HealthTrackingDBContext())
                 {
-
-                    var responseDto = await context.Foods
+                    var food = await context.Foods
                         .Where(f => f.FoodId == id && f.Status == true)
                         .Include(f => f.CreateByNavigation)
-                        .Select(food => new GetFoodForStaffByIdResponseDTO
-                        {
-                            FoodId = food.FoodId,
-                            FoodName = food.FoodName,
-                            Portion = food.Portion,
-                            Calories = food.Calories,
-                            CreateBy = food.CreateByNavigation.FullName,
-                            CreateDate = food.CreateDate,
-                            ChangeBy = food.CreateByNavigation.FullName,
-                            ChangeDate = food.ChangeDate,
-                            FoodImage = food.FoodImage,
-                            Protein = food.Protein,
-                            Carbs = food.Carbs,
-                            Fat = food.Fat,
-                            VitaminA = food.VitaminA,
-                            VitaminC = food.VitaminC,
-                            VitaminD = food.VitaminD,
-                            VitaminE = food.VitaminE,
-                            VitaminB1 = food.VitaminB1,
-                            VitaminB2 = food.VitaminB2,
-                            VitaminB3 = food.VitaminB3,
-                            Status = food.Status,
-                            DietId = food.DietId,
-                            DietName = food.Diet.DietName
-                        })
+                        .Include(f => f.Diet) // Include Diet for DietName
                         .FirstOrDefaultAsync();
+
+                    if (food == null)
+                    {
+                        throw new Exception($"Food with ID {id} not found or inactive.");
+                    }
+
+                    
+                    string portion = food.Portion;
+                    string serving = portion;
+
+                    
+                    if (!string.IsNullOrEmpty(portion))
+                    {
+                        int startIndex = portion.IndexOf("(");
+                        int endIndex = portion.IndexOf(")");
+
+                        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
+                        {
+                            portion = portion.Substring(0, startIndex).Trim();
+                            serving = food.Portion.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+                        }
+                    }
+                    if (portion == serving)
+                    {
+                        serving = null;
+                    }
+
+
+                    // Map to DTO
+                    var responseDto = new GetFoodForStaffByIdResponseDTO
+                    {
+                        FoodId = food.FoodId,
+                        FoodName = food.FoodName,
+                        Portion = portion,
+                        Serving = serving,
+                        Calories = food.Calories,
+                        CreateBy = food.CreateByNavigation?.FullName,
+                        CreateDate = food.CreateDate,
+                        ChangeBy = food.CreateByNavigation?.FullName,
+                        ChangeDate = food.ChangeDate,
+                        FoodImage = food.FoodImage,
+                        Protein = food.Protein,
+                        Carbs = food.Carbs,
+                        Fat = food.Fat,
+                        VitaminA = food.VitaminA,
+                        VitaminC = food.VitaminC,
+                        VitaminD = food.VitaminD,
+                        VitaminE = food.VitaminE,
+                        VitaminB1 = food.VitaminB1,
+                        VitaminB2 = food.VitaminB2,
+                        VitaminB3 = food.VitaminB3,
+                        Status = food.Status,
+                        DietId = food.DietId,
+                        DietName = food.Diet?.DietName
+                    };
 
                     return responseDto;
                 }
@@ -171,6 +200,8 @@ namespace DataAccess
                 throw new Exception($"Error retrieving food: {ex.Message}", ex);
             }
         }
+
+
 
 
         public async Task<Food> UpdateFoodAsync(Food food)

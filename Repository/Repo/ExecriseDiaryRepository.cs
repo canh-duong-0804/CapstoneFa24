@@ -11,7 +11,7 @@ namespace Repository.Repo
 {
     public class ExecriseDiaryRepository : IExeriseDiaryRepository
     {
-        
+       
         public Task<List<ExerciseDiary>> GetExerciseDiaryByMemberId(int memberId) => ExerciseDiaryDAO.Instance.GetExerciseDiaryByMemberId(memberId);
         public Task<ExerciseDiary> GetTodayExerciseDiaryByMemberId(int memberId, DateTime today) => ExerciseDiaryDAO.Instance.GetTodayExerciseDiaryByMemberId(memberId, today);
 		public Task AddExerciseDiaryAsync(ExerciseDiary exerciseDiary) => ExerciseDiaryDAO.Instance.AddExerciseDiaryAsync(exerciseDiary);
@@ -19,7 +19,7 @@ namespace Repository.Repo
 		public Task UpdateTotalDurationAndCaloriesAsync(int exerciseDiaryId) => ExerciseDiaryDAO.Instance.UpdateTotalDurationAndCaloriesAsync(exerciseDiaryId);
 
 		public Task<ExerciseDiary> GetExerciseDiaryById(int exerciseDiaryId) => ExerciseDiaryDAO.Instance.GetExerciseDiaryById(exerciseDiaryId);
-        public Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId) => ExerciseDiaryDAO.Instance.GetExerciseDiaryStreakWithDates(memberId);
+        public Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId, DateTime selectDate) => ExerciseDiaryDAO.Instance.GetExerciseDiaryStreakWithDates(memberId,selectDate);
     }
 
 }
