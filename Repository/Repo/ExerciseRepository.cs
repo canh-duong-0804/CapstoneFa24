@@ -40,6 +40,9 @@ namespace Repository.Repo
 
         public Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId) => ExerciseDAO.Instance.GetExercisesCardioDetailForMemberrAsync(exerciseId);
 
+        public Task<GetExerciseDetailOfOtherResponseDTO> GetExercisesOtherDetailForMemberAsync(int exerciseId) => ExerciseDAO.Instance.GetExercisesOtherDetailForMemberAsync(exerciseId);
+       
+
         public Task<GetExerciseDetailOfResitanceResponseDTO> GetExercisesResistanceDetailForMemberAsync(int exerciseId) => ExerciseDAO.Instance.GetExercisesResistanceDetailForMemberAsync(exerciseId);
 
 

@@ -64,12 +64,12 @@ namespace DataAccess
                         var cardioDetail = new ExerciseCardio
                         {
                             ExerciseId = exercise.ExerciseId,
-                            Calories1 = request.CardioMetrics.Calories1,
-                            Calories2 = request.CardioMetrics.Calories2,
-                            Calories3 = request.CardioMetrics.Calories3,
-                            Minutes1 = request.CardioMetrics.Minutes1,
-                            Minutes2 = request.CardioMetrics.Minutes2,
-                            Minutes3 = request.CardioMetrics.Minutes3,
+                            Calories1 = (double)request.CardioMetrics.Calories1,
+                            Calories2 = (double)request.CardioMetrics.Calories2,
+                            Calories3 = (double)request.CardioMetrics.Calories3,
+                            Minutes1 = (int)request.CardioMetrics.Minutes1,
+                            Minutes2 = (int)request.CardioMetrics.Minutes2,
+                            Minutes3 = (int)request.CardioMetrics.Minutes3,
 
                             // MetricsCardio = request.CardioMetrics.MetricsCardio,
                             // MetValue = request.CardioMetrics.MetValue
@@ -245,12 +245,12 @@ namespace DataAccess
                         var cardioDetail = exercise.ExerciseCardios.FirstOrDefault();
                         if (cardioDetail != null)
                         {
-                            cardioDetail.Minutes1 = updateRequest.CardioMetrics.Minutes1;
-                            cardioDetail.Minutes2 = updateRequest.CardioMetrics.Minutes2;
-                            cardioDetail.Minutes3 = updateRequest.CardioMetrics.Minutes3;
-                            cardioDetail.Calories1 = updateRequest.CardioMetrics.Calories1;
-                            cardioDetail.Calories2 = updateRequest.CardioMetrics.Calories2;
-                            cardioDetail.Calories3 = updateRequest.CardioMetrics.Calories3;
+                            cardioDetail.Minutes1 = (int)updateRequest.CardioMetrics.Minutes1;
+                            cardioDetail.Minutes2 = (int)updateRequest.CardioMetrics.Minutes2;
+                            cardioDetail.Minutes3 = (int)updateRequest.CardioMetrics.Minutes3;
+                            cardioDetail.Calories1 = (double)updateRequest.CardioMetrics.Calories1;
+                            cardioDetail.Calories2 = (double)updateRequest.CardioMetrics.Calories2;
+                            cardioDetail.Calories3 = (double)updateRequest.CardioMetrics.Calories3;
 
                             //  cardioDetail.MetricsCardio = updateRequest.CardioMetrics.MetricsCardio ?? cardioDetail.MetricsCardio;
                             //   cardioDetail.MetValue = updateRequest.CardioMetrics.MetValue ?? cardioDetail.MetValue;
