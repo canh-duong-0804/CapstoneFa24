@@ -9,7 +9,7 @@ namespace BusinessObject.Dto.ExecriseDiary
     public class AddExerciseDiaryDetailForWebsiteRequestDTO
     {
 
-        public int ExerciseDiaryId { get; set; }
+       // public int ExerciseDiaryId { get; set; }
 
         public DateTime selectDate { get; set; }
         public List<ExerciseDiaryDetailForWebisteRequestDTO> ListFoodIdToAdd { get; set; } = new List<ExerciseDiaryDetailForWebisteRequestDTO>();

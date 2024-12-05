@@ -420,7 +420,7 @@ namespace DataAccess
                     // Map the retrieved data to AddExerciseDiaryDetailForWebsiteRequestDTO
                     var result = new AddExerciseDiaryDetailForWebsiteRequestDTO
                     {
-                        ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
+                        //ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
                         selectDate = exerciseDiary.Date.Value.Date,
                         ListFoodIdToAdd = exerciseDiaryDetails
                     };
