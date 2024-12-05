@@ -1,4 +1,6 @@
 ﻿using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Dto.Exericse;
+using BusinessObject.Dto.Food;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -433,6 +435,37 @@ namespace DataAccess
                 throw new Exception($"Error fetching exercise diary details: {ex.Message}", ex);
             }
         }
+
+        public async Task<List<ExerciseListBoxResponseDTO>> GetListBoxExerciseForStaffAsync()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var exercises = await (from exercise in context.Exercises
+                                           where exercise.Status == true
+                                           select new ExerciseListBoxResponseDTO
+                                           {
+                                               Value = exercise.ExerciseId,
+                                               Label = exercise.ExerciseName,
+                                               ExerciseName=exercise.ExerciseName,
+                                               MetValue = exercise.MetValue,
+                                               TypeExercise = exercise.TypeExercise,
+                                               NameTypeExercise = exercise.TypeExercise == 1 ? "Cardio" :
+                                                                  exercise.TypeExercise == 2 ? "Kháng lực" :
+                                                                  exercise.TypeExercise == 3 ? "Các bài tập khác" :
+                                                                  "Unknown"
+                                           }).ToListAsync();
+
+                    return exercises;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving exercises: {ex.Message}", ex);
+            }
+        }
+
 
     }
 }

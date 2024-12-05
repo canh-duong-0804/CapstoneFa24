@@ -272,5 +272,20 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(mainDashBoardInfo);
         }
 
+        [HttpGet("get-list-box-exercise")]
+        public async Task<IActionResult> GetListBoxFoodForStaff()
+        {
+            var listBoxExercise = await _exerciseDiaryDetailRepo.GetListBoxExerciseForStaffAsync();
+
+
+            if (listBoxExercise == null || !listBoxExercise.Any())
+            {
+                return NotFound("No listBoxExercise found.");
+            }
+
+
+            return Ok(listBoxExercise);
+        }
+
     }
 }

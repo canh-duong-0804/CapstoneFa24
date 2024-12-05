@@ -1,4 +1,6 @@
-﻿using BusinessObject.Dto.ExecriseDiary;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Dto.Exericse;
 using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
@@ -32,6 +34,8 @@ namespace Repository.Repo
         public Task<bool> addExerciseListToDiaryForWebsite(AddExerciseDiaryDetailForWebsiteRequestDTO request, int memberId) => ExecriseDiaryDetailDAO.Instance.addExerciseListToDiaryForWebsite(request, memberId);
 
         public Task<AddExerciseDiaryDetailForWebsiteRequestDTO> GetExerciseDairyDetailWebsite(int memberId, DateTime selectDate) => ExecriseDiaryDetailDAO.Instance.GetExerciseDairyDetailWebsite(memberId, selectDate);
+
+        public Task<List<ExerciseListBoxResponseDTO>> GetListBoxExerciseForStaffAsync() => ExecriseDiaryDetailDAO.Instance.GetListBoxExerciseForStaffAsync();
         
     }
 

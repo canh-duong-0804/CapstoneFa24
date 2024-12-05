@@ -1,4 +1,6 @@
-﻿using BusinessObject.Dto.ExecriseDiary;
+﻿using BusinessObject.Dto.CategoryExerice;
+using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Dto.Exericse;
 using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
@@ -30,5 +32,8 @@ namespace Repository.IRepo
         Task<List<ExerciseDiaryForAllMonthDTO>> GetAllDiariesForMonthOfExercise(DateTime date, int memberId);
         Task<bool> addExerciseListToDiaryForWebsite(AddExerciseDiaryDetailForWebsiteRequestDTO request, int memberId);
         Task<AddExerciseDiaryDetailForWebsiteRequestDTO> GetExerciseDairyDetailWebsite(int memberId, DateTime selectDate);
+        Task<List<ExerciseListBoxResponseDTO>> GetListBoxExerciseForStaffAsync();
     }
 }
+
+
