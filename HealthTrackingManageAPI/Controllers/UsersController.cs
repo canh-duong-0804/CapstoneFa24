@@ -176,7 +176,7 @@ namespace HealthTrackingManageAPI.Controllers
             var mapper = MapperConfig.InitializeAutomapper();
 
             var model = mapper.Map<BusinessObject.Models.Member>(member);
-            model.PhoneNumber = member.Email;
+            model.PhoneNumber = member.PhoneNumber;
             var user = await _userRepo.Login(model, member.Password);
 
             if (user == null)

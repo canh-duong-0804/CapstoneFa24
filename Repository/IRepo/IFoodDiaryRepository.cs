@@ -25,7 +25,7 @@ namespace Repository.IRepo
         Task<FoodDiaryForMemberMobileResponse> GetFoodDairyByDate(int memberId, DateTime date);
         Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodHistoryAsync(int memberId);
         Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestionAsync(int memberId);
-        Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId);
+        //Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId);
         Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date);
         Task<bool> addFoodListToDiaryForWebsite(AddFoodDiaryDetailForWebsiteRequestDTO request, int memberId);
         Task<AddFoodDiaryDetailForWebsiteRequestDTO> GetFoodDairyDetailWebsite(int memberId, DateTime selectDate, int mealtype);

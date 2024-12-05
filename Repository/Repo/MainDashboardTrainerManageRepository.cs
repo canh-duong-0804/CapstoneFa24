@@ -13,6 +13,10 @@ namespace Repository.Repo
     {
         public Task<MainDashBoardInfoForTrainerDTO> GetAllInformationForMainTrainer(DateTime selectDate) => MainDashboardTrainerDAO.Instance.GetAllInformationForMainTrainer(selectDate);
 
+        public Task<MainDashBoardInfoForTrainerExerciseDTO> GetMainDashBoardForExerciseTrainer(DateTime selectDate) => MainDashboardTrainerDAO.Instance.GetMainDashBoardForExerciseTrainer(selectDate);
+        
 
+        public Task<MainDashBoardInfoForTrainerFoodDTO> GetMainDashBoardForFoodTrainer(DateTime selectDate) => MainDashboardTrainerDAO.Instance.GetMainDashBoardForFoodTrainer(selectDate);
+        
     }
 }

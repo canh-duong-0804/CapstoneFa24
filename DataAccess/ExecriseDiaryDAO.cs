@@ -1,4 +1,6 @@
 ﻿using AutoMapper.Execution;
+using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Dto.FoodDiary;
 using BusinessObject.Dto.Streak;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
@@ -263,5 +265,7 @@ namespace DataAccess
                 throw new Exception("Error calculating exercise diary streak", ex);
             }
         }
+
+        
     }
 }

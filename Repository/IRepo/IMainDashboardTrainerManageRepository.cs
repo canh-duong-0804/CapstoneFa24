@@ -10,5 +10,7 @@ namespace Repository.IRepo
     public interface IMainDashboardTrainerManageRepository
     {
         Task<MainDashBoardInfoForTrainerDTO> GetAllInformationForMainTrainer(DateTime selectDate);
+        Task<MainDashBoardInfoForTrainerExerciseDTO> GetMainDashBoardForExerciseTrainer(DateTime selectDate);
+        Task<MainDashBoardInfoForTrainerFoodDTO> GetMainDashBoardForFoodTrainer(DateTime selectDate);
     }
 }

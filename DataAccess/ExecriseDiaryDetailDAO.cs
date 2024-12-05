@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -266,13 +267,172 @@ namespace DataAccess
 
                     await context.ExerciseDiaryDetails.AddAsync(diaryDetail);
 
-                   
+
                 }
 
                 await context.SaveChangesAsync();
             }
         }
+        public async Task<List<ExerciseDiaryForAllMonthDTO>> GetAllDiariesForMonthOfExercise(DateTime date, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
 
+                    var startOfMonth = new DateTime(date.Year, date.Month, 1);
+                    var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+
+                    var diaries = await context.ExerciseDiaries
+                        .Where(fd => fd.Date >= startOfMonth && fd.Date <= endOfMonth && fd.MemberId == memberId )
+                        .Select(fd => new ExerciseDiaryForAllMonthDTO
+                        {
+                            Date = fd.Date.Value,
+                            exerciseDiaryId = fd.ExerciseDiaryId,
+                            HasExercise = fd.ExerciseDiaryDetails.Any(detail => detail.IsPractice == true)
+
+                        })
+                        .ToListAsync();
+
+                    return diaries;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching food diaries for the month: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> addExerciseListToDiaryForWebsite(AddExerciseDiaryDetailForWebsiteRequestDTO request, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    // Retrieve the exercise diary for the specified member and date.
+                    var exerciseDiary = await context.ExerciseDiaries
+                        .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == request.selectDate.Date);
+
+                    if (exerciseDiary == null)
+                    {
+                        // If no exercise diary exists, create a new one.
+                        await GetOrCreateExerciseDiaryAsync(memberId, request.selectDate.Date);
+                        exerciseDiary = await context.ExerciseDiaries
+                            .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == request.selectDate.Date);
+                    }
+
+                    // Delete all existing exercise diary details for the given exercise diary.
+                    var existingDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => edd.ExerciseDiaryId == exerciseDiary.ExerciseDiaryId)
+                        .ToListAsync();
+
+                    context.ExerciseDiaryDetails.RemoveRange(existingDetails);
+
+                    // Add the new exercise items to the exercise diary.
+                    foreach (var exerciseItem in request.ListFoodIdToAdd)
+                    {
+                        var newDetail = new ExerciseDiaryDetail
+                        {
+                            ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
+                            ExerciseId = exerciseItem.ExerciseId,
+                            Duration = exerciseItem.DurationInMinutes,
+                            IsPractice = exerciseItem.IsPractice,
+                            CaloriesBurned = exerciseItem.CaloriesBurned
+                        };
+                        await context.ExerciseDiaryDetails.AddAsync(newDetail);
+                    }
+
+                    // Save the changes to the database.
+                    await context.SaveChangesAsync();
+
+                    // Recalculate the exercise diary's total calories burned based on the new details.
+                    var exerciseDiaryDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => edd.ExerciseDiaryId == exerciseDiary.ExerciseDiaryId)
+                        .ToListAsync();
+
+                    exerciseDiary.TotalCaloriesBurned = Math.Round((double)exerciseDiaryDetails.Sum(d => d.CaloriesBurned), 1);
+
+                    // Save the updated exercise diary.
+                    await context.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding exercise list to diary: {ex.Message}", ex);
+            }
+        }
+
+        private async Task GetOrCreateExerciseDiaryAsync(int memberId, DateTime date)
+        {
+            using (var context = new HealthTrackingDBContext())
+            {
+                // Check if an exercise diary already exists for the given memberId and date
+                var existingDiary = await context.ExerciseDiaries
+                    .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == date.Date);
+
+                if (existingDiary == null)
+                {
+                    // If the diary doesn't exist, create a new exercise diary
+                    var newDiary = new ExerciseDiary
+                    {
+                        MemberId = memberId,
+                        Date = date,
+                        TotalCaloriesBurned = 0 // Initialize TotalCaloriesBurned to 0 or any default value
+                    };
+
+                    await context.ExerciseDiaries.AddAsync(newDiary);
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task<AddExerciseDiaryDetailForWebsiteRequestDTO> GetExerciseDairyDetailWebsite(int memberId, DateTime selectDate)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    // Retrieve the exercise diary for the given memberId and selectDate
+                    var exerciseDiary = await context.ExerciseDiaries
+                        .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == selectDate.Date);
+
+                    // If the diary doesn't exist, return null or handle as needed
+                    if (exerciseDiary == null)
+                    {
+                        return null;
+                    }
+
+                    // Retrieve the exercise diary details associated with this exercise diary
+                    var exerciseDiaryDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => edd.ExerciseDiaryId == exerciseDiary.ExerciseDiaryId)
+                        .Select(edd => new ExerciseDiaryDetailForWebisteRequestDTO
+                        {
+                            ExerciseId = edd.ExerciseId,
+                            DurationInMinutes = edd.Duration,
+                            IsPractice = (bool)edd.IsPractice,
+                            CaloriesBurned = (float)edd.CaloriesBurned
+                        })
+                        .ToListAsync();
+
+                    // Map the retrieved data to AddExerciseDiaryDetailForWebsiteRequestDTO
+                    var result = new AddExerciseDiaryDetailForWebsiteRequestDTO
+                    {
+                        ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
+                        selectDate = exerciseDiary.Date.Value.Date,
+                        ListFoodIdToAdd = exerciseDiaryDetails
+                    };
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching exercise diary details: {ex.Message}", ex);
+            }
+        }
 
     }
 }

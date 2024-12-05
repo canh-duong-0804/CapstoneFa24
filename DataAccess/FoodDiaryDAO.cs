@@ -552,7 +552,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId)
+        /*public async Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId)
         {
             try
             {
@@ -581,7 +581,7 @@ namespace DataAccess
             {
                 throw new Exception($"Error fetching food diaries: {ex.Message}");
             }
-        }
+        }*/
 
         public async Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date)
         {
@@ -681,20 +681,14 @@ namespace DataAccess
                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == request.selectDate.Date);
                     }
 
-                    
+                    var existingDetails = await context.FoodDiaryDetails
+                .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                .ToListAsync();
+
                     foreach (var foodItem in request.ListFoodIdToAdd)
                     {
                         
-                        var existingDetail = await context.FoodDiaryDetails
-                            .FirstOrDefaultAsync(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.FoodId == foodItem.FoodId &&fdd.MealType==request.MealType);
-
-                        if (existingDetail != null)
-                        {
-                            
-                            existingDetail.Quantity += foodItem.Quantity;
-                        }
-                        else
-                        {
+                        
                            
                             var newDetail = new FoodDiaryDetail
                             {
@@ -704,7 +698,7 @@ namespace DataAccess
                                 MealType=request.MealType
                             };
                             await context.FoodDiaryDetails.AddAsync(newDetail);
-                        }
+                        
                     }
 
                     await context.SaveChangesAsync();

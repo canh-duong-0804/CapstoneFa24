@@ -1,5 +1,6 @@
 ﻿
 using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Dto.FoodDiary;
 using BusinessObject.DTOs;
 
 using BusinessObject.Models;
@@ -7,6 +8,7 @@ using DataAccess;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
+using Repository.Repo;
 using System.Security.Claims;
 
 namespace HealthTrackingManageAPI.Controllers
@@ -221,6 +223,61 @@ namespace HealthTrackingManageAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
+
+       /* [HttpGet("get-all-diaries-for-month-of-exercise")]
+        public async Task<IActionResult> GetAllDiariesForMonthOfExercise([FromQuery] DateTime date)
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
+
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var diaries = await _exerciseDiaryRepo.GetAllDiariesForMonthOfExercise(date, memberId);
+
+                if (diaries == null || !diaries.Any())
+                {
+                    return NotFound("No diaries found for the specified month.");
+                }
+
+                return Ok(diaries);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
+        [HttpPost("addExerciseListToDiaryForWebsite")]
+        [Authorize]
+        public async Task<IActionResult> addFoodListToDiaryForWebsite([FromBody] AddExerciseDiaryDetailForWebsiteRequestDTO request)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                return Unauthorized("Member ID not found in claims.");
+            if (request == null)
+            {
+                return BadRequest("Invalid request: No food details provided.");
+            }
+
+            var result = await _foodDiaryRepository.addFoodListToDiaryForWebsite(request, memberId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }*/
     }
 
 }

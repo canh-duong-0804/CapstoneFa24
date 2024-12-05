@@ -196,7 +196,81 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
 
+        [HttpGet("get-all-diaries-for-month-of-exercise")]
+        public async Task<IActionResult> GetAllDiariesForMonthOfExercise([FromQuery] DateTime date)
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
 
+                if (!int.TryParse(memberIdClaim, out int memberId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var diaries = await _exerciseDiaryDetailRepo.GetAllDiariesForMonthOfExercise(date, memberId);
+
+                if (diaries == null || !diaries.Any())
+                {
+                    return NotFound("No diaries found for the specified month.");
+                }
+
+                return Ok(diaries);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
+        [HttpPost("addExerciseListToDiaryForWebsite")]
+        [Authorize]
+        public async Task<IActionResult> addExerciseListToDiaryForWebsite([FromBody] AddExerciseDiaryDetailForWebsiteRequestDTO request)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                return Unauthorized("Member ID not found in claims.");
+            if (request == null)
+            {
+                return BadRequest("Invalid request: No food details provided.");
+            }
+
+            var result = await _exerciseDiaryDetailRepo.addExerciseListToDiaryForWebsite(request, memberId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("Get-Exercise-dairy-detail-website")]
+        public async Task<IActionResult> GetExerciseDairyDetailWebsite(DateTime selectDate)
+        {
+
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var mainDashBoardInfo = await _exerciseDiaryDetailRepo.GetExerciseDairyDetailWebsite(memberId, selectDate);
+            if (mainDashBoardInfo == null)
+            {
+                return NotFound(" not found.");
+            }
+            return Ok(mainDashBoardInfo);
+        }
 
     }
 }

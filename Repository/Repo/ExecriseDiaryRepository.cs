@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -20,6 +21,8 @@ namespace Repository.Repo
 
 		public Task<ExerciseDiary> GetExerciseDiaryById(int exerciseDiaryId) => ExerciseDiaryDAO.Instance.GetExerciseDiaryById(exerciseDiaryId);
         public Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId, DateTime selectDate) => ExerciseDiaryDAO.Instance.GetExerciseDiaryStreakWithDates(memberId,selectDate);
+
+        
     }
 
 }

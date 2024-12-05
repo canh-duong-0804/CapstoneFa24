@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,6 @@ namespace Repository.IRepo
 
 		Task<ExerciseDiary> GetExerciseDiaryById(int exerciseDiaryId);
 		Task<(int StreakCount, List<DateTime> StreakDates)> GetExerciseDiaryStreakWithDates(int memberId, DateTime selectDate);
-
+       
     }
 }

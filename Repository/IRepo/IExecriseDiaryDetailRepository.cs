@@ -1,4 +1,5 @@
-﻿using BusinessObject.Models;
+﻿using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,8 @@ namespace Repository.IRepo
 
 		Task AssignExercisePlanToUserAsync(int memberId, int planId, DateTime startDate);
 
+        Task<List<ExerciseDiaryForAllMonthDTO>> GetAllDiariesForMonthOfExercise(DateTime date, int memberId);
+        Task<bool> addExerciseListToDiaryForWebsite(AddExerciseDiaryDetailForWebsiteRequestDTO request, int memberId);
+        Task<AddExerciseDiaryDetailForWebsiteRequestDTO> GetExerciseDairyDetailWebsite(int memberId, DateTime selectDate);
     }
 }
