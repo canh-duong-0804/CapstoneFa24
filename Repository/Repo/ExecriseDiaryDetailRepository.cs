@@ -1,4 +1,7 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.ExecriseDiary;
+using BusinessObject.Dto.Exericse;
+using BusinessObject.Models;
 using DataAccess;
 using Repository.IRepo;
 using System;
@@ -6,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace Repository.Repo
 {
@@ -24,7 +28,16 @@ namespace Repository.Repo
 		public Task UpdateDiaryDetailAsync(ExerciseDiaryDetail diaryDetail) => ExecriseDiaryDetailDAO.Instance.UpdateDiaryDetailAsync(diaryDetail);
 		
 		public Task AssignExercisePlanToUserAsync(int memberId, int planId, DateTime startDate) => ExecriseDiaryDetailDAO.Instance.AssignExercisePlanToUserAsync(memberId, planId, startDate);
+
+        public Task<List<ExerciseDiaryForAllMonthDTO>> GetAllDiariesForMonthOfExercise(DateTime date, int memberId) => ExecriseDiaryDetailDAO.Instance.GetAllDiariesForMonthOfExercise(date, memberId);
+
+        public Task<bool> addExerciseListToDiaryForWebsite(AddExerciseDiaryDetailForWebsiteRequestDTO request, int memberId) => ExecriseDiaryDetailDAO.Instance.addExerciseListToDiaryForWebsite(request, memberId);
+
+        public Task<AddExerciseDiaryDetailForWebsiteRequestDTO> GetExerciseDairyDetailWebsite(int memberId, DateTime selectDate) => ExecriseDiaryDetailDAO.Instance.GetExerciseDairyDetailWebsite(memberId, selectDate);
+
+        public Task<List<ExerciseListBoxResponseDTO>> GetListBoxExerciseForStaffAsync() => ExecriseDiaryDetailDAO.Instance.GetListBoxExerciseForStaffAsync();
+        
     }
-	
+
 
 }

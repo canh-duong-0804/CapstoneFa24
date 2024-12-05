@@ -29,7 +29,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<MainDashBoardInfoForTrainerDTO> GetAllInformationForMainTrainer(DateTime selectDate)
+        public async Task<MainDashBoardInfoForAdminDTO> GetAllInformationForMainTrainer(DateTime selectDate)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace DataAccess
 
 
                     // Return aggregated results
-                    return new MainDashBoardInfoForTrainerDTO
+                    return new MainDashBoardInfoForAdminDTO
                     {
                         TotalFoods = totalFoods,
                         TotalExercises = totalExercises,

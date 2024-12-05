@@ -248,7 +248,7 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(foodHistory);
 
         }
-        [Authorize]
+        /*[Authorize]
         [HttpGet("Get-Food-dairy-date")]
         public async Task<IActionResult> GetFoodDairyDate()
         {
@@ -270,7 +270,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
             return Ok(mainDashBoardInfo);
         }
-
+*/
         [HttpGet("get-streak")]
         [Authorize]
         public async Task<IActionResult> GetCalorieStreak(DateTime date)

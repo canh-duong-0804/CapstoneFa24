@@ -11,7 +11,8 @@ namespace BusinessObject.Dto.Food
       
         public string FoodName { get; set; } = null!;
         public string Portion { get; set; } = null!;
-        public string dietname { get; set; } = null!;
+        public string Serving { get; set; } = null!;
+        //public string dietname { get; set; } = null!;
         public double Calories { get; set; }
        // public int CreateBy { get; set; }    
         public string? FoodImage { get; set; }

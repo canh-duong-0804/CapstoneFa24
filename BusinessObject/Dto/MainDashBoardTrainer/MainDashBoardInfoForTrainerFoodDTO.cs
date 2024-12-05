@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.Dto.MainDashBoardTrainer
 {
-    public class MainDashBoardInfoForTrainerDTO
+    public class MainDashBoardInfoForTrainerFoodDTO
     {
+
         public int TotalFoods { get; set; }
-        public int TotalExercises { get; set; }
-        public int TotalUsers { get; set; }
+      
         public int TotalMemberUseEatClean { get; set; }
         public int TotalMemberUseLowCarb { get; set; }
         public int TotalMemberUseNormal { get; set; }
@@ -22,9 +22,9 @@ namespace BusinessObject.Dto.MainDashBoardTrainer
         public double PercentageNormal { get; set; }
 
 
-        public int NewUsersThisMonth { get; set; } // New user registrations in the selected month
+      
         public List<TopFoodStatisticsDTO> TopFoodStatistics { get; set; } = new List<TopFoodStatisticsDTO>();
-        public List<TopExeriseStatisticsDTO> TopExerciseStatistics { get; set; } = new List<TopExeriseStatisticsDTO>();
-        public List<UserRegistrationStatisticsDTO> UserRegistrationStatistics { get; set; } = new List<UserRegistrationStatisticsDTO>();
+        
+        
     }
 }

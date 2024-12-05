@@ -13,14 +13,14 @@ namespace HealthTrackingManageAPI.Controllers
     public class MainDashboardForAdminManageController : ControllerBase
     {
 
-        private readonly IMainDashboardAdminRepository _mainDashBoardTrainerRepository;
-        public MainDashboardForAdminManageController(IMainDashboardAdminRepository mainDashBoardTrainerRepository)
+        private readonly IMainDashboardAdminManageRepository _mainDashBoardTrainerRepository;
+        public MainDashboardForAdminManageController(IMainDashboardAdminManageRepository mainDashBoardTrainerRepository)
         {
             _mainDashBoardTrainerRepository = mainDashBoardTrainerRepository;
         }
 
         [RoleLessThanOrEqualTo(1)]
-        [HttpGet("Get-main-dashboard-for-Main-Trainer")]
+        [HttpGet("Get-main-dashboard-for-Admin")]
         public async Task<IActionResult> GetMainDashBoardForMemberById1(DateTime SelectDate)
         {
             var memberIdClaim = User.FindFirstValue("Id");

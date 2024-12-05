@@ -440,7 +440,7 @@ namespace DataAccess
                 const int maxAttempts = 5;
                 int attempts = 0;
                 var foodDetails = new List<AllFoodForMemberResponseDTO>();
-                var seenFoodIds = new HashSet<int>(); 
+                var seenFoodIds = new HashSet<int>();
                 var lastDate = DateTime.Now;
 
                 do
@@ -484,13 +484,13 @@ namespace DataAccess
                     // Thêm FoodId vào tập hợp và chi tiết thực phẩm vào danh sách
                     foreach (var food in currentFoodDetails)
                     {
-                        if (seenFoodIds.Add(food.FoodId)) 
+                        if (seenFoodIds.Add(food.FoodId))
                         {
                             foodDetails.Add(food);
                         }
                     }
 
-                   
+
                     if (foodDetails.Count >= 3 || attempts >= maxAttempts)
                     {
                         break;
@@ -552,7 +552,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId)
+        /*public async Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId)
         {
             try
             {
@@ -581,7 +581,7 @@ namespace DataAccess
             {
                 throw new Exception($"Error fetching food diaries: {ex.Message}");
             }
-        }
+        }*/
 
         public async Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date)
         {
@@ -643,7 +643,7 @@ namespace DataAccess
                         currentStreak++;
                         currentDate = currentDate.AddDays(-1);
                     }
-                    else if (startOfMonth.Date.Date == currentDate.Date )
+                    else if (startOfMonth.Date.Date == currentDate.Date)
                     {
                         break;
                     }
@@ -668,12 +668,12 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     var foodDiary = await context.FoodDiaries
                         .FirstOrDefaultAsync(fd => fd.MemberId == memberId
                                                    && fd.Date.Date == request.selectDate.Date);
 
-                   
+
                     if (foodDiary == null)
                     {
                         await GetOrCreateFoodDiaryAsync(memberId, request.selectDate.Date);
@@ -681,35 +681,32 @@ namespace DataAccess
                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == request.selectDate.Date);
                     }
 
-                    
+                    var existingDetails = await context.FoodDiaryDetails
+                .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                .ToListAsync();
+
+
+                    context.FoodDiaryDetails.RemoveRange(existingDetails);
+
                     foreach (var foodItem in request.ListFoodIdToAdd)
                     {
-                        
-                        var existingDetail = await context.FoodDiaryDetails
-                            .FirstOrDefaultAsync(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.FoodId == foodItem.FoodId &&fdd.MealType==request.MealType);
 
-                        if (existingDetail != null)
+
+
+                        var newDetail = new FoodDiaryDetail
                         {
-                            
-                            existingDetail.Quantity += foodItem.Quantity;
-                        }
-                        else
-                        {
-                           
-                            var newDetail = new FoodDiaryDetail
-                            {
-                                DiaryId = foodDiary.DiaryId,
-                                FoodId = foodItem.FoodId,
-                                Quantity = foodItem.Quantity,
-                                MealType=request.MealType
-                            };
-                            await context.FoodDiaryDetails.AddAsync(newDetail);
-                        }
+                            DiaryId = foodDiary.DiaryId,
+                            FoodId = foodItem.FoodId,
+                            Quantity = foodItem.Quantity,
+                            MealType = request.MealType
+                        };
+                        await context.FoodDiaryDetails.AddAsync(newDetail);
+
                     }
 
                     await context.SaveChangesAsync();
 
-                    
+
                     var foodDiaryDetails = await context.FoodDiaryDetails
                         .Include(fdd => fdd.Food)
                         .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
@@ -737,13 +734,13 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     var foodDiary = await context.FoodDiaries
                         .Include(fd => fd.FoodDiaryDetails)
                         .ThenInclude(fdd => fdd.Food)
                         .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == selectDate.Date);
 
-                  
+
                     if (foodDiary == null || !foodDiary.FoodDiaryDetails.Any())
                     {
                         return new AddFoodDiaryDetailForWebsiteRequestDTO
@@ -754,7 +751,7 @@ namespace DataAccess
                         };
                     }
 
-                   
+
                     var filteredDetails = foodDiary.FoodDiaryDetails
                         .Where(fdd => fdd.MealType == mealType)
                         .Select(fdd => new FoodDiaryDetailForWebisteRequestDTO
@@ -764,7 +761,7 @@ namespace DataAccess
                         })
                         .ToList();
 
-                   
+
                     return new AddFoodDiaryDetailForWebsiteRequestDTO
                     {
                         MealType = mealType,
@@ -785,13 +782,13 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     var startOfMonth = new DateTime(date.Year, date.Month, 1);
                     var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
 
-                    
+
                     var diaries = await context.FoodDiaries
-                        .Where(fd => fd.Date >= startOfMonth && fd.Date <= endOfMonth && fd.MemberId==memberId)
+                        .Where(fd => fd.Date >= startOfMonth && fd.Date <= endOfMonth && fd.MemberId == memberId)
                         .Select(fd => new FoodDiaryWithMealTypeDTO
                         {
                             Date = fd.Date,

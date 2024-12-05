@@ -55,7 +55,7 @@ namespace BusinessObject
                 .ReverseMap();
 
                 cfg.CreateMap<LoginRequestDTO, Member>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber));
                 // .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password));
 
                 cfg.CreateMap<LoginRequestStaffDTO, staff>()

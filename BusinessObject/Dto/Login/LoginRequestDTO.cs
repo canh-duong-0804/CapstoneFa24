@@ -10,7 +10,7 @@ namespace BusinessObject.Dto.Login
     public class LoginRequestDTO
     {
       
-        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
         
         public string Password { get; set; }
     }

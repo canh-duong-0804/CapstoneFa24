@@ -40,7 +40,7 @@ namespace Repository.Repo
 
         public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetFoodSuggestionAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodSuggestAsync(memberId);
 
-        public Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodDairyDateAsync(memberId);
+        //public Task<List<GetFoodDiaryDateResponseDTO>> GetFoodDairyDateAsync(int memberId) => FoodDiaryDAO.Instance.GetFoodDairyDateAsync(memberId);
 
         public Task<CalorieStreakDTO> GetCalorieStreakAsync(int memberId, DateTime date) => FoodDiaryDAO.Instance.GetCalorieStreakAsync(memberId,date);
 

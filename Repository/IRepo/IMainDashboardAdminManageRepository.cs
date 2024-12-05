@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Repository.IRepo
 {
-    public interface IMainDashboardAdminRepository
+    public interface IMainDashboardAdminManageRepository
     {
-        Task<MainDashBoardInfoForTrainerDTO> GetAllInformationForMainTrainer(DateTime selectDate);
+        Task<MainDashBoardInfoForAdminDTO> GetAllInformationForMainTrainer(DateTime selectDate);
     }
 }
