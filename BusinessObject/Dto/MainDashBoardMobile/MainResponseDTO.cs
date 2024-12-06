@@ -19,6 +19,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
         public int streakNumberFood { get; set; }
         public int streakNumberExercise { get; set; }
         public double? CaloriesBurn { get; set; }
+        public int? TotalDuration { get; set; }
 
 
         public double? Height { get; set; }

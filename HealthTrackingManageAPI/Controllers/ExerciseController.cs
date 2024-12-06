@@ -34,8 +34,17 @@ namespace HealthTrackingManageAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetExercisesDetailForMember(int ExerciseId)
         {
-            
-            var exercises = await _exerciseRepository.GetExercisesCardioDetailForMemberrAsync(ExerciseId);
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var exercises = await _exerciseRepository.GetExercisesCardioDetailForMemberrAsync(ExerciseId,memberId);
 
             
             if (exercises == null)
@@ -70,8 +79,17 @@ namespace HealthTrackingManageAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetExercisesOtherDetailForMember(int ExerciseId)
         {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
 
-            var exercises = await _exerciseRepository.GetExercisesOtherDetailForMemberAsync(ExerciseId);
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var exercises = await _exerciseRepository.GetExercisesOtherDetailForMemberAsync(ExerciseId,memberId);
 
 
             if (exercises == null)

@@ -143,7 +143,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             if (!success)
             {
-                return StatusCode(500);
+                return BadRequest();
             }
 
             return Ok("");
@@ -166,7 +166,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             if (!success)
             {
-                return StatusCode(500);
+                return BadRequest();
             }
 
             return Ok("");

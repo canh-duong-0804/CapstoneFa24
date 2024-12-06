@@ -119,148 +119,7 @@ namespace DataAccess
 
 
 
-        public async Task<bool> updateGoal(int memberId, GoalRequestDTO updatedGoal)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-
-                    var getGoal = await context.Goals.FindAsync(memberId);
-                    getGoal.TargetValue = updatedGoal.TargetWeight;
-                    //getGoal.TargetDate = updatedGoal.TargetDate;
-                    // getGoal.GoalType = updatedGoal.GoalType;
-                    context.SaveChanges();
-                    return true;
-                    /* context.Goals.Update(updatedGoal);
-                     await context.SaveChangesAsync();*/
-                }
-            }
-            catch (Exception ex)
-            {
-
-                //throw new Exception("An error occurred while updating the goal.", ex);
-            }
-            return false;
-        }
-
-        public async Task<bool> AddCurrentWeightAsync(int memberId, double weightCurrent)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    var addNewWeightCurrent = new BodyMeasureChange
-                    {
-                        MemberId = memberId,
-                        Weight = weightCurrent,
-                        DateChange = DateTime.Now,
-                        BodyFat = 0,
-                        Muscles = 0,
-                    };
-
-                    context.BodyMeasureChanges.Add(addNewWeightCurrent);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                //throw new Exception("An error occurred while updating the goal.", ex);
-            }
-            return false;
-        }
-
-        public async Task<bool> AddGoalLevelExercise(int memberId, string goalWeekDaily)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    var getGoal = await context.Goals.OrderByDescending(b => b.GoalId).Where(b => b.MemberId == memberId).FirstOrDefaultAsync();
-
-
-                    var addNewWeightCurrent = new Goal
-                    {
-                        MemberId = memberId,
-                        GoalType = goalWeekDaily,
-                        TargetDate = getGoal.TargetDate,
-                        TargetValue = getGoal.TargetValue,
-
-                    };
-
-                    context.Goals.Add(addNewWeightCurrent);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                //throw new Exception("An error occurred while updating the goal.", ex);
-            }
-            return false;
-        }
-
-        public async Task<bool> AddGoalWeekDaily(int memberId, string goalWeekDaily)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    var getGoal = await context.Goals.OrderByDescending(b => b.GoalId).Where(b => b.MemberId == memberId).FirstOrDefaultAsync();
-
-
-                    var addNewWeightCurrent = new Goal
-                    {
-                        MemberId = memberId,
-                        GoalType = goalWeekDaily,
-                        TargetDate = getGoal.TargetDate,
-                        TargetValue = getGoal.TargetValue,
-
-                    };
-
-                    context.Goals.Add(addNewWeightCurrent);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                //throw new Exception("An error occurred while updating the goal.", ex);
-            }
-            return false;
-        }
-
-        public async Task<bool> AddGoalWeightAsync(int memberId, double weightCurrent)
-        {
-            try
-            {
-                using (var context = new HealthTrackingDBContext())
-                {
-                    var getGoal = await context.Goals.OrderByDescending(b => b.GoalId).Where(b => b.MemberId == memberId).FirstOrDefaultAsync();
-
-
-                    var addNewWeightCurrent = new Goal
-                    {
-                        MemberId = memberId,
-                        //GoalType = goalWeekDaily,
-                        TargetDate = getGoal.TargetDate,
-                        TargetValue = getGoal.TargetValue,
-
-                    };
-
-                    context.Goals.Add(addNewWeightCurrent);
-                    context.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                //throw new Exception("An error occurred while updating the goal.", ex);
-            }
-            return false;
-        }
-
+        
         public async Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId)
         {
             try
@@ -274,8 +133,8 @@ namespace DataAccess
 
                     var groupedBodyMeasures = bodyMeasureChanges
                         .GroupBy(b => b.DateChange.Value.Date)
-                        .Select(g => g.OrderBy(b => b.DateChange).FirstOrDefault())
-                        .OrderBy(b => b.DateChange)
+                        .Select(g => g.OrderByDescending(b => b.BodyMeasureId).FirstOrDefault())
+                        .OrderBy(b => b.BodyMeasureId)
                         .Select(b => new WeightDTO
                         {
                             Date = b.DateChange.Value.ToString("dd-MM-yyyy"),
@@ -310,6 +169,38 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while retrieving daily member data.", ex);
+            }
+        }
+
+        
+
+        public async Task AddOnlyGoalMember(Goal goalModel)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                   
+                    var latestBodyMeasure = await context.BodyMeasureChanges
+                        .Where(b => b.MemberId == goalModel.MemberId)
+                        .OrderByDescending(b => b.DateChange)
+                        .FirstOrDefaultAsync();
+
+                    double? currentWeight = latestBodyMeasure.Weight;
+                    double targetWeight = goalModel.TargetValue;
+                    double weeklyGoal = Convert.ToDouble(goalModel.GoalType);
+
+                    int weeksNeeded = (int)Math.Ceiling(Math.Abs((double)((targetWeight - currentWeight) / weeklyGoal)));
+
+                    goalModel.TargetDate = DateTime.Now.AddDays(weeksNeeded * 7);
+                  
+                    await context.Goals.AddAsync(goalModel);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 

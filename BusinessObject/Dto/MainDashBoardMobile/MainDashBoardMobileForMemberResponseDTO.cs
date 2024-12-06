@@ -30,5 +30,7 @@ namespace BusinessObject.Dto.MainDashBoardMobile
         public int DiaryExerciseId { get; set; }
         public int DiaryFoodId { get; set; }
         public double? CaloriesBurn { get; set; }
+
+        public int? TotalDuration { get; set; }
     }
 }

@@ -10,18 +10,19 @@ namespace Repository.IRepo
 {
     public interface IGoalRepository
     {
-        Task<bool> AddCurrentWeightAsync(int memberId, double weightCurrent);
+       // Task<bool> AddCurrentWeightAsync(int memberId, double weightCurrent);
         Task AddGoalAsync(Goal goal, double weight);
-        Task<bool> AddGoalLevelExercise(int memberId, string goalWeekDaily);
-        Task<bool> AddGoalWeekDaily(int memberId, string goalWeekDaily);
-        Task<bool> AddGoalWeightAsync(int memberId, double weightCurrent);
+      //  Task<bool> AddGoalLevelExercise(int memberId, string goalWeekDaily);
+     //   Task<bool> AddGoalWeekDaily(int memberId, string goalWeekDaily);
+      //  Task<bool> AddGoalWeightAsync(int memberId, double weightCurrent);
+        Task AddOnlyGoalMember(Goal goalModel);
         Task<GoalResponseDTO> GetGoalByIdAsync(int id);
         
         Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraph(int memberId);
         //Task<GetInforGoalWeightMemberForGraphResponseDTO> GetInforGoalWeightMemberForGraphInMonth(int memberId, DateTime date);
 
         /* Task<bool> updateGoal(int memberId, GoalRequestDTO updatedGoal);*/
-        Task<bool> UpdateGoalAsync(int memberId, GoalRequestDTO updatedGoal);
+      //  Task<bool> UpdateGoalAsync(int memberId, GoalRequestDTO updatedGoal);
         /*Task<bool> updateGoal(int memberId, GoalResponseDTO updatedGoal);*/
     }
 }

@@ -38,9 +38,9 @@ namespace Repository.Repo
           public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);*/
         public Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter) => ExerciseDAO.Instance.GetAllExercisesForMemberAsync(search,isCardioFilter);
 
-        public Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId) => ExerciseDAO.Instance.GetExercisesCardioDetailForMemberrAsync(exerciseId);
+        public Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId, int memberId) => ExerciseDAO.Instance.GetExercisesCardioDetailForMemberrAsync(exerciseId,memberId);
 
-        public Task<GetExerciseDetailOfOtherResponseDTO> GetExercisesOtherDetailForMemberAsync(int exerciseId) => ExerciseDAO.Instance.GetExercisesOtherDetailForMemberAsync(exerciseId);
+        public Task<GetExerciseDetailOfOtherResponseDTO> GetExercisesOtherDetailForMemberAsync(int exerciseId, int memberId) => ExerciseDAO.Instance.GetExercisesOtherDetailForMemberAsync(exerciseId,memberId);
        
 
         public Task<GetExerciseDetailOfResitanceResponseDTO> GetExercisesResistanceDetailForMemberAsync(int exerciseId) => ExerciseDAO.Instance.GetExercisesResistanceDetailForMemberAsync(exerciseId);

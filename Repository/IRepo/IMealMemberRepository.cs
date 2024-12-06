@@ -18,7 +18,7 @@ namespace Repository.IRepo
         Task CreateMealMemberDetailsAsync(List<MealMemberDetail> mealMemberDetails);
         Task<bool> CreateMealPlanForMember(MealMember mealMember);
         Task DeleteMealMemberAsync(int mealMemberId);
-        Task DeleteMealMemberDetailAsync(int detailId);
+        Task<bool> DeleteMealMemberDetailAsync(int detailId);
         Task DeleteMealMemberDetailsByMealMemberIdAsync(int mealMemberId);
         Task<IEnumerable<MealMember>> GetAllMealMembersAsync(int memberId);
         Task<int> GetMealBeforeByMealType(int foodDiaryId, int mealtype);

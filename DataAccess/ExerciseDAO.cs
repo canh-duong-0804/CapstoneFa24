@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.CategoryExerice;
+﻿using AutoMapper.Execution;
+using BusinessObject.Dto.CategoryExerice;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
@@ -77,7 +78,7 @@ namespace DataAccess
 
         }
 
-        public async Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId)
+        public async Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId,int memberId)
         {
 
             try
@@ -91,7 +92,11 @@ namespace DataAccess
                            .Where(c => c.ExerciseId == exerciseId)
                            .FirstOrDefaultAsync();
                     if (exercise == null ) return null;
-
+                    var latestMeasurement = await context.BodyMeasureChanges
+                        .Where(b => b.MemberId == memberId)
+                        .OrderByDescending(b => b.DateChange.Value.Date)
+                        .ThenBy(b => b.DateChange.Value.TimeOfDay)
+                        .FirstOrDefaultAsync();
 
                     if (exercise.TypeExercise == 1)
                     {
@@ -116,6 +121,7 @@ namespace DataAccess
                             Minutes1 = cardio.Minutes1,
                             Minutes2 = cardio.Minutes2,
                             Minutes3 = cardio.Minutes3,
+                            Weight=latestMeasurement.Weight
                             
 
                             //MetricsCardio=cardio.MetricsCardio
@@ -197,7 +203,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<GetExerciseDetailOfOtherResponseDTO> GetExercisesOtherDetailForMemberAsync(int exerciseId)
+        public async Task<GetExerciseDetailOfOtherResponseDTO> GetExercisesOtherDetailForMemberAsync(int exerciseId, int memberId)
         {
             try
             {
@@ -210,7 +216,11 @@ namespace DataAccess
                                                 .Where(r => r.ExerciseId == exerciseId)
                                                 .FirstOrDefaultAsync();
                     if (exercise == null ) return null;
-
+                    var latestMeasurement = await context.BodyMeasureChanges
+                        .Where(b => b.MemberId == memberId)
+                        .OrderByDescending(b => b.DateChange.Value.Date)
+                        .ThenBy(b => b.DateChange.Value.TimeOfDay)
+                        .FirstOrDefaultAsync();
                     if (exercise.TypeExercise == 3)
                     {
                         var result = new GetExerciseDetailOfOtherResponseDTO
@@ -228,7 +238,7 @@ namespace DataAccess
                             ExerciseName = exercise.ExerciseName,
                             Description = exercise.Description,
                             MetValue=exercise.MetValue,
-
+                            Weight=latestMeasurement.Weight
 
 
                             //MetricsResistance= resistance.MetricsResistance

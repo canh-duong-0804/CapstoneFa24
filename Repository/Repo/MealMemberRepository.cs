@@ -40,7 +40,7 @@ public Task CreateMealMemberDetailsAsync(MealMemberDetail mealMemberDetails) => 
         public Task DeleteMealMemberAsync(int mealMemberId) => MealMemberDAO.Instance.DeleteMealMemberAsync(mealMemberId);
         
 
-        public Task DeleteMealMemberDetailAsync(int detailId) => MealMemberDAO.Instance.DeleteMealMemberDetailAsync(detailId);
+        public Task<bool> DeleteMealMemberDetailAsync(int detailId) => MealMemberDAO.Instance.DeleteMealMemberDetailAsync(detailId);
 
         public Task DeleteMealMemberDetailsByMealMemberIdAsync(int mealMemberId) => MealMemberDAO.Instance.DeleteMealMemberDetailsByMealMemberIdAsync(mealMemberId);
        
