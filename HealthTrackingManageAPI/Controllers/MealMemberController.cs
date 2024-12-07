@@ -61,8 +61,8 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [Authorize]
-        [HttpPut("upload-image-meal-plan")]
-        public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile, [FromForm] int mealMemberid)
+        [HttpPut("upload-image-meal")]
+        public async Task<IActionResult> UploadImageMeal(IFormFile? imageFile, [FromForm] int mealMemberid)
         {
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -82,7 +82,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [Authorize]
-        [HttpPost("create-meal-plan-for-member")]
+        [HttpPost("create-meal-for-member")]
         public async Task<IActionResult> CreateMealForMember([FromBody] CreateMealMemberRequestDTO mealMemberDto)
         {
             var memberIdClaim = User.FindFirstValue("Id");
@@ -175,14 +175,16 @@ namespace HealthTrackingManageAPI.Controllers
         {
 
 
-            await _mealPlanMemberRepository.DeleteMealMemberDetailAsync(detailId);
+            var check=await _mealPlanMemberRepository.DeleteMealMemberDetailAsync(detailId);
+
+            if (!check) return NotFound();
             return Ok();
         }
 
 
         [Authorize]
-        [HttpPost("add-multiple-foods-to-meal/{mealMemberId}")]
-        public async Task<IActionResult> AddMultipleFoodsToMealMember(int mealMemberId, [FromBody] AddMoreFoodToMealMemberRequestDTO mealDetails)
+        [HttpPost("add-multiple-foods-to-meal")]
+        public async Task<IActionResult> AddMultipleFoodsToMealMember([FromBody] AddMoreFoodToMealMemberRequestDTO mealDetails)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)
@@ -205,14 +207,14 @@ namespace HealthTrackingManageAPI.Controllers
             foreach (var detail in mealMemberDetails)
             {
                 detail.MemberId = memberId;
-                detail.MealMemberId = mealMemberId;
+                detail.MealMemberId = mealDetails.mealMemberId;
 
             }
 
             await _mealPlanMemberRepository.CreateMealMemberDetailsAsync(mealMemberDetails);
 
 
-            await _mealPlanMemberRepository.UpdateMealMemberTotalCaloriesAsync(mealMemberId);
+            await _mealPlanMemberRepository.UpdateMealMemberTotalCaloriesAsync(mealDetails.mealMemberId);
 
             return Ok();
         }

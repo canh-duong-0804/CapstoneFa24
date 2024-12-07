@@ -9,7 +9,8 @@ namespace BusinessObject.Dto.MealDetailMember
 {
     public class AddMoreFoodToMealMemberRequestDTO
     {
-        public List<CreateMealDetailMemberRequestDTO> MealDetails { get; set; } = new List<CreateMealDetailMemberRequestDTO>();
+        public int mealMemberId { get; set; }
+         public List<CreateMealDetailMemberRequestDTO> MealDetails { get; set; } = new List<CreateMealDetailMemberRequestDTO>();
 
     }
 }

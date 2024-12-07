@@ -45,6 +45,34 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok(new { message = "Goal inserted successfully" });
 
         }
+        
+        
+        
+        
+        [HttpPost("add-only-goal-member")]
+        [Authorize]
+        public async Task<IActionResult> AddOnlyGoalMember([FromBody] AddOnlyGoalMemberRequestDTO goal)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var mapper = MapperConfig.InitializeAutomapper();
+            var goalModel = mapper.Map<Goal>(goal);
+            goalModel.MemberId = memberId;
+            goalModel.TargetValue = goal.TargetWeight;
+            goalModel.ChangeDate = DateTime.UtcNow;
+            goalModel.GoalType = goal.GoalType.ToString("F1");
+            await _goalRepository.AddOnlyGoalMember(goalModel);
+            return Ok(new { message = "Goal inserted successfully" });
+
+        }
 
         [HttpGet("get-goal-detail")]
         [Authorize]

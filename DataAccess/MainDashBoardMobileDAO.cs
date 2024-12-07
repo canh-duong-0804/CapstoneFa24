@@ -204,6 +204,7 @@ namespace DataAccess
                         Gender = member.Gender.HasValue ? "Male" : "Female",
                         ExerciseLevel=member.ExerciseLevel,
                         CaloriesBurn=IdExercise.TotalCaloriesBurned,
+                        TotalDuration=IdExercise.TotalDuration,
 
 
 

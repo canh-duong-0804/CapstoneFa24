@@ -193,8 +193,8 @@ namespace YourAPINamespace.Controllers
 
     public class SendMessageRequestMember
     {
-        public int ChatId { get; set; } // ID của đoạn chat
-        public string MessageContent { get; set; } = null!; // Nội dung tin nhắn
+        public int ChatId { get; set; } 
+        public string MessageContent { get; set; } = null!; 
     }
 
     public class MemberCreateChatRequest

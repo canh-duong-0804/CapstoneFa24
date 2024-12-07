@@ -542,6 +542,7 @@ namespace DataAccess
                         Fat = f.Fat,
                         DietName = f.Diet.DietName
                     })
+                    .OrderBy(x => Guid.NewGuid())
                     .Take(3).ToListAsync();
 
                 return foodSuggest;

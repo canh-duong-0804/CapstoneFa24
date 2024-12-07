@@ -12,7 +12,7 @@ namespace BusinessObject.Dto.Exericse
        
         public int? TypeExercise { get; set; }
         public string? ExerciseImage { get; set; }
-      
+        public double? Weight { get; set; }
         public string ExerciseName { get; set; } = null!;
         public string? Description { get; set; }
         public double? MetValue { get; set; }
