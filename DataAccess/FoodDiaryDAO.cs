@@ -682,7 +682,7 @@ namespace DataAccess
                     }
 
                     var existingDetails = await context.FoodDiaryDetails
-                .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                .Where(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.MealType==request.MealType)
                 .ToListAsync();
 
 
@@ -783,8 +783,8 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var startOfMonth = new DateTime(date.Year, date.Month, 1);
-                    var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+                    var startOfMonth = new DateTime(date.Year, 1, 1);
+                    var endOfMonth = new DateTime(date.Year, 12, 31);
 
 
                     var diaries = await context.FoodDiaries
