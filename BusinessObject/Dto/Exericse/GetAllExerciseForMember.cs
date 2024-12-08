@@ -10,11 +10,14 @@ namespace BusinessObject.Dto.Exericse
     {
         public int ExerciseId { get; set; }
         public double? Weight { get; set; }
+        public int? TypeExercise { get; set; }
         public string CategoryExercise { get; set; }
         public string? ExerciseImage { get; set; }
         public double? MetValue { get; set; }
         public string ExerciseName { get; set; } = null!;
-      
-      
+        public GetExerciseDetailOfResitanceResponseDTO getExerciseDetailOfResitanceResponseDTO { get; set; }
+        public GetExerciseDetailOfCardiorResponseDTO getExerciseDetailOfCardiorResponseDTO { get; set; }
+
+
     }
 }

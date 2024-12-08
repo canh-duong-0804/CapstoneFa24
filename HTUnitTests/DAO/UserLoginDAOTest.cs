@@ -23,12 +23,12 @@ namespace HTUnitTests.DAO
         public async Task Login_Successful_With_ValidCredentials()
         {
             // Arrange: Thêm dữ liệu test
-            var password = "TestPassword";
+            var password = "Test_CorrectPassword";
             UserDAO.Instance.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
             var testMember = new BusinessObject.Models.Member
             {
-                PhoneNumber = "Test_123456789",
+                PhoneNumber = "Test_0949267534",
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Email = "Test@gmail.com",
@@ -41,7 +41,7 @@ namespace HTUnitTests.DAO
 
             var loginRequest = new BusinessObject.Models.Member
             {
-                PhoneNumber = "Test_123456789"
+                PhoneNumber = "Test_0949267534"
             };
 
             // Act
@@ -58,11 +58,11 @@ namespace HTUnitTests.DAO
             // Arrange: Dữ liệu test
             var loginRequest = new BusinessObject.Models.Member
             {
-                PhoneNumber = "Test_123456789"
+                PhoneNumber = "Test_WrongPhoneNumber"
             };
 
             // Act
-            var result = await UserDAO.Instance.Login(loginRequest, "WrongPassword");
+            var result = await UserDAO.Instance.Login(loginRequest, "Test_WrongPassword");
 
             // Assert
             Assert.Null(result);
@@ -73,11 +73,11 @@ namespace HTUnitTests.DAO
             // Arrange: User does not exist in the database
             var loginRequest = new BusinessObject.Models.Member
             {
-                PhoneNumber = "NonExistentUser"
+                PhoneNumber = "Test_WrongPhoneNumber"
             };
 
             // Act: Call the login method
-            var result = await UserDAO.Instance.Login(loginRequest, "SomePassword");
+            var result = await UserDAO.Instance.Login(loginRequest, "Test_Password");
 
             // Assert: Verify that login fails and returns null
             Assert.Null(result);
@@ -149,7 +149,37 @@ namespace HTUnitTests.DAO
             Assert.Null(result);
         }
 
+        [Fact]
+        public async Task Login_Fails_With_EmptyPhoneNumberAndPassword()
+        {
+            // Arrange: Add test data to the database
+            var password = "TestPassword";
+            UserDAO.Instance.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
+            var testMember = new BusinessObject.Models.Member
+            {
+                PhoneNumber = "Test_123456789",
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Email = "Test@gmail.com",
+                Dob = DateTime.Now,
+                Username = "TestUser"
+            };
+
+            _context.Members.Add(testMember);
+            await _context.SaveChangesAsync();
+
+            var loginRequest = new BusinessObject.Models.Member
+            {
+                PhoneNumber = string.Empty // Empty phone number
+            };
+
+            // Act: Call the login method with empty phone number
+            var result = await UserDAO.Instance.Login(loginRequest, "");
+
+            // Assert: Verify that login fails and returns null
+            Assert.Null(result);
+        }
 
 
     }
