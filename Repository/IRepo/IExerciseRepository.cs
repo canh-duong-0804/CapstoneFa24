@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Dto.CategoryExerice;
+using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
@@ -12,6 +13,7 @@ namespace Repository.IRepo
 {
     public interface IExerciseRepository
     {
+        Task<List<GetAllExerciseFilterForMember>> GetAllExercisesFilterAsync(string? search, int? isCardioFilter, int memberId);
 
         /*Task<IEnumerable<AllExerciseResponseDTO>> GetAllExercisesAsync(); 
         Task<ExerciseDetailDTO> GetExerciseByIdAsync(int id);

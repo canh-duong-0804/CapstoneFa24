@@ -1,5 +1,6 @@
 ﻿using AutoMapper.Execution;
 using BusinessObject.Dto.CategoryExerice;
+using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.Dto.Exericse;
 using BusinessObject.Dto.SearchFilter;
 using BusinessObject.Models;
@@ -33,7 +34,57 @@ namespace DataAccess
             }
         }
 
-        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter, int memberId)
+        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter,int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var query = context.Exercises.AsQueryable();
+                    var latestMeasurement = await context.BodyMeasureChanges
+                        .Where(b => b.MemberId == memberId)
+                        .OrderByDescending(b => b.DateChange.Value.Date)
+                        .ThenBy(b => b.DateChange.Value.TimeOfDay)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        query = query.Where((e => EF.Functions.Collate(e.ExerciseName.ToLower(), "Vietnamese_CI_AI").Contains(search.ToLower())));
+                    }
+
+
+                    if (isCardioFilter.HasValue)
+                    {
+                        query = query.Where(e => e.TypeExercise == isCardioFilter.Value);
+                    }
+
+                    var exercises = await query
+                        .Select(e => new GetAllExerciseForMember
+                        {
+                            ExerciseId = e.ExerciseId,
+
+                            ExerciseImage = e.ExerciseImage,
+                            ExerciseName = e.ExerciseName,
+                            Weight = latestMeasurement.Weight,
+                            CategoryExercise = e.TypeExercise == 1 ? "Cardio" :
+                                               e.TypeExercise == 2 ? "Kháng lực" :
+                                               e.TypeExercise == 3 ? "Các bài tập khác" : "khong xac dinh"
+
+                        })
+                        .ToListAsync();
+
+                    return exercises;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+
+        }
+
+        /*public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter, int memberId)
         {
             using var context = new HealthTrackingDBContext();
 
@@ -107,7 +158,7 @@ namespace DataAccess
             }).ToList();
 
             return result;
-        }
+        }*/
 
 
         public async Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId,int memberId)
@@ -285,6 +336,75 @@ namespace DataAccess
             {
                 throw new Exception("An unexpected error occurred while fetching exercise details.", ex);
             }
+        }
+
+        public async Task<List<GetAllExerciseFilterForMember>> GetAllExercisesFilterAsync(string? search, int? isCardioFilter, int memberId)
+        {
+            using var context = new HealthTrackingDBContext();
+
+            // Lấy cân nặng mới nhất của thành viên
+            var latestWeight = await context.BodyMeasureChanges
+                .Where(b => b.MemberId == memberId)
+                .OrderByDescending(b => b.DateChange)
+                .Select(b => b.Weight)
+                .FirstOrDefaultAsync();
+
+            // Xây dựng truy vấn cơ bản cho Exercise
+            var query = context.Exercises.AsQueryable();
+
+            // Áp dụng bộ lọc tìm kiếm
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(e => e.ExerciseName.ToLower().Contains(search.ToLower()));
+
+            // Áp dụng bộ lọc cardio
+            if (isCardioFilter.HasValue)
+                query = query.Where(e => e.TypeExercise == isCardioFilter.Value);
+
+            // Truy xuất danh sách bài tập
+            var exercises = await query.ToListAsync();
+
+            // Fetch the cardio and resistance details after retrieving the exercises
+            var cardioDetails = await context.ExerciseCardios
+                .Where(c => exercises.Select(e => e.ExerciseId).Contains(c.ExerciseId))
+                .ToListAsync();
+
+            var resistanceDetails = await context.ExerciseResistances
+                .Where(r => exercises.Select(e => e.ExerciseId).Contains(r.ExerciseId))
+                .ToListAsync();
+
+            // Map the data into the required DTO format
+            var result = exercises.Select(e => new GetAllExerciseFilterForMember
+            {
+                ExerciseId = e.ExerciseId,
+                Weight = latestWeight ?? 0,
+                MetValue = e.MetValue,
+                TypeExercise = e.TypeExercise,
+                ExerciseImage = e.ExerciseImage,
+                ExerciseName = e.ExerciseName,
+                CategoryExercise = e.TypeExercise == 1 ? "Cardio" :
+                                   e.TypeExercise == 2 ? "Kháng lực" :
+                                   e.TypeExercise == 3 ? "Các bài tập khác" : "không xác định",
+                
+                        CaloriesCadior1 = cardioDetails.FirstOrDefault(c => c.ExerciseId == e.ExerciseId)?.Calories1 ?? null,
+                        CaloriesCadior2 = cardioDetails.FirstOrDefault(c => c.ExerciseId == e.ExerciseId)?.Calories2 ?? null,
+                        CaloriesCadior3 = cardioDetails.FirstOrDefault(c => c.ExerciseId == e.ExerciseId)?.Calories3 ?? null,
+                        MinutesCadior1 = cardioDetails.FirstOrDefault(c => c.ExerciseId == e.ExerciseId)?.Minutes1 ?? null,
+                        MinutesCadior2 = cardioDetails.FirstOrDefault(c => c.ExerciseId == e.ExerciseId)?.Minutes2 ?? null,
+                        MinutesCadior3 = cardioDetails.FirstOrDefault(c => c.ExerciseId == e.ExerciseId)?.Minutes3 ?? null,
+                  
+                        MinutesResitance1 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Minutes1 ?? null,
+                        MinutesResitance2 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Minutes2 ?? null,
+                        MinutesResitance3 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Minutes3 ?? null,
+                        RepsResitance1 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Reps1 ?? null,
+                        RepsResitance2 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Reps2 ?? null,
+                        RepsResitance3 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Reps3 ?? null,
+                        SetsResitance1 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Sets1 ?? null,
+                        SetsResitance2 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Sets2 ?? null,
+                        SetsResitance3 = resistanceDetails.FirstOrDefault(r => r.ExerciseId == e.ExerciseId)?.Sets3 ?? null,
+                   
+            }).ToList();
+
+            return result;
         }
     }
 }

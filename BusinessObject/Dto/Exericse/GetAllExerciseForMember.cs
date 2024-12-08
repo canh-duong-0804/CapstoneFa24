@@ -15,8 +15,8 @@ namespace BusinessObject.Dto.Exericse
         public string? ExerciseImage { get; set; }
         public double? MetValue { get; set; }
         public string ExerciseName { get; set; } = null!;
-        public GetExerciseDetailOfResitanceResponseDTO getExerciseDetailOfResitanceResponseDTO { get; set; }
-        public GetExerciseDetailOfCardiorResponseDTO getExerciseDetailOfCardiorResponseDTO { get; set; }
+       /* public GetExerciseDetailOfResitanceResponseDTO getExerciseDetailOfResitanceResponseDTO { get; set; }
+        public GetExerciseDetailOfCardiorResponseDTO getExerciseDetailOfCardiorResponseDTO { get; set; }*/
 
 
     }
