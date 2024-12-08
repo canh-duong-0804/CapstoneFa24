@@ -25,7 +25,18 @@ namespace HealthTrackingManageAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllExercises([FromQuery] string? search, [FromQuery] int? isCardioFilter)
         {
-            var exercises = await _exerciseRepository.GetAllExercisesForMemberAsync(search, isCardioFilter);
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var exercises = await _exerciseRepository.GetAllExercisesForMemberAsync(search, isCardioFilter,memberId);
+            if(exercises == null) return NotFound();
             return Ok(exercises);
         }
 

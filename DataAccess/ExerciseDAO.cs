@@ -33,14 +33,18 @@ namespace DataAccess
             }
         }
 
-        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter)
+        public async Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter, int memberId)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
                     var query = context.Exercises.AsQueryable();
-
+                    var latestMeasurement = await context.BodyMeasureChanges
+                        .Where(b => b.MemberId == memberId)
+                        .OrderByDescending(b => b.DateChange.Value.Date)
+                        .ThenBy(b => b.DateChange.Value.TimeOfDay)
+                        .FirstOrDefaultAsync();
 
                     if (!string.IsNullOrEmpty(search))
                     {
@@ -57,7 +61,8 @@ namespace DataAccess
                         .Select(e => new GetAllExerciseForMember
                         {
                             ExerciseId = e.ExerciseId,
-
+                            Weight=latestMeasurement.Weight,
+                            MetValue=e.MetValue,
                             ExerciseImage = e.ExerciseImage,
                             ExerciseName = e.ExerciseName,
                             CategoryExercise = e.TypeExercise == 1 ? "Cardio" :

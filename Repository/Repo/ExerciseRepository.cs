@@ -36,7 +36,7 @@ namespace Repository.Repo
 
 
           public Task<UpdateExerciseRequestDTO> UpdateExerciseAsync(UpdateExerciseRequestDTO exercise) => ExerciseDAO.Instance.UpdateExerciseAsync(exercise);*/
-        public Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter) => ExerciseDAO.Instance.GetAllExercisesForMemberAsync(search,isCardioFilter);
+        public Task<List<GetAllExerciseForMember>> GetAllExercisesForMemberAsync(string? search, int? isCardioFilter, int memberId) => ExerciseDAO.Instance.GetAllExercisesForMemberAsync(search,isCardioFilter,memberId);
 
         public Task<GetExerciseDetailOfCardiorResponseDTO> GetExercisesCardioDetailForMemberrAsync(int exerciseId, int memberId) => ExerciseDAO.Instance.GetExercisesCardioDetailForMemberrAsync(exerciseId,memberId);
 
