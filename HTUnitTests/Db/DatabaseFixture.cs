@@ -27,6 +27,7 @@ namespace HTUnitTests.Db
         {
             // Xóa dữ liệu test trong bảng Members
             Context.Members.RemoveRange(Context.Members.Where(m => m.PhoneNumber.StartsWith("Test_")));
+            Context.Members.RemoveRange(Context.Members.Where(m => m.Email.StartsWith("Test_")));
             Context.SaveChanges();
             Context.Dispose();
         }

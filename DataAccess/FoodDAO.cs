@@ -470,7 +470,7 @@ namespace DataAccess
                     {
                         /*return await GetAllFoodsForMemberAsync();*/
 
-                        foods = await (from food in context.Foods
+                        /*foods = await (from food in context.Foods
                                        join diet in context.Diets on food.DietId equals diet.DietId
                                        where food.Status == true
                                        select new AllFoodForMemberResponseDTO
@@ -483,7 +483,7 @@ namespace DataAccess
                                            Carbs = food.Carbs,
                                            Protein = food.Protein,
                                            DietName = food.Diet.DietName,
-                                       }).ToListAsync();
+                                       }).ToListAsync();*/
                     }
 
                     return foods;

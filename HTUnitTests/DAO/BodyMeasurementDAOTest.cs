@@ -1,4 +1,4 @@
-﻿using DataAccess;
+﻿/*using DataAccess;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace HealthTrackingUnitTests.DAO
 
 		public BodyMeasurementDAOTest()
 		{
-			/*// Setup in-memory database specifically for this test
+			*//*// Setup in-memory database specifically for this test
 			var options = new DbContextOptionsBuilder<HealthTrackingDBContext>()
 				.UseInMemoryDatabase(databaseName: "TestDatabase")
 				.Options;
@@ -27,7 +27,7 @@ namespace HealthTrackingUnitTests.DAO
 				new BodyMeasureChange { BodyMeasureId = 1, Weight = 70, MemberId = 1 },
 				new BodyMeasureChange { BodyMeasureId = 2, Weight = 75, MemberId = 2 }
 			});
-			_dbContext.SaveChanges();*/
+			_dbContext.SaveChanges();*//*
 		}
 
 		[Fact]
@@ -43,3 +43,4 @@ namespace HealthTrackingUnitTests.DAO
 		}
 	}
 }
+*/

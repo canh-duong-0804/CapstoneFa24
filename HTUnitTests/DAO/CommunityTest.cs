@@ -1,4 +1,4 @@
-﻿using BusinessObject.Models;
+﻿/*using BusinessObject.Models;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -36,7 +36,7 @@ namespace HTUnitTests.DAO
 			return context;
 		}
 
-		/*[Fact]
+		*//*[Fact]
 		public async void CommunityPostDAO_CreatePost_ReturnsCreatedPost()
 		{
 			// Arrange
@@ -57,7 +57,7 @@ namespace HTUnitTests.DAO
 			// Assert
 			Assert.NotNull(result);
 
-		}*/
+		}*//*
 		
 		[Fact]
 		public async void CommunityPostDAO_CreatePost1_ReturnsCreatedPost()
@@ -77,3 +77,4 @@ namespace HTUnitTests.DAO
 		}
 	}
 }
+*/

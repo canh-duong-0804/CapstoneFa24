@@ -139,7 +139,8 @@ namespace HealthTrackingManageAPI.Controllers
         
         
         [HttpGet("get-list-box-food-for-staff")]
-        [RoleLessThanOrEqualTo(2)]
+        // [RoleLessThanOrEqualTo(2)]
+        [Authorize]
         public async Task<IActionResult> GetListBoxFoodForStaff()
         {
             var listBoxFood = await _foodRepository.GetListBoxFoodForStaffAsync();
