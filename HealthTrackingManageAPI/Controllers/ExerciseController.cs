@@ -39,6 +39,26 @@ namespace HealthTrackingManageAPI.Controllers
             if(exercises == null) return NotFound();
             return Ok(exercises);
         }
+        
+        
+        [HttpGet("Get-all-exercises-filter")]
+        [Authorize]
+        public async Task<IActionResult> GetAllExercisesFilter([FromQuery] string? search, [FromQuery] int? isCardioFilter)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null)
+            {
+                return Unauthorized("Member ID not found in claims.");
+            }
+
+            if (!int.TryParse(memberIdClaim, out int memberId))
+            {
+                return BadRequest("Invalid member ID.");
+            }
+            var exercises = await _exerciseRepository.GetAllExercisesFilterAsync(search, isCardioFilter,memberId);
+            if(exercises == null) return NotFound();
+            return Ok(exercises);
+        }
 
 
         [HttpGet("Get-exercise-cardio-detail-for-member/{ExerciseId}")]
