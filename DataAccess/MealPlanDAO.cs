@@ -358,11 +358,12 @@ namespace DataAccess
                         foodDiary = await context.FoodDiaries
                         .FirstOrDefaultAsync(fd => fd.Date == addMealPlanDetail.selectDate && fd.MemberId == memberId);
                     }
-
-
+                    var mealPlan = await context.MealPlans.Where(mp => mp.MealPlanId == addMealPlanDetail.MealPlanId).FirstOrDefaultAsync();
+                    if(mealPlan == null) return false;
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(mp => mp.MealPlanId == addMealPlanDetail.MealPlanId && mp.Day == addMealPlanDetail.day)
                         .ToListAsync();
+                    
 
 
 
@@ -420,7 +421,8 @@ namespace DataAccess
                         foodDiary = await context.FoodDiaries
                         .FirstOrDefaultAsync(fd => fd.Date == addMealPlanDetail.selectDateToAdd && fd.MemberId == memberId);
                     }
-
+                    var mealPlan = await context.MealPlans.Where(mp => mp.MealPlanId == addMealPlanDetail.MealPlanId).FirstOrDefaultAsync();
+                    if (mealPlan == null) return false;
 
                     var mealPlanDetails = await context.MealPlanDetails
                         .Where(mp => mp.MealPlanId == addMealPlanDetail.MealPlanId

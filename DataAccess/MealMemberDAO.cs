@@ -76,7 +76,7 @@ namespace DataAccess
 
 
 
-        public async Task DeleteMealMemberDetailAsync(int detailId)
+        public async Task<bool> DeleteMealMemberDetailAsync(int detailId)
         {
             try
             {
@@ -87,7 +87,9 @@ namespace DataAccess
                     {
                         context.MealMemberDetails.Remove(detail);
                         await context.SaveChangesAsync();
+                        return true ;
                     }
+                    return false ;
                 }
             }
 

@@ -49,6 +49,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
+                return null;
                 throw new Exception($"Error creating food: {ex.Message}", ex);
             }
         }
@@ -81,7 +82,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int currentPage,int pageSize)
+        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int currentPage, int pageSize)
         {
             try
             {
@@ -142,11 +143,11 @@ namespace DataAccess
                         throw new Exception($"Food with ID {id} not found or inactive.");
                     }
 
-                    
+
                     string portion = food.Portion;
                     string serving = portion;
 
-                    
+
                     if (!string.IsNullOrEmpty(portion))
                     {
                         int startIndex = portion.IndexOf("(");
@@ -249,6 +250,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
+                return null;
                 throw new Exception($"Error updating food: {ex.Message}", ex);
             }
         }
@@ -314,7 +316,7 @@ namespace DataAccess
         }
 
 
-        
+
 
 
         public async Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int FoodId, DateTime SelectDate, int memberId)
@@ -405,7 +407,7 @@ namespace DataAccess
                                        {
                                            Value = food.FoodId,
                                            Label = food.FoodName,
-                                           Calories=food.Calories,
+                                           Calories = food.Calories,
                                            Portion = food.Portion,
 
 
@@ -468,7 +470,7 @@ namespace DataAccess
                     {
                         /*return await GetAllFoodsForMemberAsync();*/
 
-                        foods = await(from food in context.Foods
+                        /*foods = await (from food in context.Foods
                                        join diet in context.Diets on food.DietId equals diet.DietId
                                        where food.Status == true
                                        select new AllFoodForMemberResponseDTO
@@ -481,7 +483,7 @@ namespace DataAccess
                                            Carbs = food.Carbs,
                                            Protein = food.Protein,
                                            DietName = food.Diet.DietName,
-                                       }).ToListAsync();
+                                       }).ToListAsync();*/
                     }
 
                     return foods;
@@ -505,7 +507,9 @@ namespace DataAccess
 
                 if (mealMember == null)
                 {
+                    return false;
                     throw new Exception("MealMember not found.");
+                   
                 }
 
 
@@ -518,6 +522,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
+                return false;
                 throw new Exception($"Error uploading image for meal member: {ex.Message}", ex);
             }
         }

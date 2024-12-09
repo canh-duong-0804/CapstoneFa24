@@ -58,7 +58,7 @@ namespace HealthTrackingManageAPI.Controllers
 			return Ok(bodyMeasurement);
 		}
 
-		[Authorize]
+		/*[Authorize]
 		[HttpGet("member/{memberId}")]
 		public async Task<IActionResult> GetBodyMeasurementsByMemberId(int memberId)
 		{
@@ -109,7 +109,7 @@ namespace HealthTrackingManageAPI.Controllers
 			await _bodyMeasurementRepo.UpdateMeasurementAsync(bodyMeasurement);
 
 			return Ok(bodyMeasurement);
-		}
+		}*/
 
 	}
 }

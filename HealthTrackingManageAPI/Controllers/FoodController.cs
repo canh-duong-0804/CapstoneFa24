@@ -111,6 +111,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("get-all-foods-for-member")]
+        [Authorize]
        
         public async Task<IActionResult> GetAllFoodsForMember()
         {
@@ -138,6 +139,8 @@ namespace HealthTrackingManageAPI.Controllers
         
         
         [HttpGet("get-list-box-food-for-staff")]
+        // [RoleLessThanOrEqualTo(2)]
+        [Authorize]
         public async Task<IActionResult> GetListBoxFoodForStaff()
         {
             var listBoxFood = await _foodRepository.GetListBoxFoodForStaffAsync();
@@ -184,13 +187,15 @@ namespace HealthTrackingManageAPI.Controllers
 
 
             var createdFood = await _foodRepository.CreateFoodAsync(foodModel);
+
+            if (createdFood == null) return BadRequest();
             // return CreatedAtAction(nameof(GetAllFoodsForStaff), new { id = createdFood.FoodId }, createdFood);
             return Ok(createdFood.FoodId);
         }
-
-        [Authorize]
-        [HttpPut("upload-image-meal-plan")]
-        public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile, [FromForm] int FoodId)
+        //fix
+        [RoleLessThanOrEqualTo(2)]
+        [HttpPut("upload-image-food")]
+        public async Task<IActionResult> UploadImageFood(IFormFile? imageFile, [FromForm] int FoodId)
         {
             if (imageFile != null && imageFile.Length > 0)
             {
@@ -237,8 +242,8 @@ namespace HealthTrackingManageAPI.Controllers
             }
 
 
-            await _foodRepository.UpdateFoodAsync(foodModel);
-
+          var success=  await _foodRepository.UpdateFoodAsync(foodModel);
+            if(success==null)return NotFound();
             return NoContent();
         }
 
@@ -260,9 +265,11 @@ namespace HealthTrackingManageAPI.Controllers
                 return NotFound("Food item not found or already deleted."); 
             }
         }
+
+        //rename
         [HttpGet("get-food-for-staff-by-id/{id}")]
         [RoleLessThanOrEqualTo(2)]
-        public async Task<IActionResult> GetFoodById(int id)
+        public async Task<IActionResult> GetFoodForStaffByIdAsync(int id)
         {
             var food = await _foodRepository.GetFoodForStaffByIdAsync(id);
 

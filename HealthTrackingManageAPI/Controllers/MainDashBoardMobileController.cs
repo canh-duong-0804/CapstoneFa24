@@ -69,6 +69,8 @@ namespace HealthTrackingManageAPI.Controllers
                 DiaryFoodId=mainDashBoardInfo.DiaryFoodId,
                 ExerciseLevel=mainDashBoardInfo.ExerciseLevel,
                 CaloriesBurn = mainDashBoardInfo.CaloriesBurn,
+
+                TotalDuration = mainDashBoardInfo.TotalDuration,
                 // Dữ liệu từ infoCalorinesMember
                 SelectDate = mainDashBoardInfo.DateMainDashBoard,
                 CaloriesIntake = infoCalorinesMember.Calories,
@@ -78,6 +80,7 @@ namespace HealthTrackingManageAPI.Controllers
                 CarbsIntake = infoCalorinesMember.Carbs,
                 streakNumberFood = infoCalorinesMember.streakNumberFood,
                 streakNumberExercise = infoCalorinesMember.streakNumberExercise,
+                
                
 
             };

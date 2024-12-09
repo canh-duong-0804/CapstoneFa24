@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using BusinessObject;
 using BusinessObject.Dto.CommunityPost;
 using BusinessObject.Models;
@@ -196,3 +196,4 @@ namespace HealthTrackingManageAPI.Controllers
 		}
 	}
 }
+*/
