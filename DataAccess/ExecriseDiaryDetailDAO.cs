@@ -332,15 +332,15 @@ namespace DataAccess
                     context.ExerciseDiaryDetails.RemoveRange(existingDetails);
 
                     // Add the new exercise items to the exercise diary.
-                    foreach (var exerciseItem in request.ListFoodIdToAdd)
+                    foreach (var exerciseItem in request.ListExerciseIdToAdd)
                     {
                         var newDetail = new ExerciseDiaryDetail
                         {
                             ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
                             ExerciseId = exerciseItem.ExerciseId,
-                            Duration = exerciseItem.DurationInMinutes,
+                            Duration = request.DurationInMinutes,
                             IsPractice = exerciseItem.IsPractice,
-                            CaloriesBurned = exerciseItem.CaloriesBurned
+                            CaloriesBurned = request.CaloriesBurned
                         };
                         await context.ExerciseDiaryDetails.AddAsync(newDetail);
                     }

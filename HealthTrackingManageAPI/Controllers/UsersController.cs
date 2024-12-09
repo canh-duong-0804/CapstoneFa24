@@ -43,7 +43,6 @@ namespace HealthTrackingManageAPI.Controllers
             _cloudinaryService = cloudinaryService; 
         }
 
-        
 
         /* [HttpPost("register")]
          public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO member)
