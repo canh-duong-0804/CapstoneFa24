@@ -354,6 +354,7 @@ namespace DataAccess
                         .ToListAsync();
 
                     exerciseDiary.TotalCaloriesBurned = Math.Round((double)exerciseDiaryDetails.Sum(d => d.CaloriesBurned), 1);
+                    exerciseDiary.TotalDuration = (int?)Math.Round((double)exerciseDiaryDetails.Sum(d => d.Duration), 1);
 
                     // Save the updated exercise diary.
                     await context.SaveChangesAsync();
