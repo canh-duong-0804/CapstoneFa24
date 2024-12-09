@@ -338,9 +338,9 @@ namespace DataAccess
                         {
                             ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
                             ExerciseId = exerciseItem.ExerciseId,
-                            Duration = request.DurationInMinutes,
+                            Duration = exerciseItem.DurationInMinutes,
                             IsPractice = exerciseItem.IsPractice,
-                            CaloriesBurned = request.CaloriesBurned
+                            CaloriesBurned = exerciseItem.CaloriesBurned
                         };
                         await context.ExerciseDiaryDetails.AddAsync(newDetail);
                     }
@@ -424,7 +424,7 @@ namespace DataAccess
                     {
                         //ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
                         selectDate = exerciseDiary.Date.Value.Date,
-                        ListFoodIdToAdd = exerciseDiaryDetails
+                        ListExerciseIdToAdd = exerciseDiaryDetails
                     };
 
                     return result;

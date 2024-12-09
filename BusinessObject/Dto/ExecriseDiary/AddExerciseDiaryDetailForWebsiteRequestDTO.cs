@@ -12,10 +12,6 @@ namespace BusinessObject.Dto.ExecriseDiary
        // public int ExerciseDiaryId { get; set; }
 
         public DateTime selectDate { get; set; }
-        public int? DurationInMinutes { get; set; }
-     
-
-        public float CaloriesBurned { get; set; }
         public List<ExerciseDiaryDetailForWebisteRequestDTO> ListExerciseIdToAdd { get; set; } = new List<ExerciseDiaryDetailForWebisteRequestDTO>();
 
     }
@@ -23,10 +19,10 @@ namespace BusinessObject.Dto.ExecriseDiary
     public class ExerciseDiaryDetailForWebisteRequestDTO
     {
         public int ExerciseId { get; set; }
-        //public int? DurationInMinutes { get; set; }
+        public int? DurationInMinutes { get; set; }
         public bool IsPractice { get; set; }
 
-        //public float CaloriesBurned { get; set; }
+        public float CaloriesBurned { get; set; }
 
     }
 }
