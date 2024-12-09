@@ -125,32 +125,44 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
+                    
+                    var existingFoodDetail = await context.FoodDiaryDetails
+                        .FirstOrDefaultAsync(fdd => fdd.DiaryId == foodDetails.DiaryId && fdd.FoodId == foodDetails.FoodId);
 
-
-                    var foodDiaryDetail = new FoodDiaryDetail
+                    if (existingFoodDetail != null)
                     {
-                        DiaryId = foodDetails.DiaryId,
-                        FoodId = foodDetails.FoodId,
-                        Quantity = foodDetails.Quantity,
-                        MealType = foodDetails.MealType,
+                       
+                        existingFoodDetail.Quantity += 1;
+                        context.FoodDiaryDetails.Update(existingFoodDetail);  // Update the record
+                    }
+                    else
+                    {
+                       
+                        var foodDiaryDetail = new FoodDiaryDetail
+                        {
+                            DiaryId = foodDetails.DiaryId,
+                            FoodId = foodDetails.FoodId,
+                            Quantity = foodDetails.Quantity,
+                            MealType = foodDetails.MealType,
+                        };
+                        await context.FoodDiaryDetails.AddAsync(foodDiaryDetail);
+                    }
 
-                    };
-                    await context.FoodDiaryDetails.AddAsync(foodDiaryDetail);
+                   
                     await context.SaveChangesAsync();
 
-
+                    
                     var foodDiaryDetails = await context.FoodDiaryDetails
-                                                        .Include(fdd => fdd.Food)
-                                                        .Where(fdd => fdd.DiaryId == foodDetails.DiaryId)
-                                                        .ToListAsync();
-
+                        .Include(fdd => fdd.Food)
+                        .Where(fdd => fdd.DiaryId == foodDetails.DiaryId)
+                        .ToListAsync();
 
                     double totalCalories = foodDiaryDetails.Sum(detail => detail.Food.Calories * detail.Quantity);
                     double totalProtein = foodDiaryDetails.Sum(detail => detail.Food.Protein * detail.Quantity);
                     double totalFat = foodDiaryDetails.Sum(detail => detail.Food.Fat * detail.Quantity);
                     double totalCarbs = foodDiaryDetails.Sum(detail => detail.Food.Carbs * detail.Quantity);
 
-
+                    
                     var foodDiary = await context.FoodDiaries.FirstOrDefaultAsync(fd => fd.DiaryId == foodDetails.DiaryId);
                     if (foodDiary != null)
                     {
@@ -170,6 +182,7 @@ namespace DataAccess
                 return false;
             }
         }
+
 
         public async Task<bool> DeleteFoodListToDiaryAsync(int DiaryDetailId)
         {
