@@ -22,6 +22,7 @@ namespace HealthTrackingManageAPI.Controllers
             _exercisePlanRepo = exercisePlanRepo;
         }
         [HttpGet("get-all-exercise-plans")]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllExercisePlans([FromQuery] int page)
         {
             try
@@ -48,7 +49,7 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
         [HttpPost("create-exercise-plan")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [Authorize]
         public async Task<IActionResult> CreateExercisePlan([FromBody] CreateExercisePlanRequestDTO request)
         {
@@ -75,7 +76,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPut("update-exercise-plan")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [Authorize]
         public async Task<IActionResult> UpdateExercisePlan([FromBody] UpdateExercisePlanRequestDTO request)
         {
@@ -105,7 +106,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("get-exercise-plan-detail")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [Authorize]
         public async Task<IActionResult> GetExercisePlanDetail([FromQuery] int exercisePlanId, [FromQuery] int day)
         {
@@ -135,7 +136,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpDelete("delete-exercise-plan/{planId}")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [Authorize]
         public async Task<IActionResult> DeleteExercisePlan(int planId)
         {
@@ -147,7 +148,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPost("create-exercise-plan-detail")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [Authorize]
         public async Task<IActionResult> CreateExercisePlanDetail([FromBody] CreateExercisePlanDetailRequestDTO request)
         {
@@ -187,7 +188,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         
         [HttpDelete("delete-exercise-plan-detail/{detailId}")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [Authorize]
         public async Task<IActionResult> DeleteExercisePlanDetail(int detailId)
         {
