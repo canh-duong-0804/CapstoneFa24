@@ -239,6 +239,7 @@ namespace DataAccess
 
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
+                    .Where(p=>p.Status==true)
                     .Select(ep => new ExercisePlanDTO
                     {
                         ExercisePlanId = ep.ExercisePlanId,
