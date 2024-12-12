@@ -248,6 +248,26 @@ namespace HealthTrackingManageAPI.Controllers
 
             return Ok();
         }
+        
+        
+        [HttpPost("DeleteExerciseDiaryDetailWebsite")]
+        [Authorize]
+        public async Task<IActionResult> DeleteExerciseDiaryDetailWebsite(DateTime selectDate)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                return Unauthorized("Member ID not found in claims.");
+           
+
+            var result = await _exerciseDiaryDetailRepo.DeleteExerciseDiaryDetailWebsite(selectDate, memberId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
 
         [Authorize]
         [HttpGet("Get-Exercise-dairy-detail-website")]

@@ -30,5 +30,6 @@ namespace Repository.IRepo
         Task<bool> addFoodListToDiaryForWebsite(AddFoodDiaryDetailForWebsiteRequestDTO request, int memberId);
         Task<AddFoodDiaryDetailForWebsiteRequestDTO> GetFoodDairyDetailWebsite(int memberId, DateTime selectDate, int mealtype);
         Task<List<FoodDiaryWithMealTypeDTO>> GetAllDiariesForMonthWithMealTypesAsync(DateTime date, int memberId);
+        Task<bool> DeleteFoodDiaryWebsite(DateTime selectDate, int memberId1, int mealtype);
     }
 }

@@ -93,6 +93,25 @@ namespace HealthTrackingManageAPI.Controllers
             return Ok();
         }
 
+        [HttpDelete("Delete-food-diary-website")]
+        [Authorize]
+        public async Task<IActionResult> DeleteFoodDiaryWebsite(DateTime selectDate,int mealtype)
+        {
+            var memberIdClaim = User.FindFirstValue("Id");
+            if (memberIdClaim == null || !int.TryParse(memberIdClaim, out int memberId))
+                return Unauthorized("Member ID not found in claims.");
+            
+
+            var result = await _foodDiaryRepository.DeleteFoodDiaryWebsite(selectDate, memberId,mealtype);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
         [Authorize]
         [HttpGet("Get-Food-dairy-detail-website")]
         public async Task<IActionResult> GetFoodDairyDetailWebsite(DateTime selectDate,int mealtype)

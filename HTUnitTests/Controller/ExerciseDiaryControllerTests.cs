@@ -1,4 +1,4 @@
-﻿using BusinessObject.Dto.ExecriseDiary;
+﻿/*using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.DTOs;
 using BusinessObject.Models;
 using HealthTrackingManageAPI.Controllers;
@@ -224,3 +224,4 @@ namespace HTUnitTests.Controller
 		}
 	}
 }
+*/

@@ -161,7 +161,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
                     var staffAccounts = await context.staffs
-                        .Where(s => s.Status == true)
+                        .Where(s => s.Status == true &&s.Role>1)
                         .OrderBy(s => s.StaffId)
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)

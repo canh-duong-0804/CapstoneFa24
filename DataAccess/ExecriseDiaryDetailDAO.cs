@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace DataAccess
 {
@@ -332,7 +333,7 @@ namespace DataAccess
                     context.ExerciseDiaryDetails.RemoveRange(existingDetails);
 
                     // Add the new exercise items to the exercise diary.
-                    foreach (var exerciseItem in request.ListFoodIdToAdd)
+                    foreach (var exerciseItem in request.ListExerciseIdToAdd)
                     {
                         var newDetail = new ExerciseDiaryDetail
                         {
@@ -354,6 +355,7 @@ namespace DataAccess
                         .ToListAsync();
 
                     exerciseDiary.TotalCaloriesBurned = Math.Round((double)exerciseDiaryDetails.Sum(d => d.CaloriesBurned), 1);
+                    exerciseDiary.TotalDuration = (int?)Math.Round((double)exerciseDiaryDetails.Sum(d => d.Duration), 1);
 
                     // Save the updated exercise diary.
                     await context.SaveChangesAsync();
@@ -424,7 +426,7 @@ namespace DataAccess
                     {
                         //ExerciseDiaryId = exerciseDiary.ExerciseDiaryId,
                         selectDate = exerciseDiary.Date.Value.Date,
-                        ListFoodIdToAdd = exerciseDiaryDetails
+                        ListExerciseIdToAdd = exerciseDiaryDetails
                     };
 
                     return result;
@@ -442,20 +444,51 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var exercises = await (from exercise in context.Exercises
-                                           where exercise.Status == true
-                                           select new ExerciseListBoxResponseDTO
-                                           {
-                                               Value = exercise.ExerciseId,
-                                               Label = exercise.ExerciseName,
-                                               ExerciseName=exercise.ExerciseName,
-                                               MetValue = exercise.MetValue,
-                                               TypeExercise = exercise.TypeExercise,
-                                               NameTypeExercise = exercise.TypeExercise == 1 ? "Cardio" :
-                                                                  exercise.TypeExercise == 2 ? "Kháng lực" :
-                                                                  exercise.TypeExercise == 3 ? "Các bài tập khác" :
-                                                                  "Unknown"
-                                           }).ToListAsync();
+                    // Fetch the exercises that are active
+                    var exerciseslist = await context.Exercises
+                        .Where(e => e.Status == true)
+                        .ToListAsync();
+
+                    // Create dictionaries for quick lookup of cardio and resistance details by ExerciseId
+                    var cardioDetails = await context.ExerciseCardios
+                        .Where(c => exerciseslist.Select(e => e.ExerciseId).Contains(c.ExerciseId))
+                        .ToDictionaryAsync(c => c.ExerciseId);
+
+                    var resistanceDetails = await context.ExerciseResistances
+                        .Where(r => exerciseslist.Select(e => e.ExerciseId).Contains(r.ExerciseId))
+                        .ToDictionaryAsync(r => r.ExerciseId);
+
+                    // Project exercises to DTOs
+                    var exercises = exerciseslist.Select(exercise => new ExerciseListBoxResponseDTO
+                    {
+                        Value = exercise.ExerciseId,
+                        Label = exercise.ExerciseName,
+                        ExerciseName = exercise.ExerciseName,
+                        MetValue = exercise.MetValue,
+                        TypeExercise = exercise.TypeExercise,
+                        NameTypeExercise = exercise.TypeExercise == 1 ? "Cardio" :
+                                           exercise.TypeExercise == 2 ? "Kháng lực" :
+                                           exercise.TypeExercise == 3 ? "Các bài tập khác" :
+                                           "Unknown",
+
+                        // Using dictionary lookups to fetch cardio and resistance details
+                        CaloriesCadior1 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Calories1 : null,
+                        CaloriesCadior2 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Calories2 : null,
+                        CaloriesCadior3 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Calories3 : null,
+                        MinutesCadior1 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Minutes1 : null,
+                        MinutesCadior2 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Minutes2 : null,
+                        MinutesCadior3 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Minutes3 : null,
+
+                        MinutesResitance1 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Minutes1 : null,
+                        MinutesResitance2 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Minutes2 : null,
+                        MinutesResitance3 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Minutes3 : null,
+                        RepsResitance1 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Reps1 : null,
+                        RepsResitance2 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Reps2 : null,
+                        RepsResitance3 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Reps3 : null,
+                        SetsResitance1 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Sets1 : null,
+                        SetsResitance2 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Sets2 : null,
+                        SetsResitance3 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Sets3 : null,
+                    }).ToList();
 
                     return exercises;
                 }
@@ -466,6 +499,52 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> DeleteExerciseDiaryDetailWebsite(DateTime selectDate, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    // Retrieve the exercise diary for the specified member and date.
+                    var exerciseDiary = await context.ExerciseDiaries
+                        .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == selectDate.Date);
 
+                    if (exerciseDiary == null)
+                    {
+                        // If no exercise diary exists, create a new one.
+                        await GetOrCreateExerciseDiaryAsync(memberId, selectDate.Date);
+                        exerciseDiary = await context.ExerciseDiaries
+                            .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == selectDate.Date);
+                    }
+
+                    // Delete all existing exercise diary details for the given exercise diary.
+                    var existingDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => edd.ExerciseDiaryId == exerciseDiary.ExerciseDiaryId)
+                        .ToListAsync();
+
+                    context.ExerciseDiaryDetails.RemoveRange(existingDetails);
+
+                    
+                    await context.SaveChangesAsync();
+
+                    // Recalculate the exercise diary's total calories burned based on the new details.
+                    var exerciseDiaryDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => edd.ExerciseDiaryId == exerciseDiary.ExerciseDiaryId)
+                        .ToListAsync();
+
+                    exerciseDiary.TotalCaloriesBurned = Math.Round((double)exerciseDiaryDetails.Sum(d => d.CaloriesBurned), 1);
+                    exerciseDiary.TotalDuration = (int?)Math.Round((double)exerciseDiaryDetails.Sum(d => d.Duration), 1);
+
+                    // Save the updated exercise diary.
+                    await context.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding exercise list to diary: {ex.Message}", ex);
+            }
+        }
     }
 }

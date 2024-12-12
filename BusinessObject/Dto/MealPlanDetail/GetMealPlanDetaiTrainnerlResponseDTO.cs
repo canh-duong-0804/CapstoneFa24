@@ -48,6 +48,7 @@ namespace BusinessObject.Dto.MealPlanDetail
 
     }public class GetFoodInMealPlanSnackResponseDTO
     {
+        public string Portion { get; set; } = null!;
         public int FoodId { get; set; }
         public string FoodName { get; set; }
         public int Quantity { get; set; }
@@ -64,6 +65,7 @@ namespace BusinessObject.Dto.MealPlanDetail
     }
     public class GetFoodInMealPlanLunchResponseDTO
     {
+        public string Portion { get; set; } = null!;
         public int FoodId { get; set; }
         public string FoodName { get; set; }
         public int Quantity { get; set; }
@@ -80,6 +82,7 @@ namespace BusinessObject.Dto.MealPlanDetail
     }
     public class GetFoodInMealPlanDinnerResponseDTO
     {
+        public string Portion { get; set; } = null!;
         public int FoodId { get; set; }
         public string FoodName { get; set; }
         public int Quantity { get; set; }

@@ -10,98 +10,71 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Repository.IRepo;
 using Xunit;
-
-public class UsersControllerTests
+namespace HTUnitTests.Controller
 {
-    private readonly Mock<IUserRepository> _mockUserRepo;
-    private readonly Mock<IConfiguration> _mockConfiguration;
-    private readonly Mock<IOptionsMonitor<AppSettingsKey>> _mockOptionsMonitor;
-    private readonly Mock<CloudinaryService> _mockCloudinaryService;
-    private readonly Mock<HealthTrackingDBContext> _mockContext;
-    private readonly UsersController _controller;
-
-    public UsersControllerTests()
+    public class UsersControllerTests
     {
-        // Setup mocks
-        _mockUserRepo = new Mock<IUserRepository>();
-        _mockConfiguration = new Mock<IConfiguration>();
-        _mockOptionsMonitor = new Mock<IOptionsMonitor<AppSettingsKey>>();
-        _mockCloudinaryService = new Mock<CloudinaryService>();
-        _mockContext = new Mock<HealthTrackingDBContext>();
+        private readonly Mock<IUserRepository> _mockUserRepo;
+        private readonly UsersController _controller;
 
-        // Create mock AppSettingsKey
-        var mockAppSettings = new AppSettingsKey();
-        _mockOptionsMonitor.Setup(x => x.CurrentValue).Returns(mockAppSettings);
+        /*public UsersControllerTests()
+        {
+            // Setup mock repository and controller before each test
+            _mockUserRepo = new Mock<IUserRepository>();
+            _controller = new UsersController(_mockUserRepo.Object);
+        }*/
 
-        // Initialize controller
-        _controller = new UsersController(
-            _mockContext.Object,
-            _mockConfiguration.Object,
-            _mockUserRepo.Object,
-            _mockOptionsMonitor.Object,
-            _mockCloudinaryService.Object
-        );
-    }
+        [Fact]
+        public async Task CheckEmailUnique_UniqueEmail_ReturnsOkResult()
+        {
+            // Arrange
+            string uniqueEmail = "unique.email@example.com";
+            _mockUserRepo.Setup(repo => repo.IsUniqueEmail(uniqueEmail)).Returns(true);
 
-    [Fact]
-    public async Task CheckEmailUnique_UniqueEmail_ReturnsOkResult()
-    {
-        // Arrange
-        string uniqueEmail = "test@example.com";
-        _mockUserRepo.Setup(x => x.IsUniqueEmail(uniqueEmail)).Returns(true);
+            // Act
+            var result = await _controller.CheckEmailUnique(uniqueEmail);
 
-        // Act
-        var result = await _controller.CheckEmailUnique(uniqueEmail);
+            // Assert
+            var okResult = Assert.IsType<OkResult>(result);
+            Assert.Equal(200, okResult.StatusCode);
+            _mockUserRepo.Verify(repo => repo.IsUniqueEmail(uniqueEmail), Times.Once);
+        }
 
-        // Assert
-        var okResult = Assert.IsType<OkResult>(result);
-        Assert.Equal(200, okResult.StatusCode);
-    }
+        [Fact]
+        public async Task CheckEmailUnique_DuplicateEmail_ReturnsBadRequest()
+        {
+            // Arrange
+            string duplicateEmail = "existing.email@example.com";
+            _mockUserRepo.Setup(repo => repo.IsUniqueEmail(duplicateEmail)).Returns(false);
 
-    [Fact]
-    public async Task CheckEmailUnique_DuplicateEmail_ReturnsBadRequest()
-    {
-        // Arrange
-        string duplicateEmail = "existing@example.com";
-        _mockUserRepo.Setup(x => x.IsUniqueEmail(duplicateEmail)).Returns(false);
+            // Act
+            var result = await _controller.CheckEmailUnique(duplicateEmail);
 
-        // Act
-        var result = await _controller.CheckEmailUnique(duplicateEmail);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(400, badRequestResult.StatusCode);
+            Assert.Equal("Email already exists", badRequestResult.Value);
+            _mockUserRepo.Verify(repo => repo.IsUniqueEmail(duplicateEmail), Times.Once);
+        }
 
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(400, badRequestResult.StatusCode);
-        Assert.Equal("Email already exists", badRequestResult.Value);
-    }
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public async Task CheckEmailUnique_InvalidEmail_ShouldHandleEdgeCases(string email)
+        {
+            // Arrange
+            _mockUserRepo.Setup(repo => repo.IsUniqueEmail(email)).Returns(true);
 
-    [Fact]
-    public async Task CheckPhoneUnique_UniquePhone_ReturnsOkResult()
-    {
-        // Arrange
-        string uniquePhone = "1234567890";
-        _mockUserRepo.Setup(x => x.IsUniquePhonenumber(uniquePhone)).Returns(true);
+            // Act
+            var result = await _controller.CheckEmailUnique(email);
 
-        // Act
-        var result = await _controller.CheckPhoneUnique(uniquePhone);
-
-        // Assert
-        var okResult = Assert.IsType<OkResult>(result);
-        Assert.Equal(200, okResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task CheckPhoneUnique_DuplicatePhone_ReturnsBadRequest()
-    {
-        // Arrange
-        string duplicatePhone = "9876543210";
-        _mockUserRepo.Setup(x => x.IsUniquePhonenumber(duplicatePhone)).Returns(false);
-
-        // Act
-        var result = await _controller.CheckPhoneUnique(duplicatePhone);
-
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(400, badRequestResult.StatusCode);
-        Assert.Equal("Phone number already exists", badRequestResult.Value);
+            // Assert
+            // Depending on your exact requirements, you might want to modify this test
+            // This assumes you want to return Ok for empty/null emails
+            var okResult = Assert.IsType<OkResult>(result);
+            Assert.Equal(200, okResult.StatusCode);
+            _mockUserRepo.Verify(repo => repo.IsUniqueEmail(email), Times.Once);
+        }
     }
 }

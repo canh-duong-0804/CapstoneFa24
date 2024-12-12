@@ -1,4 +1,4 @@
-﻿using AutoMapper.Execution;
+﻿/*using AutoMapper.Execution;
 using BusinessObject;
 using BusinessObject.Dto.Blog;
 using BusinessObject.Dto.SearchFilter;
@@ -149,3 +149,4 @@ namespace HealthTrackingManageAPI.Controllers
     }
 }
 
+*/

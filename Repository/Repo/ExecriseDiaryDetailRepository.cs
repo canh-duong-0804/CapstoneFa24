@@ -36,8 +36,8 @@ namespace Repository.Repo
         public Task<AddExerciseDiaryDetailForWebsiteRequestDTO> GetExerciseDairyDetailWebsite(int memberId, DateTime selectDate) => ExecriseDiaryDetailDAO.Instance.GetExerciseDairyDetailWebsite(memberId, selectDate);
 
         public Task<List<ExerciseListBoxResponseDTO>> GetListBoxExerciseForStaffAsync() => ExecriseDiaryDetailDAO.Instance.GetListBoxExerciseForStaffAsync();
+
+        public Task<bool> DeleteExerciseDiaryDetailWebsite(DateTime selectDate, int memberId) => ExecriseDiaryDetailDAO.Instance.DeleteExerciseDiaryDetailWebsite(selectDate, memberId);
         
     }
-
-
 }

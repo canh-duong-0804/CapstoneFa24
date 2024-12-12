@@ -43,7 +43,6 @@ namespace HealthTrackingManageAPI.Controllers
             _cloudinaryService = cloudinaryService; 
         }
 
-        
 
         /* [HttpPost("register")]
          public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO member)
@@ -213,7 +212,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             if (user == null)
             {
-                return Unauthorized("Invalid username or password");
+                return Unauthorized();
             }
 
             

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace DataAccess
 {
@@ -126,24 +127,36 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
+                    var existingFoodDetail = await context.FoodDiaryDetails
+                        .FirstOrDefaultAsync(fdd => fdd.DiaryId == foodDetails.DiaryId && fdd.FoodId == foodDetails.FoodId);
 
-                    var foodDiaryDetail = new FoodDiaryDetail
+                    if (existingFoodDetail != null)
                     {
-                        DiaryId = foodDetails.DiaryId,
-                        FoodId = foodDetails.FoodId,
-                        Quantity = foodDetails.Quantity,
-                        MealType = foodDetails.MealType,
 
-                    };
-                    await context.FoodDiaryDetails.AddAsync(foodDiaryDetail);
+                        existingFoodDetail.Quantity += 1;
+                        context.FoodDiaryDetails.Update(existingFoodDetail);  // Update the record
+                    }
+                    else
+                    {
+
+                        var foodDiaryDetail = new FoodDiaryDetail
+                        {
+                            DiaryId = foodDetails.DiaryId,
+                            FoodId = foodDetails.FoodId,
+                            Quantity = foodDetails.Quantity,
+                            MealType = foodDetails.MealType,
+                        };
+                        await context.FoodDiaryDetails.AddAsync(foodDiaryDetail);
+                    }
+
+
                     await context.SaveChangesAsync();
 
 
                     var foodDiaryDetails = await context.FoodDiaryDetails
-                                                        .Include(fdd => fdd.Food)
-                                                        .Where(fdd => fdd.DiaryId == foodDetails.DiaryId)
-                                                        .ToListAsync();
-
+                        .Include(fdd => fdd.Food)
+                        .Where(fdd => fdd.DiaryId == foodDetails.DiaryId)
+                        .ToListAsync();
 
                     double totalCalories = foodDiaryDetails.Sum(detail => detail.Food.Calories * detail.Quantity);
                     double totalProtein = foodDiaryDetails.Sum(detail => detail.Food.Protein * detail.Quantity);
@@ -170,6 +183,7 @@ namespace DataAccess
                 return false;
             }
         }
+
 
         public async Task<bool> DeleteFoodListToDiaryAsync(int DiaryDetailId)
         {
@@ -683,7 +697,7 @@ namespace DataAccess
                     }
 
                     var existingDetails = await context.FoodDiaryDetails
-                .Where(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.MealType==request.MealType)
+                .Where(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.MealType == request.MealType)
                 .ToListAsync();
 
 
@@ -755,10 +769,12 @@ namespace DataAccess
 
                     var filteredDetails = foodDiary.FoodDiaryDetails
                         .Where(fdd => fdd.MealType == mealType)
+
                         .Select(fdd => new FoodDiaryDetailForWebisteRequestDTO
                         {
                             FoodId = fdd.FoodId,
-                            Quantity = fdd.Quantity
+                            Quantity = fdd.Quantity,
+                            Portion = fdd.Food.Portion,
                         })
                         .ToList();
 
@@ -767,7 +783,7 @@ namespace DataAccess
                     {
                         MealType = mealType,
                         selectDate = selectDate,
-                        ListFoodIdToAdd = filteredDetails
+                        ListFoodIdToAdd = filteredDetails,
                     };
                 }
             }
@@ -810,5 +826,65 @@ namespace DataAccess
             }
         }
 
+        public async Task<bool> DeleteFoodDiaryWebsite(DateTime selectDate, int memberId, int mealtype)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    // Fetch the food diary for the specified member and date
+                    var foodDiary = await context.FoodDiaries
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == selectDate.Date);
+
+                    if (foodDiary == null)
+                    {
+                        // If no food diary exists, we create one (optional based on your requirement)
+                        await GetOrCreateFoodDiaryAsync(memberId, selectDate.Date);
+                        foodDiary = await context.FoodDiaries
+                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == selectDate.Date);
+                    }
+
+                    if (foodDiary == null)
+                    {
+                        // Return false if food diary still doesn't exist after creation
+                        return false;
+                    }
+
+                    // Fetch food diary details based on meal type
+                    var existingDetails = await context.FoodDiaryDetails
+                        .Where(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.MealType == mealtype)
+                        .ToListAsync();
+
+                    // Remove the existing food diary details
+                    context.FoodDiaryDetails.RemoveRange(existingDetails);
+                    await context.SaveChangesAsync();
+
+                    // Recalculate and update the food diary totals (calories, protein, fat, carbs)
+                    var foodDiaryDetails = await context.FoodDiaryDetails
+                 .Include(fdd => fdd.Food)
+                 .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                 .ToListAsync();
+
+                    // Calculate total values for the food diary
+                    foodDiary.Calories = Math.Round(foodDiaryDetails.Sum(d => d.Food.Calories * d.Quantity), 1);
+                    foodDiary.Protein = Math.Round(foodDiaryDetails.Sum(d => d.Food.Protein * d.Quantity), 1);
+                    foodDiary.Fat = Math.Round(foodDiaryDetails.Sum(d => d.Food.Fat * d.Quantity), 1);
+                    foodDiary.Carbs = Math.Round(foodDiaryDetails.Sum(d => d.Food.Carbs * d.Quantity), 1);
+
+                    // Save the updated food diary
+                    await context.SaveChangesAsync();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                Console.WriteLine($"Error deleting food diary: {ex.Message}");
+                return false;
+            }
+        }
+
+       
     }
 }

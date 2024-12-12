@@ -33,6 +33,7 @@ namespace Repository.IRepo
         Task<bool> addExerciseListToDiaryForWebsite(AddExerciseDiaryDetailForWebsiteRequestDTO request, int memberId);
         Task<AddExerciseDiaryDetailForWebsiteRequestDTO> GetExerciseDairyDetailWebsite(int memberId, DateTime selectDate);
         Task<List<ExerciseListBoxResponseDTO>> GetListBoxExerciseForStaffAsync();
+        Task<bool> DeleteExerciseDiaryDetailWebsite(DateTime selectDate, int memberId);
     }
 }
 
