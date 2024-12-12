@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Http;
 
 namespace DataAccess
 {
@@ -495,6 +496,54 @@ namespace DataAccess
             catch (Exception ex)
             {
                 throw new Exception($"Error retrieving exercises: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteExerciseDiaryDetailWebsite(DateTime selectDate, int memberId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    // Retrieve the exercise diary for the specified member and date.
+                    var exerciseDiary = await context.ExerciseDiaries
+                        .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == selectDate.Date);
+
+                    if (exerciseDiary == null)
+                    {
+                        // If no exercise diary exists, create a new one.
+                        await GetOrCreateExerciseDiaryAsync(memberId, selectDate.Date);
+                        exerciseDiary = await context.ExerciseDiaries
+                            .FirstOrDefaultAsync(ed => ed.MemberId == memberId && ed.Date.Value.Date == selectDate.Date);
+                    }
+
+                    // Delete all existing exercise diary details for the given exercise diary.
+                    var existingDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => edd.ExerciseDiaryId == exerciseDiary.ExerciseDiaryId)
+                        .ToListAsync();
+
+                    context.ExerciseDiaryDetails.RemoveRange(existingDetails);
+
+                    
+                    await context.SaveChangesAsync();
+
+                    // Recalculate the exercise diary's total calories burned based on the new details.
+                    var exerciseDiaryDetails = await context.ExerciseDiaryDetails
+                        .Where(edd => edd.ExerciseDiaryId == exerciseDiary.ExerciseDiaryId)
+                        .ToListAsync();
+
+                    exerciseDiary.TotalCaloriesBurned = Math.Round((double)exerciseDiaryDetails.Sum(d => d.CaloriesBurned), 1);
+                    exerciseDiary.TotalDuration = (int?)Math.Round((double)exerciseDiaryDetails.Sum(d => d.Duration), 1);
+
+                    // Save the updated exercise diary.
+                    await context.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding exercise list to diary: {ex.Message}", ex);
             }
         }
     }
