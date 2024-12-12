@@ -851,6 +851,20 @@ namespace DataAccess
 
 
                     context.FoodDiaryDetails.RemoveRange(existingDetails);
+                    await context.SaveChangesAsync();
+
+
+                    var foodDiaryDetails = await context.FoodDiaryDetails
+                        .Include(fdd => fdd.Food)
+                        .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                        .ToListAsync();
+
+                    foodDiary.Calories = Math.Round(foodDiaryDetails.Sum(d => d.Food.Calories * d.Quantity), 1);
+                    foodDiary.Protein = Math.Round(foodDiaryDetails.Sum(d => d.Food.Protein * d.Quantity), 1);
+                    foodDiary.Fat = Math.Round(foodDiaryDetails.Sum(d => d.Food.Fat * d.Quantity), 1);
+                    foodDiary.Carbs = Math.Round(foodDiaryDetails.Sum(d => d.Food.Carbs * d.Quantity), 1);
+
+                    await context.SaveChangesAsync();
                     return true;
                 }
 
