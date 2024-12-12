@@ -77,7 +77,7 @@ namespace DataAccess
                 using (var context = new HealthTrackingDBContext())
                 {
 
-                    var result = await context.Goals.Include(g => g.Member).ThenInclude(g => g.BodyMeasureChanges).FirstOrDefaultAsync(g => g.MemberId == id);
+                    var result = await context.Goals.Include(g => g.Member).ThenInclude(g => g.BodyMeasureChanges).OrderByDescending(g => g.GoalId).FirstOrDefaultAsync(g => g.MemberId == id);
                     var getCurrentWeight = await context.BodyMeasureChanges.OrderByDescending(g => g.BodyMeasureId).FirstOrDefaultAsync(g => g.MemberId == id);
                     if (result == null)
                     {
@@ -149,7 +149,7 @@ namespace DataAccess
 
                     var groupedGoals = goals
                         .GroupBy(g => g.ChangeDate.Date)
-                        .Select(g => g.OrderBy(goal => goal.ChangeDate).FirstOrDefault()) 
+                        .Select(g => g.OrderByDescending(goal => goal.ChangeDate).FirstOrDefault()) 
                         .OrderBy(g => g.ChangeDate)
                         .Select(g => new WeightDTO
                         {
