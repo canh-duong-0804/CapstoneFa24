@@ -832,48 +832,59 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-
+                    // Fetch the food diary for the specified member and date
                     var foodDiary = await context.FoodDiaries
-                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId
-                                                   && fd.Date.Date == selectDate.Date);
-
+                        .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == selectDate.Date);
 
                     if (foodDiary == null)
                     {
+                        // If no food diary exists, we create one (optional based on your requirement)
                         await GetOrCreateFoodDiaryAsync(memberId, selectDate.Date);
                         foodDiary = await context.FoodDiaries
                             .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == selectDate.Date);
                     }
 
+                    if (foodDiary == null)
+                    {
+                        // Return false if food diary still doesn't exist after creation
+                        return false;
+                    }
+
+                    // Fetch food diary details based on meal type
                     var existingDetails = await context.FoodDiaryDetails
-                .Where(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.MealType == mealtype)
-                .ToListAsync();
+                        .Where(fdd => fdd.DiaryId == foodDiary.DiaryId && fdd.MealType == mealtype)
+                        .ToListAsync();
 
-
+                    // Remove the existing food diary details
                     context.FoodDiaryDetails.RemoveRange(existingDetails);
                     await context.SaveChangesAsync();
 
-
+                    // Recalculate and update the food diary totals (calories, protein, fat, carbs)
                     var foodDiaryDetails = await context.FoodDiaryDetails
-                        .Include(fdd => fdd.Food)
-                        .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
-                        .ToListAsync();
+                 .Include(fdd => fdd.Food)
+                 .Where(fdd => fdd.DiaryId == foodDiary.DiaryId)
+                 .ToListAsync();
 
+                    // Calculate total values for the food diary
                     foodDiary.Calories = Math.Round(foodDiaryDetails.Sum(d => d.Food.Calories * d.Quantity), 1);
                     foodDiary.Protein = Math.Round(foodDiaryDetails.Sum(d => d.Food.Protein * d.Quantity), 1);
                     foodDiary.Fat = Math.Round(foodDiaryDetails.Sum(d => d.Food.Fat * d.Quantity), 1);
                     foodDiary.Carbs = Math.Round(foodDiaryDetails.Sum(d => d.Food.Carbs * d.Quantity), 1);
 
+                    // Save the updated food diary
                     await context.SaveChangesAsync();
+
                     return true;
                 }
-
             }
             catch (Exception ex)
             {
+                // Log the error here if necessary
+                Console.WriteLine($"Error deleting food diary: {ex.Message}");
                 return false;
-                throw new Exception($"Error fetching food diaries for the month: {ex.Message}", ex);
             }
         }
+
+       
     }
 }

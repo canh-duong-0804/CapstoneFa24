@@ -102,7 +102,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return Unauthorized("Member ID not found in claims.");
             
 
-            var result = await _foodDiaryRepository.DeleteFoodDiaryWebsite(selectDate, mealtype, memberId);
+            var result = await _foodDiaryRepository.DeleteFoodDiaryWebsite(selectDate, memberId,mealtype);
 
             if (!result)
             {
