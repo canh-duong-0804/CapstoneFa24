@@ -49,6 +49,8 @@ namespace Repository.Repo
         public Task<AddFoodDiaryDetailForWebsiteRequestDTO> GetFoodDairyDetailWebsite(int memberId, DateTime selectDate, int mealtype) => FoodDiaryDAO.Instance.GetFoodDairyDetailWebsite(memberId, selectDate,mealtype);
 
         public Task<List<FoodDiaryWithMealTypeDTO>> GetAllDiariesForMonthWithMealTypesAsync(DateTime date, int memberId) => FoodDiaryDAO.Instance.GetAllDiariesForMonthWithMealTypesAsync(date, memberId);
+
+        public Task<bool> DeleteFoodDiaryWebsite(DateTime SelectDate, int memberId,int mealtype) => FoodDiaryDAO.Instance.DeleteFoodDiaryWebsite(SelectDate, memberId,mealtype);
         
     }
 }

@@ -22,6 +22,7 @@ namespace BusinessObject.Dto.FoodDiary
        
         public int FoodId { get; set; }
         public double Quantity { get; set; }
-      
+        public string Portion { get; set; } = null!;
+
     }
 }

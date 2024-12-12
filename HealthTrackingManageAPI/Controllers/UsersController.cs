@@ -212,7 +212,7 @@ namespace HealthTrackingManageAPI.Controllers
 
             if (user == null)
             {
-                return Unauthorized("Invalid username or password");
+                return Unauthorized();
             }
 
             

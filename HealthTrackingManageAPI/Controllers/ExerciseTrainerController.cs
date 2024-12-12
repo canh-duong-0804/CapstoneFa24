@@ -21,7 +21,7 @@ namespace HealthTrackingManageAPI.Controllers
             _cloudinaryService = cloudinaryService;
         }
 
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [HttpPost("create-exercise")]
         public async Task<IActionResult> CreateExercise([FromBody] CreateExerciseRequestDTO request)
         {
@@ -81,7 +81,7 @@ namespace HealthTrackingManageAPI.Controllers
 */
 
         [HttpGet("get-all-exercises-trainer")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllExercisePlans([FromQuery] int? page)
         {
             try
@@ -136,7 +136,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
 
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         [HttpPut("upload-image-exercise")]
         public async Task<IActionResult> UploadImageMealPlan(IFormFile? imageFile, [FromForm] int exerciseId)
         {
@@ -156,7 +156,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpDelete("delete-exercise/{exerciseId}")]
-        [Authorize]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> DeleteExercise(int exerciseId)
         {
             try
@@ -193,6 +193,7 @@ namespace HealthTrackingManageAPI.Controllers
         }
 
         [HttpPut("update-exercise/{exerciseId}")]
+        [RoleLessThanOrEqualTo(2)]
         public async Task<IActionResult> UpdateExercise( [FromBody] ExerciseRequestDTO updateRequest)
         {
             try
@@ -211,7 +212,7 @@ namespace HealthTrackingManageAPI.Controllers
                 var result = await _exerciseRepository.UpdateExerciseAsync(memberId, updateRequest);
 
                 
-                    return NotFound(new { Message = "Exercise not found or update failed." });
+                    //return NotFound(new { Message = "Exercise not found or update failed." });
 
                 return Ok(new { Message = "Exercise updated successfully." });
             }

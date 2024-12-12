@@ -65,7 +65,9 @@ namespace DataAccess
 
                     if (existingFood == null)
                     {
+                        return false;
                         throw new Exception("Food not found.");
+                        
                     }
 
 
@@ -140,6 +142,7 @@ namespace DataAccess
 
                     if (food == null)
                     {
+                        return null;
                         throw new Exception($"Food with ID {id} not found or inactive.");
                     }
 
@@ -351,33 +354,16 @@ namespace DataAccess
                             DietId = food.DietId,
                             DietName = food.Diet.DietName
                         })
-                        .FirstOrDefaultAsync();
-
-
-
-
-
-
-
-
+                        .FirstOrDefaultAsync(); 
                     var getGoalCalo = await context.FoodDiaries
                    .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == SelectDate);
 
                     if (getGoalCalo == null)
                     {
-
-
                         await FoodDiaryDAO.Instance.GetOrCreateFoodDiaryAsync(memberId, SelectDate);
                         getGoalCalo = await context.FoodDiaries
                            .FirstOrDefaultAsync(fd => fd.MemberId == memberId && fd.Date.Date == SelectDate);
-
                     }
-
-
-
-
-
-
                     responseDto.totalFat = (double)Math.Round((decimal)(getGoalCalo.GoalCalories * 0.25) / 9, 1);
                     responseDto.totalCalories = (double)getGoalCalo.GoalCalories;
                     responseDto.totalCarb = (double)Math.Round((decimal)(getGoalCalo.GoalCalories * 0.45) / 4, 1);

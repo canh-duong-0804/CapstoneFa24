@@ -443,20 +443,51 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var exercises = await (from exercise in context.Exercises
-                                           where exercise.Status == true
-                                           select new ExerciseListBoxResponseDTO
-                                           {
-                                               Value = exercise.ExerciseId,
-                                               Label = exercise.ExerciseName,
-                                               ExerciseName=exercise.ExerciseName,
-                                               MetValue = exercise.MetValue,
-                                               TypeExercise = exercise.TypeExercise,
-                                               NameTypeExercise = exercise.TypeExercise == 1 ? "Cardio" :
-                                                                  exercise.TypeExercise == 2 ? "Kháng lực" :
-                                                                  exercise.TypeExercise == 3 ? "Các bài tập khác" :
-                                                                  "Unknown"
-                                           }).ToListAsync();
+                    // Fetch the exercises that are active
+                    var exerciseslist = await context.Exercises
+                        .Where(e => e.Status == true)
+                        .ToListAsync();
+
+                    // Create dictionaries for quick lookup of cardio and resistance details by ExerciseId
+                    var cardioDetails = await context.ExerciseCardios
+                        .Where(c => exerciseslist.Select(e => e.ExerciseId).Contains(c.ExerciseId))
+                        .ToDictionaryAsync(c => c.ExerciseId);
+
+                    var resistanceDetails = await context.ExerciseResistances
+                        .Where(r => exerciseslist.Select(e => e.ExerciseId).Contains(r.ExerciseId))
+                        .ToDictionaryAsync(r => r.ExerciseId);
+
+                    // Project exercises to DTOs
+                    var exercises = exerciseslist.Select(exercise => new ExerciseListBoxResponseDTO
+                    {
+                        Value = exercise.ExerciseId,
+                        Label = exercise.ExerciseName,
+                        ExerciseName = exercise.ExerciseName,
+                        MetValue = exercise.MetValue,
+                        TypeExercise = exercise.TypeExercise,
+                        NameTypeExercise = exercise.TypeExercise == 1 ? "Cardio" :
+                                           exercise.TypeExercise == 2 ? "Kháng lực" :
+                                           exercise.TypeExercise == 3 ? "Các bài tập khác" :
+                                           "Unknown",
+
+                        // Using dictionary lookups to fetch cardio and resistance details
+                        CaloriesCadior1 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Calories1 : null,
+                        CaloriesCadior2 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Calories2 : null,
+                        CaloriesCadior3 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Calories3 : null,
+                        MinutesCadior1 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Minutes1 : null,
+                        MinutesCadior2 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Minutes2 : null,
+                        MinutesCadior3 = cardioDetails.ContainsKey(exercise.ExerciseId) ? cardioDetails[exercise.ExerciseId].Minutes3 : null,
+
+                        MinutesResitance1 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Minutes1 : null,
+                        MinutesResitance2 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Minutes2 : null,
+                        MinutesResitance3 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Minutes3 : null,
+                        RepsResitance1 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Reps1 : null,
+                        RepsResitance2 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Reps2 : null,
+                        RepsResitance3 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Reps3 : null,
+                        SetsResitance1 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Sets1 : null,
+                        SetsResitance2 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Sets2 : null,
+                        SetsResitance3 = resistanceDetails.ContainsKey(exercise.ExerciseId) ? resistanceDetails[exercise.ExerciseId].Sets3 : null,
+                    }).ToList();
 
                     return exercises;
                 }
@@ -466,7 +497,5 @@ namespace DataAccess
                 throw new Exception($"Error retrieving exercises: {ex.Message}", ex);
             }
         }
-
-
     }
 }

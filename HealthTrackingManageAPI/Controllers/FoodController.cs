@@ -297,7 +297,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpGet("get-food-for-member-by-id")]
         [Authorize]
-        public async Task<IActionResult> GetFoodForMemberById(int FoodId, DateTime SelectDate)
+        public async Task<IActionResult> GetFoodDiaryForMemberById(int FoodId, DateTime SelectDate)
         {
             var memberIdClaim = User.FindFirstValue("Id");
             if (memberIdClaim == null)

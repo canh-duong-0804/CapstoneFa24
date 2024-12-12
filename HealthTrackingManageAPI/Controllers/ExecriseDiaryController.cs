@@ -33,7 +33,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
 
-        [Authorize]
+        /*[Authorize]
         [HttpGet("member/exercise_diary")]
         public async Task<IActionResult> GetDiaryByMemberId()
         {
@@ -78,7 +78,7 @@ namespace HealthTrackingManageAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+*/
 
 
         [Authorize]
