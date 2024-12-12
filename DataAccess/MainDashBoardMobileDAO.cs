@@ -246,10 +246,10 @@ namespace DataAccess
 
                     }
 
-                    var waterLog = await context.WaterIntakes
-                .FirstOrDefaultAsync(wl => wl.MemberId == memberId && wl.Date.Date == date.Date);
+                  /*  var waterLog = await context.WaterIntakes
+                .FirstOrDefaultAsync(wl => wl.MemberId == memberId && wl.Date.Date == date.Date);*/
 
-                    if (waterLog == null)
+                   /* if (waterLog == null)
                     {
                         waterLog = new WaterIntake
                         {
@@ -259,7 +259,7 @@ namespace DataAccess
                         };
                         context.WaterIntakes.Add(waterLog);
                         await context.SaveChangesAsync();
-                    }
+                    }*/
 
                     async Task<List<FoodDiaryForMealResponseDTO>> GetFoodDiaryDetailsByMealType(int mealType)
                     {
@@ -292,7 +292,7 @@ namespace DataAccess
                         Calories = foodDiary.Calories,
                         Protein = foodDiary.Protein,
                         Fat = foodDiary.Fat,
-                        AmountWater = waterLog.Amount,
+                        //AmountWater = waterLog.Amount,
                         Carbs = foodDiary.Carbs,
                         streakNumberFood= streakDTO.StreakNumber,
                         streakNumberExercise= streakExerciseDTO.StreakCount,
