@@ -449,7 +449,7 @@ namespace DataAccess
             try
             {
                 using var context = new HealthTrackingDBContext();
-                var getDiary = await context.FoodDiaries.Where(m => m.Date == request.SelectDateToAdd && m.MemberId== memberId).FirstOrDefaultAsync();
+                //var getDiary = await context.FoodDiaries.Where(m => m.Date == request.SelectDateToAdd && m.MemberId== memberId).FirstOrDefaultAsync();
                
                 var foodDetails = await context.FoodDiaryDetails
                     .Where(m => m.DiaryId == request.DiaryIdPreviouseMeal && m.MealType == request.MealTypePreviousMeal)
@@ -457,7 +457,7 @@ namespace DataAccess
                     .ThenInclude(f => f.Diet)
                     .Select(d => new FoodDiaryDetail
                     {
-                        DiaryId = getDiary.DiaryId, 
+                        DiaryId = request.DiaryIdCurrent, 
                         FoodId = d.FoodId,
                         MealType = request.MealTypePreviousMeal, 
                         Quantity = d.Quantity,
