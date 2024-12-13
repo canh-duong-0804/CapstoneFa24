@@ -156,6 +156,7 @@ namespace DataAccess
                         int startIndex = portion.IndexOf("(");
                         int endIndex = portion.IndexOf(")");
 
+
                         if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
                         {
                             portion = portion.Substring(0, startIndex).Trim();
@@ -385,7 +386,6 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-
                     var foods = await (from food in context.Foods
                                        join diet in context.Diets on food.DietId equals diet.DietId
                                        where food.Status == true
@@ -395,8 +395,7 @@ namespace DataAccess
                                            Label = food.FoodName,
                                            Calories = food.Calories,
                                            Portion = food.Portion,
-
-
+                                           Serving = GetServingFromPortion(food.Portion) // Thêm xử lý portion và serving
                                        }).ToListAsync();
 
                     return foods;
@@ -404,10 +403,32 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error retrieving blogs: {ex.Message}", ex);
+                throw new Exception($"Error retrieving food list: {ex.Message}", ex);
+            }
+        }
+
+        private static string GetServingFromPortion(string portion)
+        {
+            if (string.IsNullOrEmpty(portion))
+                return null;
+
+            int startIndex = portion.IndexOf("(");
+            int endIndex = portion.IndexOf(")");
+
+            // Check if parentheses exist and are in correct order
+            if (startIndex != -1 && endIndex != -1 && startIndex < endIndex)
+            {
+                // Extract the portion before the parentheses and trim
+                string servingPart = portion.Substring(0, startIndex).Trim();
+
+                // Return the serving part if it's not empty
+                return !string.IsNullOrWhiteSpace(servingPart) ? servingPart : null;
             }
 
+            return null;
         }
+
+
 
         public async Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string? foodName)
         {
