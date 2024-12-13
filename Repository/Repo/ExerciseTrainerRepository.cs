@@ -17,7 +17,7 @@ namespace Repository.Repo
 
         public Task<bool> DeleteExerciseAsync(int exerciseId) => ExerciseTrainerDAO.Instance.DeleteExerciseAsync(exerciseId);
 
-        public Task<GetExerciseResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize) => ExerciseTrainerDAO.Instance.GetAllExercisePlansAsync(page, pageSize);
+        public Task<GetExerciseResponseForTrainerDTO> GetAllExerciseAsync(int page, int pageSize) => ExerciseTrainerDAO.Instance.GetAllExerciseAsync(page, pageSize);
 
         public Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId) => ExerciseTrainerDAO.Instance.GetExerciseDetailAsync(exerciseId);
 
