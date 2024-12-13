@@ -415,26 +415,17 @@ namespace DataAccess
             int startIndex = portion.IndexOf("(");
             int endIndex = portion.IndexOf(")");
 
-            // If parentheses are not found or in incorrect order, return null
-            if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex)
-                return null;
-
-            try
+            // Check if parentheses exist and are in correct order
+            if (startIndex != -1 && endIndex != -1 && startIndex < endIndex)
             {
-                // Extract the serving information inside the parentheses
-                string serving = portion.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+                // Extract the portion before the parentheses and trim
+                string servingPart = portion.Substring(0, startIndex).Trim();
 
-                // Get the portion without the parenthetical information
-                string cleanPortion = portion.Substring(0, startIndex).Trim();
+                // Return the serving part if it's not empty
+                return !string.IsNullOrWhiteSpace(servingPart) ? servingPart : null;
+            }
 
-                // Return null if serving is empty or same as portion
-                return string.IsNullOrWhiteSpace(serving) || serving == cleanPortion ? null : serving;
-            }
-            catch
-            {
-                // In case of any unexpected error, return null
-                return null;
-            }
+            return null;
         }
 
 
