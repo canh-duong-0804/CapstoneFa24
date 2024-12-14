@@ -1139,6 +1139,7 @@ namespace BusinessObject.Models
                 entity.Property(e => e.MemberId).HasColumnName("member_id");
 
                 entity.Property(e => e.RateStar).HasColumnName("rate_star");
+                entity.Property(e => e.ContentStart).HasColumnName("content_start");
 
                 entity.Property(e => e.StaffId).HasColumnName("staff_id");
 

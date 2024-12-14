@@ -39,7 +39,7 @@ namespace YourAPINamespace.Controllers
 
 
         [HttpGet("get-all-message-for-trainer-to-asign")]
-        [RoleLessThanOrEqualTo(1)]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllMessageForTrainerToAsign(int ChatId)
         {
             try
@@ -66,7 +66,7 @@ namespace YourAPINamespace.Controllers
 
 
         [HttpGet("get-all-message-chat-for-trainer-Asign")]
-        [RoleLessThanOrEqualTo(2)]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllMessageChatForTrainerToAsign(int ChatId)
         {
             try
@@ -92,7 +92,7 @@ namespace YourAPINamespace.Controllers
 
 
         [HttpGet("get-all-message-chat-for-trainer-need-assign")]
-        [RoleLessThanOrEqualTo(2)]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllMessageChatForTrainerNeedAsign(int pageNumber)
         {
             try
@@ -124,7 +124,7 @@ namespace YourAPINamespace.Controllers
 
 
         [HttpPost("send-message")]
-        [RoleLessThanOrEqualTo(2)]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> SendMessage([FromBody] SendMessageRequest request)
         {
             try
