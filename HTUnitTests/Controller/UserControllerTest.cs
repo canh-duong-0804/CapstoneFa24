@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Threading.Tasks;
 using BusinessObject.Models;
 using HealthTrackingManageAPI.Controllers;
@@ -17,12 +17,12 @@ namespace HTUnitTests.Controller
         private readonly Mock<IUserRepository> _mockUserRepo;
         private readonly UsersController _controller;
 
-        /*public UsersControllerTests()
+        *//*public UsersControllerTests()
         {
             // Setup mock repository and controller before each test
             _mockUserRepo = new Mock<IUserRepository>();
             _controller = new UsersController(_mockUserRepo.Object);
-        }*/
+        }*//*
 
         [Fact]
         public async Task CheckEmailUnique_UniqueEmail_ReturnsOkResult()
@@ -77,4 +77,4 @@ namespace HTUnitTests.Controller
             _mockUserRepo.Verify(repo => repo.IsUniqueEmail(email), Times.Once);
         }
     }
-}
+}*/

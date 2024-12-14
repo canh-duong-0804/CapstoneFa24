@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.IRepo;
 
@@ -17,6 +18,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("Get-all-diet")]
+       
         public async Task<IActionResult> GetAllDiet()
         {
             var diets = await _dietRepository.GetAllDietAsync();

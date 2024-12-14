@@ -11,7 +11,7 @@ namespace BusinessObject.Dto.MessageChatDetail
         public int MessageChatId { get; set; }
         //public int? StaffId { get; set; }
         public int? MemberId { get; set; }
-       
+        public string? ContentStart { get; set; }
         public DateTime? CreateAt { get; set; }
 
     }

@@ -29,9 +29,9 @@ namespace DataAccess
             }
         }
 
-        private ChatDAO() { }
+        //private ChatDAO() { }
 
-        public async Task CreateChatAsync(int memberId)
+        public async Task CreateChatAsync(int memberId, string createNewChat)
         {
             try
             {
@@ -42,12 +42,15 @@ namespace DataAccess
                         MemberId = memberId,
 
                         CreateAt = DateTime.UtcNow,
+                        ContentStart=createNewChat,
 
                     };
 
                     context.MessageChats.Add(newChat);
                     await context.SaveChangesAsync();
+                    var getChat = context.MessageChats.Where(c => c.MemberId == memberId && c.Status == true).FirstOrDefault();
 
+                    
                     // return newChat;
                 }
             }
@@ -104,7 +107,7 @@ namespace DataAccess
             }
         }
 
-        public async Task RateChatAsync(int memberId, int chatId, double rating)
+        public async Task RateChatAsync(int memberId, int chatId, int rating)
         {
             try
             {
@@ -245,6 +248,7 @@ namespace DataAccess
                             SentAt = detail.SentAt,
                             SenderType = detail.SenderType,
 
+
                         })
                         .ToList();
 
@@ -278,6 +282,7 @@ namespace DataAccess
                             MessageChatId = c.MessageChatId,
                             MemberId = c.MemberId,
                             CreateAt = c.CreateAt,
+                            ContentStart=c.ContentStart,
                         })
                         .ToListAsync();
 

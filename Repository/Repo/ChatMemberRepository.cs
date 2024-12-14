@@ -12,7 +12,7 @@ namespace Repository.Repo
 {
     public class ChatMemberRepository : IChatMemberRepository
     {
-        public Task CreateChatAsync(int memberId)=> ChatDAO.Instance.CreateChatAsync(memberId);
+        public Task CreateChatAsync(int memberId, string createNewChat)=> ChatDAO.Instance.CreateChatAsync(memberId, createNewChat);
 
         public Task<bool> EndChatsAsync(int memberId) => ChatDAO.Instance.EndChatsAsync(memberId);
 
@@ -23,7 +23,7 @@ namespace Repository.Repo
         public Task<List<MessageChat>> GetMemberChatsAsync(int memberId) => ChatDAO.Instance.GetMemberChatsAsync(memberId);
         
 
-        public Task RateChatAsync(int memberId, int chatId, double rating) => ChatDAO.Instance.RateChatAsync(memberId, chatId, rating);
+        public Task RateChatAsync(int memberId, int chatId, int rating) => ChatDAO.Instance.RateChatAsync(memberId, chatId, rating);
 
         public Task SendMessageMemberAsync(int memberId, int chatId, string messageContent) => ChatDAO.Instance.SendMessageMemberAsync(memberId, chatId, messageContent);
 

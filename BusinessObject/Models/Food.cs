@@ -10,8 +10,6 @@ namespace BusinessObject.Models
             FoodDiaryDetails = new HashSet<FoodDiaryDetail>();
             MealMemberDetails = new HashSet<MealMemberDetail>();
             MealPlanDetails = new HashSet<MealPlanDetail>();
-            Recipes = new HashSet<Recipe>();
-            Tags = new HashSet<Tag>();
         }
 
         public int FoodId { get; set; }
@@ -41,8 +39,5 @@ namespace BusinessObject.Models
         public virtual ICollection<FoodDiaryDetail> FoodDiaryDetails { get; set; }
         public virtual ICollection<MealMemberDetail> MealMemberDetails { get; set; }
         public virtual ICollection<MealPlanDetail> MealPlanDetails { get; set; }
-        public virtual ICollection<Recipe> Recipes { get; set; }
-
-        public virtual ICollection<Tag> Tags { get; set; }
     }
 }
