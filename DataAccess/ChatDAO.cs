@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObject.Models;
 using BusinessObject.Dto.MessageChatDetail;
 using AutoMapper.Execution;
+using BusinessObject.Dto.Trainer;
 
 namespace DataAccess
 {
@@ -317,6 +318,32 @@ namespace DataAccess
                     getChat.Status = false;
                    await context.SaveChangesAsync();
                     return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving chats: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<GetAllAccountTrainer>> GetAllTrainerToAssign()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var getAllTrainer = context.staffs.Where(c => c.Role >1 && c.Status == true).
+                        Select(c => new GetAllAccountTrainer
+                        {
+                            Value=c.StaffId,
+                            Label=c.FullName,
+                        })
+                        .ToList();
+                    if (getAllTrainer == null) return null;
+
+
+                   
+                    return getAllTrainer;
                 }
             }
             catch (Exception ex)

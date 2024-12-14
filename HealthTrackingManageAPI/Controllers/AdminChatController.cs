@@ -36,6 +36,22 @@ namespace YourAPINamespace.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        
+        
+        [HttpGet("get-all-trainer-to-assign")]
+        [RoleLessThanOrEqualTo(1)]
+        public async Task<IActionResult> GetAllTrainerToAssign()
+        {
+            try
+            {
+              var allTrainer =  await _adminChatRepository.GetAllTrainerToAssign();
+                return Ok(allTrainer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
 
         [HttpGet("get-all-message-for-trainer-to-asign")]
