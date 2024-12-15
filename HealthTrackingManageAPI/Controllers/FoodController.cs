@@ -91,16 +91,6 @@ namespace HealthTrackingManageAPI.Controllers
                     TotalFoods = totalFoods
                 });
             }
-            catch (UnauthorizedAccessException)
-            {
-                // Handle unauthorized access
-                return StatusCode(403, "Access denied.");
-            }
-            catch (KeyNotFoundException)
-            {
-                // Handle case where data is not found
-                return NotFound("No foods found.");
-            }
             catch (Exception ex)
             {
                 // Handle unexpected errors

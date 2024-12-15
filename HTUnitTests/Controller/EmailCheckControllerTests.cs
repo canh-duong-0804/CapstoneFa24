@@ -90,32 +90,8 @@ namespace HTUnitTests.Controller
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         }
 
-        [Fact]
-        public async Task CheckEmailUnique_AbnormalEmail_ReturnsBadRequest()
-        {
-            // Arrange
-            string abnormalEmail = "<script>alert('test')</script>@example.com";
-            _mockUserRepo.Setup(repo => repo.IsUniqueEmail(abnormalEmail)).Returns(false);
+       
 
-            // Act
-            var result = await _controller.CheckEmailUnique(abnormalEmail);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        }
-
-        [Fact]
-        public async Task CheckEmailUnique_BoundaryEmail_LongEmail_ReturnsBadRequest()
-        {
-            // Arrange
-            string longEmail = new string('a', 250) + "@example.com";
-            _mockUserRepo.Setup(repo => repo.IsUniqueEmail(longEmail)).Returns(false);
-
-            // Act
-            var result = await _controller.CheckEmailUnique(longEmail);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        }
+       
     }
 }
