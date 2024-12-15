@@ -7,6 +7,7 @@ using BusinessObject.Models;
 using BusinessObject.Dto.MessageChatDetail;
 using AutoMapper.Execution;
 using BusinessObject.Dto.Trainer;
+using BusinessObject.Dto.Chat;
 
 namespace DataAccess
 {
@@ -351,5 +352,41 @@ namespace DataAccess
                 throw new Exception($"Error retrieving chats: {ex.Message}", ex);
             }
         }
+
+        public async Task<List<OverViewMessageDTO>> OverviewAllMessageOfTrainer(int staffId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                   
+                    var messages = await context.MessageChats
+                        .Where(chat => chat.StaffId == staffId) 
+                        .Join(
+                            context.Members,
+                            chat => chat.MemberId,
+                            member => member.MemberId,
+                            (chat, member) => new OverViewMessageDTO
+                            {
+                                ChatId = chat.MessageChatId,
+                                MemberId = chat.Member.MemberId,
+                                ImageMember = member.ImageMember, 
+                                ContentStart = chat.ContentStart, 
+                                MessageContent = chat.ContentStart, 
+                                
+                            }
+                        )
+                        .ToListAsync();
+
+                    return messages;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving chats: {ex.Message}", ex);
+            }
+        }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using BusinessObject.Dto.MessageChatDetail;
+﻿using BusinessObject.Dto.Chat;
+using BusinessObject.Dto.MessageChatDetail;
 using BusinessObject.Dto.Trainer;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Repository.IRepo
         Task<PagedResult<AllMessageChatDTO>> GetAllMessageChatForTrainerNeedAsign(int pageNumber, int pageSize);
         Task<List<GetMessageChatDetailDTO>> GetAllMessageForTrainerToAsign(int chatId, int staffId);
         Task<List<GetAllAccountTrainer>> GetAllTrainerToAssign();
+        Task<List<OverViewMessageDTO>> OverviewAllMessageOfTrainer(int staffId);
         Task SendMessageAsync(int chatId, int staffId, string messageContent);
     }
 }

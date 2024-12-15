@@ -78,10 +78,36 @@ namespace YourAPINamespace.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        
+        
+        [HttpGet("overview-all-message-of trainer")]
+        [RoleLessThanOrEqualTo(3)]
+        public async Task<IActionResult> OverviewAllMessageOfTrainer()
+        {
+            try
+            {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
+
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var getAllMessageForAdmin = await _adminChatRepository.OverviewAllMessageOfTrainer(StaffId);
+                return Ok(getAllMessageForAdmin);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
 
 
-        [HttpGet("get-all-message-chat-for-trainer-Asign")]
+        /*[HttpGet("get-all-message-chat-for-trainer-Asign")]
         [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllMessageChatForTrainerToAsign(int ChatId)
         {
@@ -104,7 +130,7 @@ namespace YourAPINamespace.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-        }
+        }*/
 
 
         [HttpGet("get-all-message-chat-for-trainer-need-assign")]
@@ -184,5 +210,7 @@ namespace YourAPINamespace.Controllers
         public int ChatId { get; set; }
         // public int StaffId { get; set; }
         public string MessageContent { get; set; }
-    }
+    } 
+    
+    
 }

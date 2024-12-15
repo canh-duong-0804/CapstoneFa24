@@ -247,6 +247,9 @@ namespace DataAccess
                         Name = ep.Name,
                         TotalCaloriesBurned = ep.TotalCaloriesBurned,
                         ExercisePlanImage = ep.ExercisePlanImage,
+                        AvgDuration = context.ExercisePlanDetails
+                    .Where(detail => detail.ExercisePlanId == ep.ExercisePlanId)
+                    .Average(detail => (double?)detail.Duration) ?? 0
                     })
                     .ToListAsync();
 

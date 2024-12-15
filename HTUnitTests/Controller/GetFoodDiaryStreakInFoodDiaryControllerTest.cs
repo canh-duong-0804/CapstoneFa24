@@ -1,4 +1,4 @@
-﻿/*using BusinessObject.Dto.Streak;
+﻿using BusinessObject.Dto.Streak;
 using HealthTrackingManageAPI.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +30,7 @@ namespace HTUnitTests.Controller
             // Arrange
             var memberId = 1;
             var date = new DateTime(2024, 12, 9);
-            var expectedStreak = new CalorieStreakDTO { *//* populate with test data *//* };
+            var expectedStreak = new CalorieStreakDTO {  };
 
             // Setup the controller with claims
             var controller = SetupControllerWithClaims(memberId.ToString());
@@ -113,7 +113,7 @@ namespace HTUnitTests.Controller
             // Setup repository mock
             _mockFoodDiaryRepository
                 .Setup(repo => repo.GetCalorieStreakAsync(memberId, It.IsAny<DateTime>()))
-                .ReturnsAsync(new CalorieStreakDTO { *//* populate with test data *//* });
+                .ReturnsAsync(new CalorieStreakDTO {  });
 
             // Act
             var result = await controller.GetCalorieStreak(default);
@@ -146,4 +146,3 @@ namespace HTUnitTests.Controller
     }
 }
 
-*/

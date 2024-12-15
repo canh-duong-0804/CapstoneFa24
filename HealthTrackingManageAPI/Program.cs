@@ -16,6 +16,7 @@ using Repository.Repo;
 using System.Text;
 using Twilio;
 using Twilio.Clients;
+using HealthTrackingManageAPI.NewFolder.Chat;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +85,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 var secretKey = builder.Configuration["ApiSettings:SecretKey"];
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
@@ -149,6 +151,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRouting();
+
+/*app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<ChatHub>("/chathub"); // Map the ChatHub
+});*/
 app.UseCors("MyCorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
