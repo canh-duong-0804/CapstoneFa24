@@ -338,6 +338,7 @@ namespace DataAccess
                         {
                             Value=c.StaffId,
                             Label=c.FullName,
+                            Role=c.Role,
                         })
                         .ToList();
                     if (getAllTrainer == null) return null;

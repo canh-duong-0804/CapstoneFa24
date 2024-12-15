@@ -9,5 +9,6 @@ namespace BusinessObject.Dto.Trainer
 {
     public class GetAllAccountTrainer : ListBoxResponseDTO
     {
+        public byte Role { get; set; }
     }
 }
