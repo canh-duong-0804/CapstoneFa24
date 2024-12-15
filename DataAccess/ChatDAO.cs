@@ -373,6 +373,7 @@ namespace DataAccess
                                 ImageMember = member.ImageMember, 
                                 ContentStart = chat.ContentStart, 
                                 MessageContent = chat.ContentStart, 
+                                FullName=chat.Member.Username,
                                 
                             }
                         )

@@ -12,6 +12,7 @@ namespace BusinessObject.Dto.Chat
        
         public int MemberId { get; set; }
         public string ImageMember { get; set; }
+        public string FullName { get; set; }
         public string ContentStart { get; set; }
 
         public string MessageContent { get; set; }
