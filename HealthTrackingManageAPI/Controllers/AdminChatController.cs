@@ -6,6 +6,8 @@ using BusinessObject.Models;
 using Repository.IRepo;
 using HealthTrackingManageAPI.Authorize;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using HealthTrackingManageAPI.NewFolder.Chat;
 
 namespace YourAPINamespace.Controllers
 {
@@ -36,15 +38,15 @@ namespace YourAPINamespace.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-        
-        
+
+
         [HttpGet("get-all-trainer-to-assign")]
         [RoleLessThanOrEqualTo(1)]
         public async Task<IActionResult> GetAllTrainerToAssign()
         {
             try
             {
-              var allTrainer =  await _adminChatRepository.GetAllTrainerToAssign();
+                var allTrainer = await _adminChatRepository.GetAllTrainerToAssign();
                 return Ok(allTrainer);
             }
             catch (Exception ex)
@@ -54,32 +56,9 @@ namespace YourAPINamespace.Controllers
         }
 
 
-        [HttpGet("get-all-message-for-trainer-to-asign")]
-        [RoleLessThanOrEqualTo(3)]
-        public async Task<IActionResult> GetAllMessageForTrainerToAsign(int ChatId)
-        {
-            try
-            {
-                var memberIdClaim = User.FindFirstValue("Id");
-                if (memberIdClaim == null)
-                {
-                    return Unauthorized("Member ID not found in claims.");
-                }
 
-                if (!int.TryParse(memberIdClaim, out int StaffId))
-                {
-                    return BadRequest("Invalid member ID.");
-                }
-                var getAllMessageForAdmin = await _adminChatRepository.GetAllMessageForTrainerToAsign(ChatId, StaffId);
-                return Ok(getAllMessageForAdmin);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-        
-        
+
+
         [HttpGet("overview-all-message-of trainer")]
         [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> OverviewAllMessageOfTrainer()
@@ -163,32 +142,70 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-
-
-        [HttpPost("send-message")]
+        [HttpGet("get-all-message-for-trainer-to-asign")]
         [RoleLessThanOrEqualTo(3)]
-        public async Task<IActionResult> SendMessage([FromBody] SendMessageRequest request)
+        public async Task<IActionResult> GetAllMessageForTrainerToAsign(int ChatId)
         {
             try
             {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
 
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var getAllMessageForAdmin = await _adminChatRepository.GetAllMessageForTrainerToAsign(ChatId, StaffId);
+                return Ok(getAllMessageForAdmin);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("send-message")]
+        [RoleLessThanOrEqualTo(3)]
+        public async Task<IActionResult> SendMessageForTrainer([FromBody] SendMessageRequest request)
+        {
+            try
+            {
                 var memberIdClaim = User.FindFirstValue("Id");
                 if (memberIdClaim == null)
                 {
                     return Unauthorized();
                 }
-
-                if (!int.TryParse(memberIdClaim, out int StaffId))
+                if (!int.TryParse(memberIdClaim, out int staffId))
                 {
                     return BadRequest();
                 }
-                await _adminChatRepository.SendMessageAsync(request.ChatId, StaffId, request.MessageContent);
+
+                // Save message
+                await _adminChatRepository.SendMessageAsync(request.ChatId, staffId, request.MessageContent);
+
+                // Get SignalR hub context
+                var hubContext = HttpContext.RequestServices.GetService<IHubContext<ChatHub>>();
+
+                // Broadcast message with trainer type
+                await hubContext.Clients.Group($"{request.ChatId}_{ChatHub.UserType.Trainer}")
+                    .SendAsync("ReceiveMessage", new
+                    {
+                        SenderId = staffId,
+                        MessageContent = request.MessageContent,
+                        SenderType = ChatHub.UserType.Trainer,
+                        Timestamp = DateTime.UtcNow
+                    });
+
                 return Ok(new { message = "Message sent successfully." });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
+
         }
     }
 

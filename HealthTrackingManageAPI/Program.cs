@@ -153,14 +153,16 @@ if (app.Environment.IsDevelopment())
 }
 app.UseRouting();
 
-/*app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    endpoints.MapHub<ChatHub>("/chathub"); // Map the ChatHub
-});*/
+
 app.UseCors("MyCorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<ChatHub>("/chathub"); // Map the ChatHub
+});
 app.UseSession();
 
 app.MapControllers();
