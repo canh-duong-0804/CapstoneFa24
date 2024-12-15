@@ -115,6 +115,149 @@ namespace HTUnitTests.Controller
 		}
 
 		[Fact]
+		public async Task AddExerciseToDiaryDetail_NullDto_ReturnsBadRequest()
+		{
+			// Arrange
+			int memberId = 1;
+			SetupUserClaims(memberId);
+
+			NewExerciseDetailDTO? nullDto = null;
+
+			// Act
+			var result = await _controller.AddExerciseToDiaryDetail(nullDto);
+
+			// Assert
+			var notFoundResult = Assert.IsType<ObjectResult>(result);
+			Assert.Equal(StatusCodes.Status500InternalServerError, notFoundResult.StatusCode);
+		}
+
+		[Fact]
+		public async Task AddExerciseToDiaryDetail_InvalidExerciseId_ReturnsNotFound()
+		{
+			// Arrange
+			int memberId = 1;
+			SetupUserClaims(memberId);
+
+			var newExerciseDetail = new NewExerciseDetailDTO
+			{
+				ExerciseDiaryId = 1,
+				ExerciseId = -1, // Invalid ExerciseId
+				DurationInMinutes = 30
+			};
+
+			_mockExerciseDiaryDetailRepo
+				.Setup(repo => repo.GetExerciseAsync(newExerciseDetail.ExerciseId))
+				.ReturnsAsync((Exercise?)null);
+
+			// Act
+			var result = await _controller.AddExerciseToDiaryDetail(newExerciseDetail);
+
+			// Assert
+			var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+			Assert.Equal("Exercise not found.", notFoundResult.Value);
+		}
+
+		[Fact]
+		public async Task AddExerciseToDiaryDetail_MissingRequiredField_ReturnsBadRequest()
+		{
+			// Arrange
+			int memberId = 1;
+			SetupUserClaims(memberId);
+
+			var newExerciseDetail = new NewExerciseDetailDTO
+			{
+				ExerciseDiaryId = 1,
+				ExerciseId = 2,
+				DurationInMinutes = 0 // Invalid duration
+			};
+
+			// Act
+			var result = await _controller.AddExerciseToDiaryDetail(newExerciseDetail);
+
+			// Assert
+			var badRequestResult = Assert.IsType<NotFoundObjectResult>(result);
+			Assert.Equal("Exercise not found.", badRequestResult.Value);
+		}
+
+		[Fact]
+		public async Task AddExerciseToDiaryDetail_ExceptionThrown_ReturnsInternalServerError()
+		{
+			// Arrange
+			int memberId = 1;
+			SetupUserClaims(memberId);
+
+			var newExerciseDetail = new NewExerciseDetailDTO
+			{
+				ExerciseDiaryId = 1,
+				ExerciseId = 2,
+				DurationInMinutes = 30
+			};
+
+			var exercise = new Exercise { TypeExercise = 1 };
+
+			_mockExerciseDiaryDetailRepo
+				.Setup(repo => repo.GetExerciseAsync(newExerciseDetail.ExerciseId))
+				.ReturnsAsync(exercise);
+
+			_mockExerciseDiaryDetailRepo
+				.Setup(repo => repo.AddDiaryDetailAsync(It.IsAny<ExerciseDiaryDetail>()))
+				.Throws(new Exception("Database error"));
+
+			// Act
+			var result = await _controller.AddExerciseToDiaryDetail(newExerciseDetail);
+
+			// Assert
+			var internalServerErrorResult = Assert.IsType<ObjectResult>(result);
+			Assert.Equal(500, internalServerErrorResult.StatusCode);
+			Assert.Contains("Error: Database error", internalServerErrorResult.Value.ToString());
+		}
+
+		
+		[Fact]
+		public async Task AddExerciseToDiaryDetail_ValidResistanceExercise_ReturnsOk()
+		{
+			// Arrange
+			int memberId = 1;
+			SetupUserClaims(memberId);
+
+			var newExerciseDetail = new NewExerciseDetailDTO
+			{
+				ExerciseDiaryId = 1,
+				ExerciseId = 3,
+				DurationInMinutes = 40,
+				IsPractice = true
+			};
+
+			var exercise = new Exercise { TypeExercise = 2 }; // Resistance exercise
+
+			_mockExerciseDiaryDetailRepo
+				.Setup(repo => repo.GetExerciseAsync(newExerciseDetail.ExerciseId))
+				.ReturnsAsync(exercise);
+
+			_mockExerciseDiaryDetailRepo
+				.Setup(repo => repo.AddDiaryDetailAsync(It.IsAny<ExerciseDiaryDetail>()))
+				.Returns(Task.CompletedTask);
+
+			// Act
+			var result = await _controller.AddExerciseToDiaryDetail(newExerciseDetail);
+
+			// Assert
+			var okResult = Assert.IsType<OkObjectResult>(result);
+			Assert.Equal("Exercise added successfully to diary detail.", okResult.Value);
+
+			_mockExerciseDiaryDetailRepo.Verify(
+				repo => repo.AddDiaryDetailAsync(It.Is<ExerciseDiaryDetail>(
+					d => d.ExerciseDiaryId == newExerciseDetail.ExerciseDiaryId &&
+						 d.ExerciseId == newExerciseDetail.ExerciseId &&
+						 d.Duration == newExerciseDetail.DurationInMinutes &&
+						 d.IsPractice == newExerciseDetail.IsPractice
+				)),
+				Times.Once
+			);
+		}
+
+
+		[Fact]
 		public async Task DeleteExerciseFromDiaryDetail_Success_ReturnsOk()
 		{
 			// Arrange

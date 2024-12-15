@@ -1,4 +1,4 @@
-﻿/*using BusinessObject.Dto.ExecriseDiary;
+﻿using BusinessObject.Dto.ExecriseDiary;
 using BusinessObject.DTOs;
 using BusinessObject.Models;
 using HealthTrackingManageAPI.Controllers;
@@ -40,53 +40,9 @@ namespace HTUnitTests.Controller
 				}
 			};
 		}
-		[Fact]
-		public async Task GetDiaryByMemberId_ReturnsOkResult_WhenDiariesExist()
-		{
-			// Arrange
-			var memberId = 1;
-			var exerciseDiaries = new List<ExerciseDiary>
-		{
-			new ExerciseDiary
-			{
-				ExerciseDiaryId = 1,
-				MemberId = memberId,
-				Date = DateTime.Now,
-				TotalDuration = 30,
-				TotalCaloriesBurned = 300
-			}
-		};
-
-			_mockExerciseDiaryRepo.Setup(repo => repo.GetExerciseDiaryByMemberId(memberId))
-				.ReturnsAsync(exerciseDiaries);
-
-			// Act
-			var result = await _controller.GetDiaryByMemberId();
-
-			// Assert
-			var okResult = Assert.IsType<OkObjectResult>(result);
-			var returnValue = Assert.IsType<List<ExerciseDiaryDTO>>(okResult.Value);
-			Assert.Single(returnValue);
-			Assert.Equal(1, returnValue.Count);
-		}
+		
 
 
-
-		[Fact]
-		public async Task GetDiaryByMemberId_ReturnsNotFound_WhenNoDiariesExist()
-		{
-			// Arrange
-			var memberId = 1;
-			_mockExerciseDiaryRepo.Setup(repo => repo.GetExerciseDiaryByMemberId(memberId))
-				.ReturnsAsync(new List<ExerciseDiary>());
-
-			// Act
-			var result = await _controller.GetDiaryByMemberId();
-
-			// Assert
-			var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
-			Assert.Equal("No exercise diary entries found for the specified member.", notFoundResult.Value);
-		}
 
 		[Fact]
 		public async Task GetDiaryByDate_CreatesAndReturnsDiary_WhenNotExists()
@@ -114,9 +70,9 @@ namespace HTUnitTests.Controller
 			var result = await _controller.GetDiaryByDate(targetDate);
 
 			// Assert
-			var objectResult = Assert.IsType<ObjectResult>(result);  
-			Assert.Equal(500, objectResult.StatusCode); 
-			
+			var objectResult = Assert.IsType<ObjectResult>(result);
+			Assert.Equal(500, objectResult.StatusCode);
+
 		}
 
 
@@ -148,7 +104,7 @@ namespace HTUnitTests.Controller
 			// Assert
 			var objectResult = Assert.IsType<ObjectResult>(result);  // General ObjectResult
 			Assert.Equal(500, objectResult.StatusCode);  // Ensure the status code is 200
-			
+
 		}
 
 
@@ -224,4 +180,3 @@ namespace HTUnitTests.Controller
 		}
 	}
 }
-*/

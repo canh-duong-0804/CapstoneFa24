@@ -64,7 +64,7 @@ namespace HTUnitTests.Controller
             int pageSize = 5;
             int totalFoods = 10;
             var mockFoods = new List<AllFoodForStaffResponseDTO>
-    {
+        {
         new AllFoodForStaffResponseDTO { FoodId = 1, FoodName = "Apple" },
         new AllFoodForStaffResponseDTO { FoodId = 2, FoodName = "Banana" }
     };
@@ -249,10 +249,13 @@ namespace HTUnitTests.Controller
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("Food item not found or already deleted.", notFoundResult.Value);
         }
-        #endregion
 
-        #region GetFoodForStaffById Tests
-        [Fact]
+		
+
+		#endregion
+
+		#region GetFoodForStaffById Tests
+		[Fact]
         public async Task GetFoodForStaffById_ExistingFood_ReturnsOkResult()
         {
             // Arrange
@@ -285,10 +288,12 @@ namespace HTUnitTests.Controller
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
             Assert.Equal("Food not found.", notFoundResult.Value);
         }
-        #endregion
 
-        #region GetFoodForMemberById Tests
-        [Fact]
+      
+		#endregion
+
+		#region GetFoodForMemberById Tests
+		[Fact]
         public async Task GetFoodDiaryForMemberById_ExistingFood_ReturnsOkResult()
         {
             // Arrange

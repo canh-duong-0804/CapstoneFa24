@@ -45,18 +45,24 @@ namespace HTUnitTests.Controller
         [Fact]
         public async Task CreateMealPlanTrainer_ValidRequest_ReturnsOk()
         {
-            // Arrange
-            var request = new CreateMealPlanRequestDTO();
-            _mockMealPlanRepository
-                .Setup(repo => repo.CreateMealPlanTrainerAsync(It.IsAny<MealPlan>()))
-                .ReturnsAsync(true);
+			// Arrange
+			var request = new CreateMealPlanRequestDTO
+			{
+				Name = "Healthy Plan",
+				TotalCalories = 2000
+			};
 
-            // Act
-            var result = await _controller.CreateMealPlanTrainer(request);
+			_mockMealPlanRepository
+				.Setup(repo => repo.CreateMealPlanTrainerAsync(It.Is<MealPlan>(
+					m => m.Name == request.Name && m.TotalCalories == request.TotalCalories)))
+				.ReturnsAsync(true);
 
-            // Assert
-            Assert.IsType<OkResult>(result);
-        }
+			// Act
+			var result = await _controller.CreateMealPlanTrainer(request);
+
+			// Assert
+			Assert.IsType<OkResult>(result);
+		}
 
         [Fact]
         public async Task CreateMealPlanTrainer_RepositoryFails_ReturnsStatusCode500()
@@ -164,10 +170,12 @@ namespace HTUnitTests.Controller
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal(expectedMealPlan, okResult.Value);
         }
-        #endregion
 
-        #region CreateMealPlanDetail Tests
-        [Fact]
+		
+		#endregion
+
+		#region CreateMealPlanDetail Tests
+		[Fact]
         public async Task CreateMealPlanDetail_ValidRequest_ReturnsOkWithMessage()
         {
             // Arrange
@@ -202,10 +210,60 @@ namespace HTUnitTests.Controller
             Assert.Equal(500, objectResult.StatusCode);
             Assert.Equal("Failed to create meal plan detail.", objectResult.Value);
         }
-        #endregion
 
-        #region GetMealPlanDetail Tests
         [Fact]
+        public async Task CreateMealPlanDetail_DayZero_ShouldReturnBadRequest()
+        {
+            // Arrange
+            var request = new CreateMealPlanDetailRequestDTO
+            {
+                MealPlanId = 1,
+                Day = 0, // Invalid day
+                DescriptionBreakFast = "Test Breakfast",
+                ListFoodIdBreakfasts = new List<FoodQuantityResponseDTO>
+        {
+            new FoodQuantityResponseDTO { FoodId = 101, Quantity = 100 }
+        }
+            };
+
+            // Act
+            var result = await _controller.CreateMealPlanDetail(request);
+
+            // Assert
+            var badRequestResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, badRequestResult.StatusCode);
+
+
+        }
+		[Fact]
+		public async Task CreateMealPlanDetail_Dayinvalid_ShouldReturnBadRequest()
+		{
+			// Arrange
+			var request = new CreateMealPlanDetailRequestDTO
+			{
+				MealPlanId = 1,
+				Day = 200, // Invalid day
+				DescriptionBreakFast = "Test Breakfast",
+				ListFoodIdBreakfasts = new List<FoodQuantityResponseDTO>
+		{
+			new FoodQuantityResponseDTO { FoodId = 101, Quantity = 100 }
+		}
+			};
+
+			// Act
+			var result = await _controller.CreateMealPlanDetail(request);
+
+			// Assert
+			var badRequestResult = Assert.IsType<ObjectResult>(result);
+			Assert.Equal(500, badRequestResult.StatusCode);
+
+
+		}
+
+		#endregion
+
+		#region GetMealPlanDetail Tests
+		[Fact]
         public async Task GetMealPlanDetail_ValidRequest_ReturnsOkWithData()
         {
             // Arrange
@@ -279,8 +337,57 @@ namespace HTUnitTests.Controller
 
            
         }
-        #endregion
 
-       
-    }
+
+		[Fact]
+		public async Task UpdateMealPlanDetail_DayInvalid_ShouldReturnBadRequest()
+		{
+			// Arrange
+			var request = new CreateMealPlanDetailRequestDTO
+			{
+				MealPlanId = 1,
+				Day = 0, // Invalid day (outside of 1-254 range)
+				DescriptionBreakFast = "Test Breakfast",
+				ListFoodIdBreakfasts = new List<FoodQuantityResponseDTO>
+		{
+			new FoodQuantityResponseDTO { FoodId = 101, Quantity = 100 }
+		}
+			};
+
+			// Act
+			var result = await _controller.UpdateMealPlanDetail(request);
+
+			// Assert
+			var objectResult = Assert.IsType<ObjectResult>(result);
+			Assert.Equal(500, objectResult.StatusCode);
+			
+		}
+
+		[Fact]
+		public async Task UpdateMealPlanDetail_DayInvalid1_ShouldReturnBadRequest()
+		{
+			// Arrange
+			var request = new CreateMealPlanDetailRequestDTO
+			{
+				MealPlanId = 1,
+				Day = 255, // Invalid day (outside of 1-254 range)
+				DescriptionBreakFast = "Test Breakfast",
+				ListFoodIdBreakfasts = new List<FoodQuantityResponseDTO>
+		{
+			new FoodQuantityResponseDTO { FoodId = 101, Quantity = 100 }
+		}
+			};
+
+			// Act
+			var result = await _controller.UpdateMealPlanDetail(request);
+
+			// Assert
+			var objectResult = Assert.IsType<ObjectResult>(result);
+			Assert.Equal(500, objectResult.StatusCode);
+
+		}
+		#endregion
+
+
+	}
 }

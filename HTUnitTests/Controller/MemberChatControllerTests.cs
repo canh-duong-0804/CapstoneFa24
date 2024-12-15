@@ -134,11 +134,11 @@ namespace HTUnitTests.Controller
             new MessageChatDetail { MessageChatDetailsId = 1 }
         }
     },
-    new MessageChat
-    {
-        MessageChatId = 2,
-        MessageChatDetails = new List<MessageChatDetail>
-        {
+            new MessageChat
+                {
+                    MessageChatId = 2,
+                    MessageChatDetails = new List<MessageChatDetail>
+                {
             new MessageChatDetail { MessageChatDetailsId = 2 }
         }
     }
@@ -171,6 +171,8 @@ namespace HTUnitTests.Controller
             var okResult = Assert.IsType<BadRequestObjectResult>(result); // Asserts that the result is 200 OK
             Assert.Equal(400, okResult.StatusCode); // Asserts the status code
         }
+
+
         #endregion
 
         #region EndChats Tests
@@ -203,10 +205,11 @@ namespace HTUnitTests.Controller
             // Assert
             Assert.IsType<BadRequestResult>(result);
         }
-        #endregion
 
-        #region GetChatDetails Tests
-        [Fact]
+		#endregion
+
+		#region GetChatDetails Tests
+		[Fact]
         public async Task GetChatDetails_ValidRequest_ReturnsOkWithChatDetails()
         {
             // Arrange

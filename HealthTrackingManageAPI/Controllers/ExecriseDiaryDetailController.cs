@@ -77,8 +77,11 @@ namespace HealthTrackingManageAPI.Controllers
             }
         }
 
+		
 
-        [HttpDelete("DeleteExercise/{diaryDetailId}")]
+
+
+		[HttpDelete("DeleteExercise/{diaryDetailId}")]
         [Authorize]
         public async Task<IActionResult> DeleteExerciseFromDiaryDetail(int diaryDetailId)
         {
