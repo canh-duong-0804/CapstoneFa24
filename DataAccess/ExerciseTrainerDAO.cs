@@ -386,12 +386,12 @@ namespace DataAccess
         {
             using (var context = new HealthTrackingDBContext())
             {
-                var query = context.ExercisePlans.AsQueryable();
+                var query = context.Exercises.AsQueryable();
 
               
                 if (!string.IsNullOrEmpty(searchExericse))
                 {
-                    query = query.Where(ep => ep.Name.Contains(searchExericse));
+                    query = query.Where(ep => ep.ExerciseName.Contains(searchExericse));
                 }
 
                 
