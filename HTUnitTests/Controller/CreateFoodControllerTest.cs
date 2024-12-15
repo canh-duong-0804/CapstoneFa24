@@ -2,6 +2,7 @@
 using BusinessObject.Models;
 using HealthTrackingManageAPI.Controllers;
 using HealthTrackingManageAPI.NewFolder.Image;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ using Repository.IRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,129 +22,224 @@ namespace HTUnitTests.Controller
         private readonly Mock<IFoodRepository> _mockFoodRepository;
         private readonly Mock<CloudinaryService> _mockCloudinaryService;
         private readonly Mock<IConfiguration> _mockConfiguration;
-        private readonly Mock<ILogger<FoodController>> _mockLogger;
+        private readonly Mock<ILogger<CloudinaryService>> _mockCloudinaryLogger;
         private readonly FoodController _controller;
-
 
         public CreateFoodControllerTest()
         {
-            _mockFoodRepository = new Mock<IFoodRepository>();
-            // Mock Cloudinary configuration
+            // Initialize configuration mock
+            _mockConfiguration = new Mock<IConfiguration>();
             _mockConfiguration.Setup(x => x["Cloudinary:CloudName"]).Returns("test_cloud_name");
             _mockConfiguration.Setup(x => x["Cloudinary:ApiKey"]).Returns("test_api_key");
             _mockConfiguration.Setup(x => x["Cloudinary:ApiSecret"]).Returns("test_api_secret");
 
-            var mockLogger = new Mock<ILogger<CloudinaryService>>();
+            // Initialize Cloudinary logger mock
+            _mockCloudinaryLogger = new Mock<ILogger<CloudinaryService>>();
 
-            // Create a mock CloudinaryService using the actual constructor
+            // Create CloudinaryService mock
             _mockCloudinaryService = new Mock<CloudinaryService>(
                 _mockConfiguration.Object,
-                mockLogger.Object
+                _mockCloudinaryLogger.Object
             )
             { CallBase = true };
+
+            // Initialize repository mock
+            _mockFoodRepository = new Mock<IFoodRepository>();
+
+            // Create controller
             _controller = new FoodController(_mockFoodRepository.Object, _mockCloudinaryService.Object);
         }
 
-        // UTCID01: Valid page number with existing foods
+        private void SetupUserClaims(int memberId = 1)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim("Id", memberId.ToString())
+            };
+            var identity = new ClaimsIdentity(claims);
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
+        }
+
+        // UTCID01: Successful food creation
         [Fact]
-        public async Task GetAllFoodsForStaff_ValidPage_ReturnsOkResult()
+        public async Task CreateFood_ValidInput_ReturnsOkResultWithFoodId()
         {
             // Arrange
-            int page = 1;
-            int totalFoods = 10;
-            var mockFoods = CreateMockFoodList(5);
+            SetupUserClaims();
 
-            _mockFoodRepository.Setup(r => r.GetTotalFoodsForStaffAsync()).ReturnsAsync(totalFoods);
-            _mockFoodRepository.Setup(r => r.GetAllFoodsForStaffAsync(page, 5)).ReturnsAsync(mockFoods);
+            var createFoodDto = new CreateFoodRequestDTO
+            {
+                FoodName = "Test Food",
+                Calories = 100,
+                Portion = "1 serving",
+                Serving = "100g"
+            };
+
+            var expectedFood = new Food
+            {
+                FoodId = 1,
+                FoodName = "Test Food",
+                Calories = 100,
+                Portion = "1 serving (100g)"
+            };
+
+            _mockFoodRepository
+                .Setup(r => r.CreateFoodAsync(It.IsAny<Food>()))
+                .ReturnsAsync(expectedFood);
 
             // Act
-            var result = await _controller.GetAllFoodsForStaff(page);
+            var result = await _controller.CreateFood(createFoodDto);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = okResult.Value as dynamic;
-            Assert.Equal(5, response.Foods.Count);
-            Assert.Equal(2, response.TotalPages);
-            Assert.Equal(page, response.CurrentPage);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(expectedFood.FoodId, okResult.Value);
+
+            _mockFoodRepository.Verify(r => r.CreateFoodAsync(It.Is<Food>(
+                f => f.FoodName == createFoodDto.FoodName &&
+                     f.Calories == createFoodDto.Calories &&
+                     f.CreateBy == 1 &&
+                     f.Portion == "1 serving (100g)"
+            )), Times.Once);
+
+            //what is verify mean in above code 
+            //
+
         }
 
-        // UTCID02: No page number specified (default to page 1)
+        // UTCID02: Create food with no serving
         [Fact]
-        public async Task GetAllFoodsForStaff_NoPageSpecified_ReturnsFirstPage()
+        public async Task CreateFood_NoServing_PortionSetCorrectly()
         {
             // Arrange
-            int totalFoods = 10;
-            var mockFoods = CreateMockFoodList(5);
+            SetupUserClaims();
 
-            _mockFoodRepository.Setup(r => r.GetTotalFoodsForStaffAsync()).ReturnsAsync(totalFoods);
-            _mockFoodRepository.Setup(r => r.GetAllFoodsForStaffAsync(1, 5)).ReturnsAsync(mockFoods);
+            var createFoodDto = new CreateFoodRequestDTO
+            {
+                FoodName = "Test Food",
+                Calories = 100,
+                Portion = "1 serving",
+                Serving = null
+            };
+
+            var expectedFood = new Food
+            {
+                FoodId = 1,
+                FoodName = "Test Food",
+                Calories = 100,
+                Portion = "1 serving"
+            };
+
+            _mockFoodRepository
+                .Setup(r => r.CreateFoodAsync(It.IsAny<Food>()))
+                .ReturnsAsync(expectedFood);
 
             // Act
-            var result = await _controller.GetAllFoodsForStaff(null);
+            var result = await _controller.CreateFood(createFoodDto);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = okResult.Value as dynamic;
-            Assert.Equal(1, response.CurrentPage);
+            Assert.Equal(expectedFood.FoodId, okResult.Value);
+            _mockFoodRepository.Verify(r => r.CreateFoodAsync(It.Is<Food>(
+                f => f.Portion == "1 serving"
+            )), Times.Once);
         }
 
-        // UTCID03: Invalid page number (less than 1)
+        // UTCID03: Null food object
         [Fact]
-        public async Task GetAllFoodsForStaff_InvalidPageNumber_ReturnsBadRequest()
+        public async Task CreateFood_NullFoodObject_ReturnsBadRequest()
         {
+            // Arrange
+            SetupUserClaims();
+
             // Act
-            var result = await _controller.GetAllFoodsForStaff(-1);
+            var result = await _controller.CreateFood(null);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Page number must be greater than or equal to 1.", badRequestResult.Value);
+            Assert.Equal("Food object is null.", badRequestResult.Value);
         }
 
-        // UTCID04: Page number exceeds total pages
+        // UTCID04: Missing member ID claim
         [Fact]
-        public async Task GetAllFoodsForStaff_PageExceedsTotalPages_ReturnsLastPage()
+        public async Task CreateFood_MissingMemberIdClaim_ReturnsUnauthorized()
         {
             // Arrange
-            int totalFoods = 10;
-            var mockFoods = CreateMockFoodList(5);
+            var createFoodDto = new CreateFoodRequestDTO
+            {
+                FoodName = "Test Food"
+            };
 
-            _mockFoodRepository.Setup(r => r.GetTotalFoodsForStaffAsync()).ReturnsAsync(totalFoods);
-            _mockFoodRepository.Setup(r => r.GetAllFoodsForStaffAsync(2, 5)).ReturnsAsync(mockFoods);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() }
+            };
 
             // Act
-            var result = await _controller.GetAllFoodsForStaff(3);
+            var result = await _controller.CreateFood(createFoodDto);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = okResult.Value as dynamic;
-            Assert.Equal(2, response.CurrentPage);
+            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal("Member ID not found in claims.", unauthorizedResult.Value);
         }
 
-        // UTCID05: No foods found
+        // UTCID05: Invalid member ID claim
         [Fact]
-        public async Task GetAllFoodsForStaff_NoFoodsFound_ReturnsNotFound()
+        public async Task CreateFood_InvalidMemberIdClaim_ReturnsBadRequest()
         {
             // Arrange
-            _mockFoodRepository.Setup(r => r.GetTotalFoodsForStaffAsync()).ReturnsAsync(0);
+            var createFoodDto = new CreateFoodRequestDTO
+            {
+                FoodName = "Test Food"
+            };
+
+            var claims = new List<Claim>
+            {
+                new Claim("Id", "invalid_id")
+            };
+            var identity = new ClaimsIdentity(claims);
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
 
             // Act
-            var result = await _controller.GetAllFoodsForStaff(1);
+            var result = await _controller.CreateFood(createFoodDto);
 
             // Assert
-            Assert.IsType<NotFoundObjectResult>(result);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Invalid member ID.", badRequestResult.Value);
         }
 
-        // Helper method to create mock food list
-        private IEnumerable<AllFoodForStaffResponseDTO> CreateMockFoodList(int count)
+        // UTCID06: Failed food creation
+        [Fact]
+        public async Task CreateFood_RepositoryReturnsNull_ReturnsBadRequest()
         {
-            return Enumerable.Range(1, count)
-                .Select(i => new AllFoodForStaffResponseDTO
-                {
+            // Arrange
+            SetupUserClaims();
 
-                    FoodId = i,
-                    FoodName = $"Food {i}"
-                })
-                .ToList();
+            var createFoodDto = new CreateFoodRequestDTO
+            {
+                FoodName = "Test Food"
+            };
+
+            _mockFoodRepository
+                .Setup(r => r.CreateFoodAsync(It.IsAny<Food>()))
+                .ReturnsAsync((Food)null);
+
+            // Act
+            var result = await _controller.CreateFood(createFoodDto);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
         }
+
     }
 }

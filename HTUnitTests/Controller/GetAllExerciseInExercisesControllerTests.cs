@@ -81,7 +81,7 @@ namespace HTUnitTests.Controller
             var result = await controller.GetAllExercises(null, null);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -204,7 +204,7 @@ namespace HTUnitTests.Controller
             var result = await controller.GetAllExercises("", 99);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }

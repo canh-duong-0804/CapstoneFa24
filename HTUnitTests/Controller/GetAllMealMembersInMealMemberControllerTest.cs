@@ -61,6 +61,10 @@ namespace HTUnitTests.Controller
         [Fact]
         public async Task GetAllMealMembers_Unauthenticated_ReturnsUnauthorized()
         {
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() }
+            };
             // Act
             var result = await _controller.GetAllMealMembers();
 

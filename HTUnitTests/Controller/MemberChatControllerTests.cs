@@ -44,11 +44,13 @@ namespace HTUnitTests.Controller
         {
             // Arrange
             _mockChatRepository
-                .Setup(repo => repo.CreateChatAsync(1))
+                .Setup(repo => repo.CreateChatAsync(1, "Hello"))
                 .Returns(Task.CompletedTask);
 
+            var request = new MemberCreateChatRequest { InitialMessage = "Hello" };
+
             // Act
-            var result = await _controller.CreateChat();
+            var result = await _controller.CreateChat(request);
 
             // Assert
             Assert.IsType<OkResult>(result);
@@ -59,16 +61,17 @@ namespace HTUnitTests.Controller
         {
             // Arrange
             _mockChatRepository
-                .Setup(repo => repo.CreateChatAsync(1))
+                .Setup(repo => repo.CreateChatAsync(1, "Hello"))
                 .ThrowsAsync(new Exception("Test exception"));
 
+            var request = new MemberCreateChatRequest { InitialMessage = "Hello" };
+
             // Act
-            var result = await _controller.CreateChat();
+            var result = await _controller.CreateChat(request);
 
             // Assert
-            // Assert
-            var okResult = Assert.IsType<BadRequestObjectResult>(result); // Asserts that the result is 200 OK
-            Assert.Equal(400, okResult.StatusCode); // Asserts the status code
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(400, badRequestResult.StatusCode);
         }
         #endregion
 
@@ -250,7 +253,7 @@ namespace HTUnitTests.Controller
             var request = new MemberChatRatingRequest
             {
                 ChatId = 1,
-                RatingStar = 4.5
+                RatingStar = 4
             };
             _mockChatRepository
                 .Setup(repo => repo.RateChatAsync(1, request.ChatId, request.RatingStar))
@@ -271,7 +274,7 @@ namespace HTUnitTests.Controller
             var request = new MemberChatRatingRequest
             {
                 ChatId = 1,
-                RatingStar = 4.5
+                RatingStar = 4
             };
             _mockChatRepository
                 .Setup(repo => repo.RateChatAsync(1, request.ChatId, request.RatingStar))
