@@ -178,10 +178,10 @@ namespace DataAccess
                     // Tạo một tin nhắn mới
                     var message = new MessageChatDetail
                     {
-                        MessageChatId = chatId, // Gắn ID của cuộc trò chuyện
-                        SenderType = "2", // Loại người gửi (Staff)
-                        MessageContent = messageContent, // Nội dung tin nhắn
-                        SentAt = DateTime.UtcNow // Thời gian gửi
+                        MessageChatId = chatId, 
+                        SenderType = "2", 
+                        MessageContent = messageContent, 
+                        SentAt = DateTime.UtcNow 
                     };
 
 

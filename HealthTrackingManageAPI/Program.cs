@@ -74,12 +74,11 @@ builder.Services.AddScoped<SpeedSMSService>();
 builder.Services.Configure<SMSSetting>(builder.Configuration.GetSection("SMSSettingTwilio"));
 builder.Services.AddTransient<ISMSService, SMSService>();
 
-builder.Services.AddDistributedMemoryCache(); // Sử dụng bộ nhớ trong để lưu session
-
+builder.Services.AddDistributedMemoryCache(); 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian timeout của session
-    options.Cookie.HttpOnly = true; // Chỉ truy cập qua HTTP
+    options.IdleTimeout = TimeSpan.FromMinutes(30); 
+    options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
@@ -136,14 +135,14 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy("MyCorsPolicy", policy =>
 	{
-		policy.AllowAnyOrigin()   // Allow any origin
-			  .AllowAnyHeader()   // Allow any header
-			  .AllowAnyMethod();  // Allow any HTTP method (GET, POST, etc.)
+		policy.AllowAnyOrigin()
+			  .AllowAnyHeader()
+			  .AllowAnyMethod();
 	});
 });
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
