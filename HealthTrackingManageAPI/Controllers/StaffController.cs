@@ -87,7 +87,7 @@ namespace HealthTrackingManageAPI.Controllers
 
 
         [HttpGet("get-all-account-staff-for-admin")]
-        public async Task<IActionResult> GetAllAccountStaffForAdmin([FromQuery] int? page)
+        public async Task<IActionResult> GetAllAccountStaffForAdmin([FromQuery] int? page, [FromQuery] string? searchStaff)
         {
             try
             {
@@ -100,8 +100,8 @@ namespace HealthTrackingManageAPI.Controllers
                 int currentPage = page ?? 1;
                 int currentPageSize = 5;
 
-               
-                int totalStaffs = await _staffRepo.GetTotalStaffCountAsync();
+
+                int totalStaffs = await _staffRepo.GetTotalStaffCountAsync(searchStaff);
 
                 if (totalStaffs == 0)
                 {
@@ -117,7 +117,7 @@ namespace HealthTrackingManageAPI.Controllers
                 if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
 
               
-                var staffs = await _staffRepo.GetAllAccountStaffsAsync(currentPage, currentPageSize);
+                var staffs = await _staffRepo.GetAllAccountStaffsAsync(currentPage, currentPageSize,searchStaff);
 
                 if (staffs == null || !staffs.Any())
                 {

@@ -317,27 +317,35 @@ namespace DataAccess
             }
         }
 
-        public async Task<GetExerciseResponseForTrainerDTO> GetAllExerciseAsync(int page, int pageSize)
+        public async Task<GetExerciseResponseForTrainerDTO> GetAllExerciseAsync(int page, int pageSize, string? searchExercise)
         {
             try
             {
                 using var context = new HealthTrackingDBContext();
 
-                
-                var totalRecords = await context.Exercises.CountAsync();
+               
+                var query = context.Exercises.AsQueryable();
 
-                // Calculate total pages
+                if (!string.IsNullOrEmpty(searchExercise))
+                {
+                    query = query.Where(ep => ep.ExerciseName.Contains(searchExercise));
+                }
+
+             
+                var totalRecords = await query.CountAsync();
+
+             
                 var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 
-                // Adjust page if it exceeds the total pages
+             
                 if (page > totalPages && totalPages > 0)
                 {
                     page = totalPages;
                 }
 
-                // Fetch the paginated exercise plans
-                var exercisePlans = await context.Exercises
-                    .OrderByDescending(ep => ep.ExerciseId) // Ensure consistent ordering
+                
+                var exercises = await query
+                    .OrderByDescending(ep => ep.ExerciseId) 
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .Select(ep => new GetExerciseResponseDTO
@@ -347,14 +355,14 @@ namespace DataAccess
                         ExerciseImage = ep.ExerciseImage,
                         ExerciseName = ep.ExerciseName,
                         MetValue = ep.MetValue,
-                        TypeExercise = ep.TypeExercise // Method to map exercise type
+                        TypeExercise = ep.TypeExercise
                     })
                     .ToListAsync();
 
-                // Create response object
+               
                 return new GetExerciseResponseForTrainerDTO
                 {
-                    Data = exercisePlans,
+                    Data = exercises,
                     TotalRecords = totalRecords,
                     Page = page,
                     PageSize = pageSize,
@@ -367,17 +375,27 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error fetching exercise plans: {ex.Message}", ex);
+                throw new Exception($"Error fetching exercises: {ex.Message}", ex);
             }
         }
 
-        
 
-        public async Task<int> GetTotalExercisesAsync()
+
+
+        public async Task<int> GetTotalExercisesAsync(string? searchExericse)
         {
             using (var context = new HealthTrackingDBContext())
             {
-                return await context.ExercisePlans.CountAsync();
+                var query = context.ExercisePlans.AsQueryable();
+
+              
+                if (!string.IsNullOrEmpty(searchExericse))
+                {
+                    query = query.Where(ep => ep.Name.Contains(searchExericse));
+                }
+
+                
+                return await query.CountAsync();
             }
         }
     }

@@ -86,6 +86,9 @@ namespace DataAccess
                     Name = s.Name,
                     TotalCalories = s.TotalCalories,
                     DietName = s.Diet.DietName,
+                    TotalDay = context.MealPlanDetails
+                   .Where(detail => detail.MealPlanId == s.MealPlanId)
+                   .Max(detail => (int?)detail.Day) ?? 0,
                 })
                 .ToListAsync();
         }
@@ -210,10 +213,10 @@ namespace DataAccess
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    
+
                     var validFoodIds = await context.Foods.Select(f => f.FoodId).ToListAsync();
 
-                    
+
                     if (request.ListFoodIdBreakfasts != null && request.ListFoodIdBreakfasts.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdBreakfasts)
@@ -226,7 +229,7 @@ namespace DataAccess
                             var newMealPlanDetail = new MealPlanDetail
                             {
                                 MealPlanId = request.MealPlanId,
-                                MealType = 1, 
+                                MealType = 1,
                                 Day = request.Day,
                                 MealDate = DateTime.Now,
                                 Description = request.DescriptionBreakFast,
@@ -237,7 +240,7 @@ namespace DataAccess
                         }
                     }
 
-                   
+
                     if (request.ListFoodIdLunches != null && request.ListFoodIdLunches.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdLunches)
@@ -261,7 +264,7 @@ namespace DataAccess
                         }
                     }
 
-                    
+
                     if (request.ListFoodIdDinners != null && request.ListFoodIdDinners.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdDinners)
@@ -285,7 +288,7 @@ namespace DataAccess
                         }
                     }
 
-                 
+
                     if (request.ListFoodIdSnacks != null && request.ListFoodIdSnacks.Any())
                     {
                         foreach (var foodDetail in request.ListFoodIdSnacks)
@@ -345,18 +348,18 @@ namespace DataAccess
 
                     foreach (var (mealType, description, foodDetails) in mealTypes)
                     {
-                       
+
                         if (foodDetails == null || !foodDetails.Any())
                         {
                             continue;
                         }
 
-                      
+
                         var existingDetails = await context.MealPlanDetails
                             .Where(d => d.MealPlanId == request.MealPlanId && d.MealType == mealType && d.Day == request.Day)
                             .ToListAsync();
 
-                       
+
                         foreach (var foodDetail in foodDetails)
                         {
                             int foodId = mealType switch
@@ -371,13 +374,13 @@ namespace DataAccess
                             var detail = existingDetails.FirstOrDefault(d => d.FoodId == foodId);
                             if (detail != null)
                             {
-                                
+
                                 detail.Quantity = foodDetail.Quantity;
                                 detail.Description = description;
                             }
                             else
                             {
-                               
+
                                 context.MealPlanDetails.Add(new MealPlanDetail
                                 {
                                     MealPlanId = request.MealPlanId,
@@ -391,7 +394,7 @@ namespace DataAccess
                             }
                         }
 
-                       
+
                         var toRemove = existingDetails
                             .Where(d => !foodDetails.Any(f =>
                                 (mealType == 1 && f.FoodIdBreakfast == d.FoodId) ||
@@ -403,7 +406,7 @@ namespace DataAccess
                         context.MealPlanDetails.RemoveRange(toRemove);
                     }
 
-                    
+
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -426,17 +429,17 @@ namespace DataAccess
 
                     if (mealPlanDetails != null && mealPlanDetails.Any())
                     {
-                      
+
                         var description = mealPlanDetails.FirstOrDefault()?.Description;
 
-                       
+
                         var breakfastFoods = mealPlanDetails
-                            .Where(d => d.MealType == 1) 
+                            .Where(d => d.MealType == 1)
                             .Select(d => new GetFoodInMealPlanBreakfastResponseDTO
                             {
                                 MealType = d.MealType,
                                 FoodId = d.FoodId,
-                                Portion=d.Food.Portion,
+                                Portion = d.Food.Portion,
                                 FoodName = d.Food.FoodName,
                                 Quantity = d.Quantity,
                                 Calories = d.Food.Calories,
@@ -444,11 +447,11 @@ namespace DataAccess
                                 Protein = d.Food.Protein,
                                 Carbs = d.Food.Carbs,
                                 Fat = d.Food.Fat,
-                                DescriptionBreakFast=d.Description,
+                                DescriptionBreakFast = d.Description,
                             }).ToList();
 
                         var lunchFoods = mealPlanDetails
-                            .Where(d => d.MealType == 2) 
+                            .Where(d => d.MealType == 2)
                             .Select(d => new GetFoodInMealPlanLunchResponseDTO
                             {
                                 MealType = d.MealType,
@@ -465,7 +468,7 @@ namespace DataAccess
                             }).ToList();
 
                         var dinnerFoods = mealPlanDetails
-                            .Where(d => d.MealType == 3) 
+                            .Where(d => d.MealType == 3)
                             .Select(d => new GetFoodInMealPlanDinnerResponseDTO
                             {
                                 MealType = d.MealType,
@@ -482,7 +485,7 @@ namespace DataAccess
                             }).ToList();
 
                         var snackFoods = mealPlanDetails
-                            .Where(d => d.MealType == 4) 
+                            .Where(d => d.MealType == 4)
                             .Select(d => new GetFoodInMealPlanSnackResponseDTO
                             {
                                 MealType = d.MealType,
@@ -495,15 +498,15 @@ namespace DataAccess
                                 Protein = d.Food.Protein,
                                 Carbs = d.Food.Carbs,
                                 Fat = d.Food.Fat,
-                                DescriptionSnack=d.Description
+                                DescriptionSnack = d.Description
                             }).ToList();
 
-                        
+
                         var response = new GetMealPlanDetaiTrainnerlResponseDTO
                         {
                             MealPlanId = MealPlanId,
                             Day = Day,
-                          
+
                             ListFoodIdBreakfasts = breakfastFoods,
                             ListFoodIdLunches = lunchFoods,
                             ListFoodIdDinners = dinnerFoods,

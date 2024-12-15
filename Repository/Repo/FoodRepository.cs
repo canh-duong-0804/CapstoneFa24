@@ -25,7 +25,7 @@ namespace Repository.Repo
         public Task<IEnumerable<AllFoodForMemberResponseDTO>> GetAllFoodsForMemberAsync() => FoodDAO.Instance.GetAllFoodsForMemberAsync();
 
 
-        public Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int page, int pageSize) => FoodDAO.Instance.GetAllFoodsForStaffAsync(page,pageSize);
+        public Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int page, int pageSize, string? searchFood) => FoodDAO.Instance.GetAllFoodsForStaffAsync(page,pageSize,searchFood);
        
 
         public Task<GetFoodForMemberByIdResponseDTO> GetFoodForMemberByIdAsync(int FoodId, DateTime SelectDate, int memberId) => FoodDAO.Instance.GetFoodForMemberByIdAsync(FoodId,SelectDate,memberId);
@@ -34,7 +34,7 @@ namespace Repository.Repo
 
         public Task<List<FoodListBoxResponseDTO>> GetListBoxFoodForStaffAsync() => FoodDAO.Instance.GetListBoxFoodForStaffAsync();
 
-        public Task<int> GetTotalFoodsForStaffAsync() => FoodDAO.Instance.GetTotalFoodsForStaffAsync();
+        public Task<int> GetTotalFoodsForStaffAsync(string? searchFood) => FoodDAO.Instance.GetTotalFoodsForStaffAsync(searchFood);
 
 
         public Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string foodName) => FoodDAO.Instance.SearchFoodsForMemberAsync(foodName);

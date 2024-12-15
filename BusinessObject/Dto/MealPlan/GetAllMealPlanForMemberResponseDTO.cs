@@ -9,6 +9,7 @@ namespace BusinessObject.Dto.MealPlan
     public class GetAllMealPlanForMemberResponseDTO
     {
         public int MealPlanId { get; set; }
+        public int TotalDay { get; set; }
         public string DietName { get; set; }
      
         public string? MealPlanImage { get; set; }

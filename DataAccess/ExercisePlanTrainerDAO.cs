@@ -247,6 +247,10 @@ namespace DataAccess
                         Name = ep.Name,
                         TotalCaloriesBurned = ep.TotalCaloriesBurned,
                         ExercisePlanImage = ep.ExercisePlanImage,
+                        TotalDay= context.ExercisePlanDetails
+                    .Where(detail => detail.ExercisePlanId == ep.ExercisePlanId)
+                    .Max(detail => (int?)detail.Day) ?? 0,
+
                         AvgDuration = context.ExercisePlanDetails
                     .Where(detail => detail.ExercisePlanId == ep.ExercisePlanId)
                     .Average(detail => (double?)detail.Duration) ?? 0
