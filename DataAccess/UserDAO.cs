@@ -389,7 +389,7 @@ namespace DataAccess
 
                     context.ExerciseDiaryDetails.RemoveRange(exerciseDiaryDetails);
                     context.ExerciseDiaries.RemoveRange(exerciseDiaries);
-
+                    context.SaveChanges();
                     
                     var bodyMeasureChanges = await context.BodyMeasureChanges
                         .Where(bmc => bmc.MemberId == user.MemberId)

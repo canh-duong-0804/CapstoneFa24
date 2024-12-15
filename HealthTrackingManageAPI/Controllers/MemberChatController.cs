@@ -24,7 +24,7 @@ namespace YourAPINamespace.Controllers
 
         [HttpPost("create-chat")]
         [Authorize]
-        public async Task<IActionResult> CreateChat()
+        public async Task<IActionResult> CreateChat([FromBody] MemberCreateChatRequest request)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace YourAPINamespace.Controllers
                     return BadRequest();
                 }
 
-                await _chatRepository.CreateChatAsync(memberId);
+                await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
                 return Ok();
             }
             catch (Exception ex)
@@ -205,6 +205,6 @@ namespace YourAPINamespace.Controllers
     public class MemberChatRatingRequest
     {
         public int ChatId { get; set; }
-        public double RatingStar { get; set; }
+        public int RatingStar { get; set; }
     }
 }

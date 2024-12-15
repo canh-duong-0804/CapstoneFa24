@@ -17,7 +17,6 @@ namespace BusinessObject.Models
         public int? TotalDuration { get; set; }
         public double? TotalCaloriesBurned { get; set; }
 
-
         public virtual ExercisePlan? ExercisePlan { get; set; }
         public virtual Member Member { get; set; } = null!;
         public virtual ICollection<ExerciseDiaryDetail> ExerciseDiaryDetails { get; set; }

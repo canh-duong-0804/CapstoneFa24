@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObject.Models;
 using BusinessObject.Dto.MessageChatDetail;
 using AutoMapper.Execution;
+using BusinessObject.Dto.Trainer;
+using BusinessObject.Dto.Chat;
 
 namespace DataAccess
 {
@@ -29,9 +31,9 @@ namespace DataAccess
             }
         }
 
-        private ChatDAO() { }
+        //private ChatDAO() { }
 
-        public async Task CreateChatAsync(int memberId)
+        public async Task CreateChatAsync(int memberId, string createNewChat)
         {
             try
             {
@@ -42,12 +44,15 @@ namespace DataAccess
                         MemberId = memberId,
 
                         CreateAt = DateTime.UtcNow,
+                        ContentStart=createNewChat,
 
                     };
 
                     context.MessageChats.Add(newChat);
                     await context.SaveChangesAsync();
+                    var getChat = context.MessageChats.Where(c => c.MemberId == memberId && c.Status == true).FirstOrDefault();
 
+                    
                     // return newChat;
                 }
             }
@@ -104,7 +109,7 @@ namespace DataAccess
             }
         }
 
-        public async Task RateChatAsync(int memberId, int chatId, double rating)
+        public async Task RateChatAsync(int memberId, int chatId, int rating)
         {
             try
             {
@@ -245,6 +250,7 @@ namespace DataAccess
                             SentAt = detail.SentAt,
                             SenderType = detail.SenderType,
 
+
                         })
                         .ToList();
 
@@ -278,6 +284,7 @@ namespace DataAccess
                             MessageChatId = c.MessageChatId,
                             MemberId = c.MemberId,
                             CreateAt = c.CreateAt,
+                            ContentStart=c.ContentStart,
                         })
                         .ToListAsync();
 
@@ -319,5 +326,68 @@ namespace DataAccess
                 throw new Exception($"Error retrieving chats: {ex.Message}", ex);
             }
         }
+
+        public async Task<List<GetAllAccountTrainer>> GetAllTrainerToAssign()
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                    var getAllTrainer = context.staffs.Where(c => c.Role >1 && c.Status == true).
+                        Select(c => new GetAllAccountTrainer
+                        {
+                            Value=c.StaffId,
+                            Label=c.FullName,
+                        })
+                        .ToList();
+                    if (getAllTrainer == null) return null;
+
+
+                   
+                    return getAllTrainer;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving chats: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<OverViewMessageDTO>> OverviewAllMessageOfTrainer(int staffId)
+        {
+            try
+            {
+                using (var context = new HealthTrackingDBContext())
+                {
+                   
+                    var messages = await context.MessageChats
+                        .Where(chat => chat.StaffId == staffId) 
+                        .Join(
+                            context.Members,
+                            chat => chat.MemberId,
+                            member => member.MemberId,
+                            (chat, member) => new OverViewMessageDTO
+                            {
+                                ChatId = chat.MessageChatId,
+                                MemberId = chat.Member.MemberId,
+                                ImageMember = member.ImageMember, 
+                                ContentStart = chat.ContentStart, 
+                                MessageContent = chat.ContentStart, 
+                                FullName=chat.Member.Username,
+                                
+                            }
+                        )
+                        .ToListAsync();
+
+                    return messages;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving chats: {ex.Message}", ex);
+            }
+        }
+
+
     }
 }
