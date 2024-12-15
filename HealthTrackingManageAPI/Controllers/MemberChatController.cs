@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using BusinessObject.Models;
 using System.Security.Claims;
 using Repository.IRepo;
+using HealthTrackingManageAPI.NewFolder.Chat;
+using Microsoft.AspNetCore.SignalR;
 
 namespace YourAPINamespace.Controllers
 {
@@ -24,7 +26,7 @@ namespace YourAPINamespace.Controllers
 
         [HttpPost("create-chat")]
         [Authorize]
-        public async Task<IActionResult> CreateChat()
+        public async Task<IActionResult> CreateChat([FromBody] MemberCreateChatRequest request)
         {
             try
             {
@@ -40,7 +42,7 @@ namespace YourAPINamespace.Controllers
                     return BadRequest();
                 }
 
-                await _chatRepository.CreateChatAsync(memberId);
+                await _chatRepository.CreateChatAsync(memberId, request.InitialMessage);
                 return Ok();
             }
             catch (Exception ex)
@@ -50,7 +52,7 @@ namespace YourAPINamespace.Controllers
         }
 
         [HttpPost("send-message")]
-        public async Task<IActionResult> SendMessage([FromBody] SendMessageRequestMember request)
+        public async Task<IActionResult> SendMessageForMember([FromBody] SendMessageRequestMember request)
         {
             try
             {
@@ -59,14 +61,26 @@ namespace YourAPINamespace.Controllers
                 {
                     return Unauthorized();
                 }
-
                 if (!int.TryParse(memberIdClaim, out int memberId))
                 {
                     return BadRequest("Invalid member ID.");
                 }
 
-
+                // Save message
                 await _chatRepository.SendMessageMemberAsync(memberId, request.ChatId, request.MessageContent);
+
+                // Get SignalR hub context
+                var hubContext = HttpContext.RequestServices.GetService<IHubContext<ChatHub>>();
+
+                // Broadcast message with member type
+                await hubContext.Clients.Group($"{request.ChatId}_{ChatHub.UserType.Member}")
+                    .SendAsync("ReceiveMessage", new
+                    {
+                        SenderId = memberId,
+                        MessageContent = request.MessageContent,
+                        SenderType = ChatHub.UserType.Member,
+                        Timestamp = DateTime.UtcNow
+                    });
 
                 return Ok(new { message = "Message sent successfully." });
             }
@@ -205,6 +219,6 @@ namespace YourAPINamespace.Controllers
     public class MemberChatRatingRequest
     {
         public int ChatId { get; set; }
-        public double RatingStar { get; set; }
+        public int RatingStar { get; set; }
     }
 }

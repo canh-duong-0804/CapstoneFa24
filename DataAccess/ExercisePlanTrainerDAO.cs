@@ -240,12 +240,16 @@ namespace DataAccess
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .Where(p=>p.Status==true)
+                    .OrderByDescending(p=>p.ExercisePlanId)
                     .Select(ep => new ExercisePlanDTO
                     {
                         ExercisePlanId = ep.ExercisePlanId,
                         Name = ep.Name,
                         TotalCaloriesBurned = ep.TotalCaloriesBurned,
                         ExercisePlanImage = ep.ExercisePlanImage,
+                        AvgDuration = context.ExercisePlanDetails
+                    .Where(detail => detail.ExercisePlanId == ep.ExercisePlanId)
+                    .Average(detail => (double?)detail.Duration) ?? 0
                     })
                     .ToListAsync();
 

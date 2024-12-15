@@ -112,7 +112,7 @@ namespace HealthTrackingManageAPI.Controllers
                 }
 
                 // Fetch paginated data
-                var exercisePlans = await _exerciseRepository.GetAllExercisePlansAsync(currentPage, pageSize);
+                var exercisePlans = await _exerciseRepository.GetAllExerciseAsync(currentPage, pageSize);
 
                 if (exercisePlans == null )
                 {

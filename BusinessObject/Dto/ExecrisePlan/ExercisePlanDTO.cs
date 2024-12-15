@@ -12,6 +12,7 @@ namespace BusinessObject.Dto.ExecrisePlan
         public string ExercisePlanImage { get; set; }
         public string Name { get; set; }
         public double TotalCaloriesBurned { get; set; }
+        public double AvgDuration { get; set; }
         public List<ExercisePlanDetailDTO> Details { get; set; } = new();
     }
 

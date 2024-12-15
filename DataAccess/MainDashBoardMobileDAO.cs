@@ -105,15 +105,15 @@ namespace DataAccess
                         if (weightDifference < 0)
                         {
 
-                            /*  var totalDeficitNeeded = Math.Abs(weightDifference) * 7700;
-                              calorieAdjustment = -1 * (totalDeficitNeeded / daysUntilTarget);*/
+                            var totalDeficitNeeded = Math.Abs(weightDifference) * 7700;
+                            calorieAdjustment = -1 * (totalDeficitNeeded / daysUntilTarget);
                             goalType = "giam can";
                         }
                         else if (weightDifference > 0)
                         {
 
-                            /*  var totalSurplusNeeded = weightDifference * 7700;
-                              calorieAdjustment = totalSurplusNeeded / daysUntilTarget;*/
+                            var totalSurplusNeeded = weightDifference * 7700;
+                            calorieAdjustment = totalSurplusNeeded / daysUntilTarget;
                             goalType = "tang can";
                         }
                     }

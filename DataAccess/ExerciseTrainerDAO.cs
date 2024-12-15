@@ -317,7 +317,7 @@ namespace DataAccess
             }
         }
 
-        public async Task<GetExerciseResponseForTrainerDTO> GetAllExercisePlansAsync(int page, int pageSize)
+        public async Task<GetExerciseResponseForTrainerDTO> GetAllExerciseAsync(int page, int pageSize)
         {
             try
             {

@@ -6,6 +6,8 @@ using BusinessObject.Models;
 using Repository.IRepo;
 using HealthTrackingManageAPI.Authorize;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using HealthTrackingManageAPI.NewFolder.Chat;
 
 namespace YourAPINamespace.Controllers
 {
@@ -38,9 +40,28 @@ namespace YourAPINamespace.Controllers
         }
 
 
-        [HttpGet("get-all-message-for-trainer-to-asign")]
+        [HttpGet("get-all-trainer-to-assign")]
         [RoleLessThanOrEqualTo(1)]
-        public async Task<IActionResult> GetAllMessageForTrainerToAsign(int ChatId)
+        public async Task<IActionResult> GetAllTrainerToAssign()
+        {
+            try
+            {
+                var allTrainer = await _adminChatRepository.GetAllTrainerToAssign();
+                return Ok(allTrainer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+
+
+
+        [HttpGet("overview-all-message-of trainer")]
+        [RoleLessThanOrEqualTo(3)]
+        public async Task<IActionResult> OverviewAllMessageOfTrainer()
         {
             try
             {
@@ -54,7 +75,7 @@ namespace YourAPINamespace.Controllers
                 {
                     return BadRequest("Invalid member ID.");
                 }
-                var getAllMessageForAdmin = await _adminChatRepository.GetAllMessageForTrainerToAsign(ChatId, StaffId);
+                var getAllMessageForAdmin = await _adminChatRepository.OverviewAllMessageOfTrainer(StaffId);
                 return Ok(getAllMessageForAdmin);
             }
             catch (Exception ex)
@@ -65,8 +86,8 @@ namespace YourAPINamespace.Controllers
 
 
 
-        [HttpGet("get-all-message-chat-for-trainer-Asign")]
-        [RoleLessThanOrEqualTo(2)]
+        /*[HttpGet("get-all-message-chat-for-trainer-Asign")]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllMessageChatForTrainerToAsign(int ChatId)
         {
             try
@@ -88,11 +109,11 @@ namespace YourAPINamespace.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-        }
+        }*/
 
 
         [HttpGet("get-all-message-chat-for-trainer-need-assign")]
-        [RoleLessThanOrEqualTo(2)]
+        [RoleLessThanOrEqualTo(3)]
         public async Task<IActionResult> GetAllMessageChatForTrainerNeedAsign(int pageNumber)
         {
             try
@@ -121,32 +142,70 @@ namespace YourAPINamespace.Controllers
             }
         }
 
-
-
-        [HttpPost("send-message")]
-        [RoleLessThanOrEqualTo(2)]
-        public async Task<IActionResult> SendMessage([FromBody] SendMessageRequest request)
+        [HttpGet("get-all-message-for-trainer-to-asign")]
+        [RoleLessThanOrEqualTo(3)]
+        public async Task<IActionResult> GetAllMessageForTrainerToAsign(int ChatId)
         {
             try
             {
+                var memberIdClaim = User.FindFirstValue("Id");
+                if (memberIdClaim == null)
+                {
+                    return Unauthorized("Member ID not found in claims.");
+                }
 
+                if (!int.TryParse(memberIdClaim, out int StaffId))
+                {
+                    return BadRequest("Invalid member ID.");
+                }
+                var getAllMessageForAdmin = await _adminChatRepository.GetAllMessageForTrainerToAsign(ChatId, StaffId);
+                return Ok(getAllMessageForAdmin);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("send-message")]
+        [RoleLessThanOrEqualTo(3)]
+        public async Task<IActionResult> SendMessageForTrainer([FromBody] SendMessageRequest request)
+        {
+            try
+            {
                 var memberIdClaim = User.FindFirstValue("Id");
                 if (memberIdClaim == null)
                 {
                     return Unauthorized();
                 }
-
-                if (!int.TryParse(memberIdClaim, out int StaffId))
+                if (!int.TryParse(memberIdClaim, out int staffId))
                 {
                     return BadRequest();
                 }
-                await _adminChatRepository.SendMessageAsync(request.ChatId, StaffId, request.MessageContent);
+
+                // Save message
+                await _adminChatRepository.SendMessageAsync(request.ChatId, staffId, request.MessageContent);
+
+                // Get SignalR hub context
+                var hubContext = HttpContext.RequestServices.GetService<IHubContext<ChatHub>>();
+
+                // Broadcast message with trainer type
+                await hubContext.Clients.Group($"{request.ChatId}_{ChatHub.UserType.Trainer}")
+                    .SendAsync("ReceiveMessage", new
+                    {
+                        SenderId = staffId,
+                        MessageContent = request.MessageContent,
+                        SenderType = ChatHub.UserType.Trainer,
+                        Timestamp = DateTime.UtcNow
+                    });
+
                 return Ok(new { message = "Message sent successfully." });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
+
         }
     }
 
@@ -168,5 +227,7 @@ namespace YourAPINamespace.Controllers
         public int ChatId { get; set; }
         // public int StaffId { get; set; }
         public string MessageContent { get; set; }
-    }
+    } 
+    
+    
 }

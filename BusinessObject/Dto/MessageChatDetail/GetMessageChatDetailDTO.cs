@@ -14,5 +14,6 @@ namespace BusinessObject.Dto.MessageChatDetail
         public string? MessageContent { get; set; }
         public DateTime? SentAt { get; set; }
 
+
     }
 }

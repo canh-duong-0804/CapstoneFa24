@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HTUnitTests.Controller
 {
-    internal class StaffController
+    public class StaffController
     {
     }
 }

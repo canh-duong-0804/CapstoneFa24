@@ -8,18 +8,14 @@ namespace BusinessObject.Models
         public Member()
         {
             BodyMeasureChanges = new HashSet<BodyMeasureChange>();
-            Comments = new HashSet<Comment>();
-            CommunityPosts = new HashSet<CommunityPost>();
             ExerciseDiaries = new HashSet<ExerciseDiary>();
             FoodDiaries = new HashSet<FoodDiary>();
             FoodMembers = new HashSet<FoodMember>();
             Goals = new HashSet<Goal>();
             MealMembers = new HashSet<MealMember>();
-            MemberDiseases = new HashSet<MemberDisease>();
             MemberNotifications = new HashSet<MemberNotification>();
             MessageChats = new HashSet<MessageChat>();
             RefreshTokensMembers = new HashSet<RefreshTokensMember>();
-            WaterIntakes = new HashSet<WaterIntake>();
         }
 
         public int MemberId { get; set; }
@@ -40,17 +36,13 @@ namespace BusinessObject.Models
 
         public virtual Diet? Diet { get; set; }
         public virtual ICollection<BodyMeasureChange> BodyMeasureChanges { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<CommunityPost> CommunityPosts { get; set; }
         public virtual ICollection<ExerciseDiary> ExerciseDiaries { get; set; }
         public virtual ICollection<FoodDiary> FoodDiaries { get; set; }
         public virtual ICollection<FoodMember> FoodMembers { get; set; }
         public virtual ICollection<Goal> Goals { get; set; }
         public virtual ICollection<MealMember> MealMembers { get; set; }
-        public virtual ICollection<MemberDisease> MemberDiseases { get; set; }
         public virtual ICollection<MemberNotification> MemberNotifications { get; set; }
         public virtual ICollection<MessageChat> MessageChats { get; set; }
         public virtual ICollection<RefreshTokensMember> RefreshTokensMembers { get; set; }
-        public virtual ICollection<WaterIntake> WaterIntakes { get; set; }
     }
 }
