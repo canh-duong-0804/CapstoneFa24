@@ -84,40 +84,43 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int currentPage, int pageSize)
+        public async Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int currentPage, int pageSize, string? searchFood)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    // Calculate total count of foods
-                    /* int totalCount = await context.Foods
-                         .Where(food => food.Status == true)
-                         .CountAsync();*/
+                    // Query with base filters
+                    var query = from food in context.Foods
+                                join diet in context.Diets on food.DietId equals diet.DietId
+                                where food.Status == true
+                                orderby food.FoodId descending // Ensure consistent ordering
+                                select new AllFoodForStaffResponseDTO
+                                {
+                                    FoodId = food.FoodId,
+                                    CreateByName = food.CreateByNavigation.FullName,
+                                    ChangeBy = food.ChangeBy,
+                                    ChangeByName = food.CreateByNavigation.FullName,
+                                    FoodName = food.FoodName,
+                                    CreateBy = food.CreateBy,
+                                    CreateDate = food.CreateDate,
+                                    ChangeDate = food.ChangeDate,
+                                    FoodImage = food.FoodImage,
+                                    Calories = food.Calories,
+                                    DietName = diet.DietName,
+                                };
 
-                    // Get paginated foods
-                    var foods = await (from food in context.Foods
-                                       join diet in context.Diets on food.DietId equals diet.DietId
-                                       where food.Status == true
-                                       orderby food.FoodId descending// Ensure consistent ordering
-                                       select new AllFoodForStaffResponseDTO
-                                       {
-                                           FoodId = food.FoodId,
-                                           CreateByName = food.CreateByNavigation.FullName,
-                                           ChangeBy = food.ChangeBy,
-                                           ChangeByName = food.CreateByNavigation.FullName,
+                    // Apply search filter if searchFood is provided
+                    if (!string.IsNullOrEmpty(searchFood))
+                    {
+                        query = query.Where(food => food.FoodName.Contains(searchFood));
+                    }
 
-                                           FoodName = food.FoodName,
-                                           CreateBy = food.CreateBy,
-                                           CreateDate = food.CreateDate,
-                                           ChangeDate = food.ChangeDate,
-                                           FoodImage = food.FoodImage,
-                                           Calories = food.Calories,
-                                           DietName = food.Diet.DietName,
-                                       })
-                                       .Skip((currentPage - 1) * pageSize) // Skip items for previous pages
-                                       .Take(pageSize) // Take items for the current page
-                                       .ToListAsync();
+                    // Apply pagination
+                    var foods = await query
+                        .Skip((currentPage - 1) * pageSize) // Skip items for previous pages
+                        .Take(pageSize) // Take items for the current page
+                        .ToListAsync();
 
                     return foods;
                 }
@@ -127,6 +130,7 @@ namespace DataAccess
                 throw new Exception($"Error retrieving foods: {ex.Message}", ex);
             }
         }
+
 
         public async Task<GetFoodForStaffByIdResponseDTO> GetFoodForStaffByIdAsync(int id)
         {
@@ -534,11 +538,15 @@ namespace DataAccess
             }
         }
 
-        public async Task<int> GetTotalFoodsForStaffAsync()
+        public async Task<int> GetTotalFoodsForStaffAsync(string? searchFood)
         {
             using (var context = new HealthTrackingDBContext())
             {
-                return await context.Foods.CountAsync();
+                if (string.IsNullOrEmpty(searchFood))
+                {
+                    return await context.Foods.CountAsync();
+                }
+                return await context.Foods.CountAsync(f => f.FoodName.Contains(searchFood));
             }
         }
     }

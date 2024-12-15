@@ -43,7 +43,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpGet("get-all-foods-for-staff")]
         [RoleLessThanOrEqualTo(2)]
-        public async Task<IActionResult> GetAllFoodsForStaff([FromQuery] int? page)
+        public async Task<IActionResult> GetAllFoodsForStaff([FromQuery] int? page, [FromQuery] string? SearchFood)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace HealthTrackingManageAPI.Controllers
                 int pageSize = 5; // Number of items per page
 
                 // Get total number of foods
-                int totalFoods = await _foodRepository.GetTotalFoodsForStaffAsync();
+                int totalFoods = await _foodRepository.GetTotalFoodsForStaffAsync(SearchFood);
 
                 if (totalFoods == 0)
                 {
@@ -74,7 +74,7 @@ namespace HealthTrackingManageAPI.Controllers
                 }
 
                 // Retrieve foods for the current page
-                var foods = await _foodRepository.GetAllFoodsForStaffAsync(currentPage, pageSize);
+                var foods = await _foodRepository.GetAllFoodsForStaffAsync(currentPage, pageSize,SearchFood);
 
                 if (foods == null || !foods.Any())
                 {

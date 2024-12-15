@@ -82,7 +82,7 @@ namespace HealthTrackingManageAPI.Controllers
 
         [HttpGet("get-all-exercises-trainer")]
         [RoleLessThanOrEqualTo(3)]
-        public async Task<IActionResult> GetAllExercisePlans([FromQuery] int? page)
+        public async Task<IActionResult> GetAllExercisePlans([FromQuery] int? page, [FromQuery] string? SearchExercise)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace HealthTrackingManageAPI.Controllers
                 int currentPage = page ?? 1; // Default to page 1 if not provided
 
                 // Retrieve the total count of exercise plans
-                int totalExercisePlans = await _exerciseRepository.GetTotalExercisesAsync();
+                int totalExercisePlans = await _exerciseRepository.GetTotalExercisesAsync(SearchExercise);
                 if (totalExercisePlans == 0)
                 {
                     return NotFound("No exercise plans found.");
@@ -112,7 +112,7 @@ namespace HealthTrackingManageAPI.Controllers
                 }
 
                 // Fetch paginated data
-                var exercisePlans = await _exerciseRepository.GetAllExerciseAsync(currentPage, pageSize);
+                var exercisePlans = await _exerciseRepository.GetAllExerciseAsync(currentPage, pageSize,SearchExercise);
 
                 if (exercisePlans == null )
                 {
@@ -120,14 +120,15 @@ namespace HealthTrackingManageAPI.Controllers
                 }
 
                 // Prepare the response
-                return Ok(new
+                /*return Ok(new
                 {
                     ExercisePlans = exercisePlans,
                     TotalPages = totalPages,
                     CurrentPage = currentPage,
                     PageSize = pageSize,
                     TotalExercisePlans = totalExercisePlans
-                });
+                });*/
+                return Ok(exercisePlans);
             }
             catch (Exception ex)
             {

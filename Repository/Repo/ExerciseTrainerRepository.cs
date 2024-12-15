@@ -17,11 +17,11 @@ namespace Repository.Repo
 
         public Task<bool> DeleteExerciseAsync(int exerciseId) => ExerciseTrainerDAO.Instance.DeleteExerciseAsync(exerciseId);
 
-        public Task<GetExerciseResponseForTrainerDTO> GetAllExerciseAsync(int page, int pageSize) => ExerciseTrainerDAO.Instance.GetAllExerciseAsync(page, pageSize);
+        public Task<GetExerciseResponseForTrainerDTO> GetAllExerciseAsync(int page, int pageSize, string? searchExercise) => ExerciseTrainerDAO.Instance.GetAllExerciseAsync(page, pageSize,searchExercise);
 
         public Task<ExerciseRequestDTO> GetExerciseDetailAsync(int exerciseId) => ExerciseTrainerDAO.Instance.GetExerciseDetailAsync(exerciseId);
 
-        public Task<int> GetTotalExercisesAsync() => ExerciseTrainerDAO.Instance.GetTotalExercisesAsync();
+        public Task<int> GetTotalExercisesAsync(string? SearchExericse) => ExerciseTrainerDAO.Instance.GetTotalExercisesAsync(SearchExericse);
        
 
         public Task<ExerciseRequestDTO> UpdateExerciseAsync(int exerciseId, ExerciseRequestDTO updateRequest) => ExerciseTrainerDAO.Instance.UpdateExerciseAsync(exerciseId, updateRequest);

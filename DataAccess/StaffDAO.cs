@@ -154,14 +154,23 @@ namespace DataAccess
             }
         }
 
-        public async Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync(int page, int pageSize)
+        public async Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync(int page, int pageSize, string? searchStaff)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    var staffAccounts = await context.staffs
-                        .Where(s => s.Status == true &&s.Role>0)
+                    var query = context.staffs
+                        .Where(s => s.Status == true && s.Role > 0); 
+
+                    
+                    if (!string.IsNullOrEmpty(searchStaff))
+                    {
+                        query = query.Where(s => s.FullName.Contains(searchStaff) || s.Email.Contains(searchStaff));
+                    }
+
+                    
+                    var staffAccounts = await query
                         .OrderBy(s => s.StaffId)
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)
@@ -170,9 +179,7 @@ namespace DataAccess
                             StaffId = s.StaffId,
                             FullName = s.FullName,
                             PhoneNumber = s.PhoneNumber,
-
                             Description = s.Description,
-
                             StaffImage = s.StaffImage,
                             Email = s.Email,
                             Role = s.Role,
@@ -190,6 +197,7 @@ namespace DataAccess
                 throw new Exception($"Error retrieving staff accounts: {ex.Message}", ex);
             }
         }
+
 
         public async Task<GetStaffByIdResponseDTO> GetAccountStaffByIdAsync(int id)
         {
@@ -367,13 +375,18 @@ namespace DataAccess
             }
         }
 
-        public async Task<int> GetTotalStaffCountAsync()
+        public async Task<int> GetTotalStaffCountAsync(string? searchStaff)
         {
             try
             {
                 using (var context = new HealthTrackingDBContext())
                 {
-                    return await context.staffs.CountAsync(s => s.Status == true);
+                    if (string.IsNullOrEmpty(searchStaff))
+                    {
+                        return await context.staffs.CountAsync(s => s.Status == true);
+
+                    }
+                    return await context.staffs.CountAsync(s => s.Status == true && s.FullName.Contains(searchStaff));
                 }
             }
             catch (Exception ex)

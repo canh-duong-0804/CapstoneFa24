@@ -24,11 +24,11 @@ namespace Repository.Repo
 
         //public Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync() => StaffDAO.Instance.GetAllAccountStaffsAsync(int page, int pageSize);
 
-        public Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync(int page, int pageSize) =>
-          StaffDAO.Instance.GetAllAccountStaffsAsync(page, pageSize);
+        public Task<IEnumerable<AllStaffsResponseDTO>> GetAllAccountStaffsAsync(int page, int pageSize,string? searchStaff) =>
+          StaffDAO.Instance.GetAllAccountStaffsAsync(page, pageSize,searchStaff);
 
 
-        public Task<int> GetTotalStaffCountAsync() => StaffDAO.Instance.GetTotalStaffCountAsync();
+        public Task<int> GetTotalStaffCountAsync(string? searchStaff) => StaffDAO.Instance.GetTotalStaffCountAsync(searchStaff);
 
 
         public bool IsUniqueEmail(string email) => StaffDAO.Instance.IsUniqueEmail(email);

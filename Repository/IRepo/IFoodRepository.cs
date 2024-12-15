@@ -14,7 +14,7 @@ namespace Repository.IRepo
         Task<Food> CreateFoodAsync(Food food);
 
 
-        Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int currentPage, int pageSize);
+        Task<IEnumerable<AllFoodForStaffResponseDTO>> GetAllFoodsForStaffAsync(int currentPage, int pageSize, string? searchFood);
 
 
         Task<GetFoodForStaffByIdResponseDTO> GetFoodForStaffByIdAsync(int id);
@@ -30,6 +30,6 @@ namespace Repository.IRepo
         Task<List<FoodListBoxResponseDTO>> GetListBoxFoodForStaffAsync();
         Task<IEnumerable<AllFoodForMemberResponseDTO>> SearchFoodsForMemberAsync(string foodName);
         Task<bool> UploadImageFood(string v, int foodId);
-        Task<int> GetTotalFoodsForStaffAsync();
+        Task<int> GetTotalFoodsForStaffAsync(string? searchFood);
     }
 }
