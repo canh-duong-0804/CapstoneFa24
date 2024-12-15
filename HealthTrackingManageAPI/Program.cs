@@ -30,30 +30,28 @@ builder.Services.AddDbContext<HealthTrackingDBContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 builder.Services.Configure<AppSettingsKey>(builder.Configuration.GetSection("ApiSettings"));
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
-builder.Services.AddScoped<ICommunityPostRepository, CommunityPostRepository>();
-builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
 builder.Services.AddScoped<IMealMemberRepository, MealMemberRepository>();
 builder.Services.AddScoped<IExecriseDiaryDetailRepository, ExecriseDiaryDetailRepository>();
-builder.Services.AddScoped<ICommunityCategoryRepo, CommunityCategoryRepository>();
 builder.Services.AddScoped<IBodyMesurementRepository, BodyMeasurementRepository>();
 builder.Services.AddScoped<IExeriseDiaryRepository, ExecriseDiaryRepository>();
 builder.Services.AddScoped<ICompanyInfoRepository, CompanyInfoRepository>();
 builder.Services.AddScoped<IFoodDiaryRepository, FoodDiaryRepository>();
 builder.Services.AddScoped<IExecrisePlanTrainerRepository, ExecrisePlanTrainerRepository>();
-builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+
 builder.Services.AddScoped<IMainDashBoardRepository, MainDashBoardRepository>();
 builder.Services.AddScoped<IExerciseCategoryRepository, ExerciseCategoryRepository>();
 builder.Services.AddScoped<IGoalRepository, GoalRepository>();
 builder.Services.AddScoped<IMealMemberDetailsRepository, MealMemberDetailsRepository>();
 builder.Services.AddScoped<IFoodMemberRepository, FoodMemberRepository>();
 builder.Services.AddScoped<IMealPlanRepository, MealPlanRepository>();
-builder.Services.AddScoped<IWaterLogRepository, WaterLogRepository>();
+/*builder.Services.AddScoped<IWaterLogRepository, WaterLogRepository>();*/
 builder.Services.AddScoped<IExecrisePlanRepository, ExecrisePlanRepository>();
 builder.Services.AddScoped<IMealPlanTrainnerRepository, MealPlanTrainnerRepository>();
 builder.Services.AddScoped<IExerciseTrainerRepository, ExerciseTrainerRepository>();

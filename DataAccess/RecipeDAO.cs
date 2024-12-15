@@ -1,4 +1,4 @@
-﻿using BusinessObject.Dto.Recipe;
+﻿/*using BusinessObject.Dto.Recipe;
 using BusinessObject.Dto.Recipe.CreateDTO;
 using BusinessObject.Dto.Recipe.UpdateDTO;
 using BusinessObject.Dto.Staff;
@@ -109,12 +109,12 @@ namespace DataAccess
                     await context.SaveChangesAsync();
 
 
-                    /* foreach (var ingredient in recipeModel.RecipeIngredients)
+                    *//* foreach (var ingredient in recipeModel.RecipeIngredients)
                      {
                          ingredient.RecipeId = recipeModel.RecipeId; 
                          ingredient.RecipeIngredientId = 0;
                          await context.RecipeIngredients.AddAsync(ingredient);
-                     }*/
+                     }*//*
 
 
                     await context.SaveChangesAsync();
@@ -180,7 +180,7 @@ namespace DataAccess
             }
         }
 
-        /*  public Task<> GetRecipeForStaffByIdAsync()
+        *//*  public Task<> GetRecipeForStaffByIdAsync()
           {
               throw new NotImplementedException();
           }*/
@@ -229,7 +229,7 @@ namespace DataAccess
             {
                 throw new Exception($"Error retrieving recipe details: {ex.Message}", ex);
             }
-        }*/
+        }*//*
 
         public async Task<Recipe> DeleteRecipeAsync(int id)
         {
@@ -354,3 +354,4 @@ namespace DataAccess
 
     }
 }
+*/

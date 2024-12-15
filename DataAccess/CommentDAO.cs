@@ -1,4 +1,4 @@
-﻿using BusinessObject.Models;
+﻿/*using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,7 @@ namespace DataAccess
             }
         }
 
-        /* // Get comments by post ID
+        *//* // Get comments by post ID
          public async Task<IEnumerable<Comment>> GetCommentsByPostId(int postId)
          {
              using (var context = new HealthTrackingDBContext())
@@ -57,7 +57,7 @@ namespace DataAccess
                      .OrderByDescending(c => c.CreateDate)
                      .ToListAsync();
              }
-         }*/
+         }*//*
 
         // Update a comment
         public async Task<Comment?> UpdateComment(Comment updatedComment)
@@ -139,3 +139,4 @@ namespace DataAccess
 
 	}
 }
+*/

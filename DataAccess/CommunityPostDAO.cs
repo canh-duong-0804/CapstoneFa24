@@ -1,4 +1,4 @@
-using BusinessObject.Dto.Register;
+/*using BusinessObject.Dto.Register;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -157,4 +157,4 @@ namespace DataAccess
 			}
 		}
 	}
-}
+}*/
