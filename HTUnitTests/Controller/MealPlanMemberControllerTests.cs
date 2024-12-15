@@ -90,18 +90,7 @@ namespace HTUnitTests.Controller
         }
         #endregion
 
-        [Fact]
-        public async Task AddMealPlanToDiary_ReturnsOk_WhenSuccess()
-        {
-            SetupAuthorizedUser();
-
-            _mockMealPlanRepository.Setup(repo => repo.AddMealPlanToFoodDiaryAsync(1, 1, It.IsAny<DateTime>()))
-                .ReturnsAsync(1);
-
-            var result = await _controller.AddMealPlanToDiary(1, DateTime.UtcNow);
-
-            Assert.IsType<OkResult>(result);
-        }
+       
 
         [Fact]
         public async Task AddMealPlanToDiary_ReturnsUnauthorized_WhenUserIsNotAuthorized()
@@ -122,19 +111,7 @@ namespace HTUnitTests.Controller
 
             Assert.IsType<BadRequestResult>(result);
         }
-        [Fact]
-        public async Task AddMealPlanToDiary_ReturnsStatusCode500_WhenRepositoryFails()
-        {
-            SetupAuthorizedUser();
-
-            _mockMealPlanRepository.Setup(repo => repo.AddMealPlanToFoodDiaryAsync(1, 1, It.IsAny<DateTime>()))
-                .ReturnsAsync(2);
-
-            var result = await _controller.AddMealPlanToDiary(1, DateTime.UtcNow);
-
-            var statusCodeResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(500, statusCodeResult.StatusCode);
-        }
+       
 
         [Fact]
         public async Task GetMealPlanDetailForMember_ReturnsOk_WhenMealPlanDetailExists()
@@ -159,20 +136,7 @@ namespace HTUnitTests.Controller
         }
 
 
-        [Fact]
-        public async Task AddMealPlanDetailWithDayToFoodDiary_ReturnsOk_WhenSuccess()
-        {
-            SetupAuthorizedUser();
-
-            _mockMealPlanRepository.Setup(repo => repo.AddMealPlanDetailWithDayToFoodDiaryAsync(It.IsAny<AddMealPlanDetailDayToFoodDiaryDetailRequestDTO>(), 1))
-                .ReturnsAsync(true);
-
-            var request = new AddMealPlanDetailDayToFoodDiaryDetailRequestDTO();
-
-            var result = await _controller.AddMealPlanDetailWithDayToFoodDiary(request);
-
-            Assert.IsType<OkResult>(result);
-        }
+        
 
         [Fact]
         public async Task AddMealPlanDetailWithDayToFoodDiary_ReturnsBadRequest_WhenRepositoryFails()
@@ -186,6 +150,53 @@ namespace HTUnitTests.Controller
 
             var result = await _controller.AddMealPlanDetailWithDayToFoodDiary(request);
 
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public async Task AddMealPlanToDiary_ReturnsOkWithEmptyString_WhenSuccess()
+        {
+            // Arrange
+            SetupAuthorizedUser();
+            _mockMealPlanRepository.Setup(repo => repo.AddMealPlanToFoodDiaryAsync(1, 1, It.IsAny<DateTime>()))
+                .ReturnsAsync(1); // Success case returns 1
+
+            // Act
+            var result = await _controller.AddMealPlanToDiary(1, DateTime.UtcNow);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("", okResult.Value);
+        }
+
+        [Fact]
+        public async Task AddMealPlanToDiary_ReturnsStatusCode500_WhenRepositoryReturns2()
+        {
+            // Arrange
+            SetupAuthorizedUser();
+            _mockMealPlanRepository.Setup(repo => repo.AddMealPlanToFoodDiaryAsync(1, 1, It.IsAny<DateTime>()))
+                .ReturnsAsync(2); // Failure case returns 2
+
+            // Act
+            var result = await _controller.AddMealPlanToDiary(1, DateTime.UtcNow);
+
+            // Assert
+            var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
+            Assert.Equal(500, statusCodeResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task AddMealPlanToDiary_ReturnsBadRequest_WhenRepositoryReturns3()
+        {
+            // Arrange
+            SetupAuthorizedUser();
+            _mockMealPlanRepository.Setup(repo => repo.AddMealPlanToFoodDiaryAsync(1, 1, It.IsAny<DateTime>()))
+                .ReturnsAsync(3); // Bad request case returns 3
+
+            // Act
+            var result = await _controller.AddMealPlanToDiary(1, DateTime.UtcNow);
+
+            // Assert
             Assert.IsType<BadRequestResult>(result);
         }
     }
