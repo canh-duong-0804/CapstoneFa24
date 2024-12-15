@@ -61,20 +61,21 @@ namespace HTUnitTests.Controller
         {
             // Arrange
             int page = 1;
+            string searchFood = null;
             int pageSize = 5;
             int totalFoods = 10;
             var mockFoods = new List<AllFoodForStaffResponseDTO>
-    {
-        new AllFoodForStaffResponseDTO { FoodId = 1, FoodName = "Apple" },
-        new AllFoodForStaffResponseDTO { FoodId = 2, FoodName = "Banana" }
-    };
-            _mockFoodRepository.Setup(x => x.GetTotalFoodsForStaffAsync())
+            {
+                new AllFoodForStaffResponseDTO { FoodId = 1, FoodName = "Apple" },
+                new AllFoodForStaffResponseDTO { FoodId = 2, FoodName = "Banana" }
+            };
+            _mockFoodRepository.Setup(x => x.GetTotalFoodsForStaffAsync(searchFood))
                 .ReturnsAsync(totalFoods);
-            _mockFoodRepository.Setup(x => x.GetAllFoodsForStaffAsync(page, pageSize))
+            _mockFoodRepository.Setup(x => x.GetAllFoodsForStaffAsync(page, pageSize, searchFood))
                 .ReturnsAsync(mockFoods);
 
             // Act
-            var result = await _controller.GetAllFoodsForStaff(page);
+            var result = await _controller.GetAllFoodsForStaff(page, searchFood);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -100,17 +101,61 @@ namespace HTUnitTests.Controller
             Assert.NotNull(currentPageProperty);
             var currentPage = (int)currentPageProperty.GetValue(resultValue);
             Assert.Equal(page, currentPage);
+
+            // Check PageSize property
+            var pageSizeProperty = resultType.GetProperty("PageSize");
+            Assert.NotNull(pageSizeProperty);
+            var returnedPageSize = (int)pageSizeProperty.GetValue(resultValue);
+            Assert.Equal(pageSize, returnedPageSize);
+
+            // Check TotalFoods property
+            var totalFoodsProperty = resultType.GetProperty("TotalFoods");
+            Assert.NotNull(totalFoodsProperty);
+            var returnedTotalFoods = (int)totalFoodsProperty.GetValue(resultValue);
+            Assert.Equal(totalFoods, returnedTotalFoods);
+        }
+
+        [Fact]
+        public async Task GetAllFoodsForStaff_SearchFood_ReturnsFilteredResults()
+        {
+            // Arrange
+            int page = 1;
+            string searchFood = "Apple";
+            int pageSize = 5;
+            int totalFoods = 1;
+            var mockFoods = new List<AllFoodForStaffResponseDTO>
+            {
+                new AllFoodForStaffResponseDTO { FoodId = 1, FoodName = "Apple" }
+            };
+            _mockFoodRepository.Setup(x => x.GetTotalFoodsForStaffAsync(searchFood))
+                .ReturnsAsync(totalFoods);
+            _mockFoodRepository.Setup(x => x.GetAllFoodsForStaffAsync(page, pageSize, searchFood))
+                .ReturnsAsync(mockFoods);
+
+            // Act
+            var result = await _controller.GetAllFoodsForStaff(page, searchFood);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var resultValue = okResult.Value;
+            var resultType = resultValue.GetType();
+
+            var foodsProperty = resultType.GetProperty("Foods");
+            var foods = foodsProperty.GetValue(resultValue) as IEnumerable<AllFoodForStaffResponseDTO>;
+            Assert.Single(foods);
+            Assert.Equal("Apple", foods.First().FoodName);
         }
 
         [Fact]
         public async Task GetAllFoodsForStaff_NoFoods_ReturnsNotFound()
         {
             // Arrange
-            _mockFoodRepository.Setup(x => x.GetTotalFoodsForStaffAsync())
+            string searchFood = null;
+            _mockFoodRepository.Setup(x => x.GetTotalFoodsForStaffAsync(searchFood))
                 .ReturnsAsync(0);
 
             // Act
-            var result = await _controller.GetAllFoodsForStaff(1);
+            var result = await _controller.GetAllFoodsForStaff(1, searchFood);
 
             // Assert
             Assert.IsType<NotFoundObjectResult>(result);
@@ -120,10 +165,43 @@ namespace HTUnitTests.Controller
         public async Task GetAllFoodsForStaff_InvalidPage_ReturnsBadRequest()
         {
             // Act
-            var result = await _controller.GetAllFoodsForStaff(-1);
+            var result = await _controller.GetAllFoodsForStaff(-1, null);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetAllFoodsForStaff_PageExceedsTotalPages_ReturnsLastPage()
+        {
+            // Arrange
+            int page = 10; // An arbitrarily large page number
+            string searchFood = null;
+            int pageSize = 5;
+            int totalFoods = 10;
+            var mockFoods = new List<AllFoodForStaffResponseDTO>
+            {
+                new AllFoodForStaffResponseDTO { FoodId = 1, FoodName = "Apple" },
+                new AllFoodForStaffResponseDTO { FoodId = 2, FoodName = "Banana" }
+            };
+            _mockFoodRepository.Setup(x => x.GetTotalFoodsForStaffAsync(searchFood))
+                .ReturnsAsync(totalFoods);
+            _mockFoodRepository.Setup(x => x.GetAllFoodsForStaffAsync(2, pageSize, searchFood)) // Should return the last page
+                .ReturnsAsync(mockFoods);
+
+            // Act
+            var result = await _controller.GetAllFoodsForStaff(page, searchFood);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var resultValue = okResult.Value;
+            var resultType = resultValue.GetType();
+
+            // Check CurrentPage property
+            var currentPageProperty = resultType.GetProperty("CurrentPage");
+            Assert.NotNull(currentPageProperty);
+            var currentPage = (int)currentPageProperty.GetValue(resultValue);
+            Assert.Equal(2, currentPage); // Should return the last page
         }
         #endregion
 
