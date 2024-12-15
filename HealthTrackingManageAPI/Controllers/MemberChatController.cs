@@ -17,10 +17,13 @@ namespace YourAPINamespace.Controllers
     public class MemberChatController : ControllerBase
     {
         private readonly IChatMemberRepository _chatRepository;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public MemberChatController(IChatMemberRepository chatRepository)
+        public MemberChatController(IChatMemberRepository chatRepository, IHubContext<ChatHub> hubContext)
         {
             _chatRepository = chatRepository;
+            _hubContext = hubContext;
+
         }
 
 
@@ -73,13 +76,12 @@ namespace YourAPINamespace.Controllers
                 var hubContext = HttpContext.RequestServices.GetService<IHubContext<ChatHub>>();
 
                 // Broadcast message with member type
-                await hubContext.Clients.Group($"{request.ChatId}_{ChatHub.UserType.Member}")
+                await _hubContext.Clients.Group(request.ChatId.ToString())
                     .SendAsync("ReceiveMessage", new
                     {
                         SenderId = memberId,
-                        MessageContent = request.MessageContent,
-                        SenderType = ChatHub.UserType.Member,
-                        Timestamp = DateTime.UtcNow
+                        Message = request.MessageContent,
+                        Timestamp = DateTime.Now
                     });
 
                 return Ok(new { message = "Message sent successfully." });

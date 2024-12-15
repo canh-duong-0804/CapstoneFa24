@@ -17,10 +17,11 @@ namespace YourAPINamespace.Controllers
     public class AdminChatController : ControllerBase
     {
         private readonly IAdminChatRepository _adminChatRepository;
-
-        public AdminChatController(IAdminChatRepository adminChatRepository)
+        private readonly IHubContext<ChatHub> _hubContext;
+        public AdminChatController(IAdminChatRepository adminChatRepository, IHubContext<ChatHub> hubContext)
         {
             _adminChatRepository = adminChatRepository;
+            _hubContext = hubContext;
         }
 
 
@@ -190,14 +191,14 @@ namespace YourAPINamespace.Controllers
                 var hubContext = HttpContext.RequestServices.GetService<IHubContext<ChatHub>>();
 
                 // Broadcast message with trainer type
-                await hubContext.Clients.Group($"{request.ChatId}_{ChatHub.UserType.Trainer}")
+                await _hubContext.Clients.Group(request.ChatId.ToString())
                     .SendAsync("ReceiveMessage", new
                     {
                         SenderId = staffId,
-                        MessageContent = request.MessageContent,
-                        SenderType = ChatHub.UserType.Trainer,
-                        Timestamp = DateTime.UtcNow
+                        Message = request.MessageContent,
+                        Timestamp = DateTime.Now
                     });
+
 
                 return Ok(new { message = "Message sent successfully." });
             }
